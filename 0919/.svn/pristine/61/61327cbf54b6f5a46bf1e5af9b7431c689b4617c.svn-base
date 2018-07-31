@@ -1,0 +1,346 @@
+<template>
+  <div class="template-selector-container">
+    <template v-for="(item, index) in templateTypeArray" >
+      <div v-if="!item.hidden" :key="index" class="template-selector-item" :class="{'checked': index === currentItemIndex}" >
+        <div class="template-selector-item--label" :class="{'template-selector-item--enable': item.enable}" @click="handleItemClick(index)"> 
+          {{ item.name }} 
+          <!-- <i class="el-icon-check template-selector-icon-checked" v-if="index === currentItemIndex"></i> -->
+        </div>
+        <div class="template-selector-item--mask" v-if="!item.enable"></div>
+      </div>
+      <transition name="slide-fade" :key="'hidden' + index">
+        <div class="template-selectior-hidden-box" v-if="(index + 1) % 3 === 0 && index - currentItemIndex < 3 && index - currentItemIndex > -1 && currentItemIndex > -1">
+          <transition name="editor-change" mode="out-in">
+            <layout-editor            key="Layout"          v-if="checkTemplateItem('Layout')"                v-model="conf"></layout-editor>
+            <row-editor               key="Row"             v-else-if="checkTemplateItem('Row')"              v-model="conf"></row-editor>
+            <column-editor            key="Column"          v-else-if="checkTemplateItem('Column')"           v-model="conf"></column-editor>
+            <grid-editor              key="Grid"            v-else-if="checkTemplateItem('Grid')"             v-model="conf"></grid-editor>
+            <grid-column-editor       key="GridColumn"      v-else-if="checkTemplateItem('GridColumn')"       v-model="conf"></grid-column-editor>
+            <flop-editor              key="Flop"            v-else-if="checkTemplateItem('Flop')"             v-model="conf"></flop-editor>
+            <double-layer-text-editor key="DoubleLayerText" v-else-if="checkTemplateItem('DoubleLayerText')"  v-model="conf"></double-layer-text-editor>
+            <marquee-text-editor      key='MarqueeText'     v-else-if="checkTemplateItem('MarqueeText')"      v-model="conf"></marquee-text-editor>
+            <image-editor             key="Image"           v-else-if="checkTemplateItem('Image')"            v-model="conf"></image-editor>
+            <flex-image-view-editor   key="FlexImageView"   v-else-if="checkTemplateItem('FlexImageView')"    v-model="conf"></flex-image-view-editor>
+            <text-editor              key="Text"            v-else-if="checkTemplateItem('Text')"             v-model="conf"></text-editor>
+          </transition>
+        </div>
+      </transition>
+    </template>
+  </div>
+</template>
+<script>
+  import LayoutEditor from './tempaltes/Layout'
+  import RowEditor from './tempaltes/Row'
+  import ColumnEditor from './tempaltes/Column'
+  import GridEditor from './tempaltes/Grid'
+  import GridColumnEditor from './tempaltes/GridColumn'
+  import FlopEditor from './tempaltes/Flop'
+  import DoubleLayerTextEditor from './tempaltes/DoubleLayerText'
+  import MarqueeTextEditor from './tempaltes/MarqueeText'
+  import ImageEditor from './tempaltes/Image'
+  import FlexImageViewEditor from './tempaltes/FlexImageView'
+  import TextEditor from './tempaltes/Text'
+  import Tools from '@/common/js/template-tools.js'
+  const parentSubItems = {
+    'Basic': ['Layout'],
+    'Layout': ['Row'],
+    'Row': ['Column'],
+    'Column': ['Row', 'Grid', 'Flop', 'DoubleLayerText', 'MarqueeText', 'FlexImageView', 'Image', 'Text'],
+    'Grid': ['GridColumn'],
+    'GridColumn': ['Row', 'Column', 'Flop', 'DoubleLayerText', 'MarqueeText', 'Image', 'Text'],
+    'Flop': ['Row', 'Column', 'DoubleLayerText', 'MarqueeText', 'Image', 'Text'],
+    'DoubleLayerText': ['DoubleLayerText', 'MarqueeText', 'Image', 'Text'],
+    'MarqueeText': ['Image', 'Text'],
+    'FlexImageView': [],
+    'Image': [],
+    'Text': []
+  }
+  const chooseArray = [
+    { name: '布局', value: 'Layout' },
+    { name: '行', value: 'Row' },
+    { name: '列', value: 'Column' },
+    { name: '表格', value: 'Grid' },
+    { name: '表格列', value: 'GridColumn' },
+    { name: '翻牌', value: 'Flop' },
+    { name: '双层文本', value: 'DoubleLayerText' },
+    { name: '滚动文本', value: 'MarqueeText' },
+    { name: '滑动图片', value: 'FlexImageView' },
+    { name: '图片', value: 'Image' },
+    { name: '文本', value: 'Text' }
+  ]
+  function buildTemplateArray () {
+    let lackIitems = []
+    let lackLength = chooseArray.length % 3
+    if (lackLength !== 0) {
+      for (let i = 0; i < (3 - lackLength); i++) {
+        lackIitems.push({
+          value: 'hidden' + i,
+          hidden: true
+        })
+      }
+    }
+    return chooseArray.concat(lackIitems)
+  }
+  export default {
+    props: {
+      value: Object,
+      currentDataSource: [String, Object],
+      parentType: [String, Object]
+    },
+    data () {
+      return {
+        templateTypeArray: buildTemplateArray(),
+        currentItemIndex: -1,
+        conf: {},
+        confStore: [],
+        isShowEidtor: false
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      currentItemIndex (val, oldVal) {
+        let _this = this
+        setTimeout(() => {
+          _this.isShowEidtor = true
+        }, 120)
+      }
+    },
+    components: {
+      LayoutEditor, RowEditor, ColumnEditor, GridEditor, GridColumnEditor, FlopEditor, DoubleLayerTextEditor, MarqueeTextEditor, ImageEditor, FlexImageViewEditor, TextEditor
+    },
+    created () {
+      // console.log('currentDataSource', this.currentDataSource)
+      if (!Tools.isEmptyObject(this.value)) {
+        this.conf = this.value
+      }
+    },
+    mounted () {
+      let fittedTemplates = parentSubItems[(!this.parentType || this.parentType === '') ? 'Basic' : this.parentType]
+      this.templateTypeArray.forEach(item => {
+        this.$set(item, 'enable', fittedTemplates.includes(item.value))
+      })
+      this.setCurrenItemIndex()
+    },
+    methods: {
+      checkTemplateItem (templateType) {
+        return this.isShowEidtor && this.templateTypeArray[this.currentItemIndex].value === templateType
+      },
+      handleItemClick (index) {
+        this.isShowEidtor = false
+        // 缓存
+        this.confStore[this.currentItemIndex] = Tools.deepCopy(this.conf)
+        this.currentItemIndex = this.currentItemIndex === index ? -1 : index
+        this.conf = this.confStore[this.currentItemIndex] || {}
+      },
+      setCurrenItemIndex () {
+        for (let i = 0; i < this.templateTypeArray.length; i++) {
+          if (this.templateTypeArray[i].value === this.conf.type) {
+            this.currentItemIndex = i
+            break
+          }
+        }
+        // console.log('edit index', this.currentItemIndex)
+      }
+    }
+  }
+</script>
+<style>
+.template-selector-container {
+  width: 100%;
+}
+.template-selector-item {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  font-size: 14px;
+  margin: 8px;
+  text-align: center;
+  background: #ededed;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 30%;
+}
+.template-selector-item--label {
+  cursor: pointer;
+  padding: 23px;
+}
+.template-selector-item--enable:after:hover, .template-selector-item--label:hover {
+  background: #727272;
+  color: #fff;
+}
+.template-selector-item--mask {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background: white;
+  opacity: 0.3;
+}
+.template-selector-item--enable:after {
+  position: absolute;
+  box-sizing: border-box;
+  height: 20px;
+  width: 20px;
+  top: 0;
+  right: 0;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #13CE66;
+  content: "";
+}
+.template-selector-item--mask:after {
+  position: absolute;
+  box-sizing: border-box;
+  height: 20px;
+  width: 20px;
+  top: 0;
+  right: 0;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #ef9292;
+  content: "";
+}
+.template-selector-item--mask:hover {
+  cursor: not-allowed
+}
+.template-selector-item.checked {
+  background: #727272;
+  color: #fff;
+}
+.template-selector-item.checked::after {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  bottom: -6px;
+  left: 48%;
+  border-top-color: #727272;
+  border-bottom-width: 0;
+}
+.template-selector-icon-checked {
+  position: absolute;
+  right: 4px;
+  color: #13CE66;
+  font-size: 16px;
+  margin: auto 0;
+}
+.template-selectior-hidden-box {
+  background-color: #f2f2f2;
+  border: solid 1px #ccc;
+  margin: 0 8px;
+  padding: 15px;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 500px;
+}
+.slide-fade-enter-active {
+  transition: all .6s ease;
+}
+.slide-fade-leave-active {
+  transition: all .1s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to{
+  transform: translateY(10px);
+  opacity: 0;
+}
+.editor-change-enter-active, .editor-change-leave-active {
+  transition: all .3s ease;
+}
+.editor-change-enter, .editor-change-leave-to{
+  transform: translateY(10px);
+  opacity: 0;
+}
+.editor-fieldset {
+  border: solid 1px #ccc;
+}
+.editor-label {
+  display: block;
+  text-align: left;
+  margin: 0 auto;
+}
+.editor-label-require {
+  padding: 0 5px;
+  color: #ff0000;
+}
+.editor-select-full {
+  width: 100%;
+}
+.editor-select-options--left {
+  float: left;
+}
+.editor-select-options--right {
+  float: right;
+  color: #7c7a7a;
+  font-size: 13px;
+}
+.editor-inner-pannel {
+  position: relative;
+  border: solid 1px #7f7e7e;
+  padding: 15px;
+}
+.editor-inner-pannel>div::after, .editor-inner-pannel>div::before {
+  clear: both;
+  content: "";
+  display: table;
+}
+.editor-inner-pannel-left::before {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -6px;
+  left: 10%;
+  border-bottom-color: #7f7e7e;
+  border-top-width: 0;
+}
+.editor-inner-pannel-left::after {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -4px;
+  left: 10%;
+  border-bottom-color: #ededed;
+  border-top-width: 0;
+}
+.editor-inner-pannel-right::before {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -6px;
+  right: 20%;
+  border-bottom-color: #7f7e7e;
+  border-top-width: 0;
+}
+.editor-inner-pannel-right::after {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -4px;
+  right: 20%;
+  border-bottom-color: #ededed;
+  border-top-width: 0;
+}
+</style>

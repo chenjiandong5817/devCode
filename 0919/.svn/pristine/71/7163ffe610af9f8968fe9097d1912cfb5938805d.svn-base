@@ -1,0 +1,18 @@
+/*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:50:55
+ * @Last Modified by:   cdroid
+ * @Last Modified time: 2017-05-25 10:50:55
+ * @Description:  表单校验规则
+ */
+export default {
+  // 校验电话号码
+  telephone: function (rule, value, callback) {
+    var ret = /^1((3|5|8){1}\d{1}|70)\d{8}$/
+    if (value && !ret.test(value)) {
+      callback(new Error('请输入正确的电话号码'))
+    } else {
+      callback()
+    }
+  }
+}

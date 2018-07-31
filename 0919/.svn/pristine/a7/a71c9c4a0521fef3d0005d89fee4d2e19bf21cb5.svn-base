@@ -1,0 +1,358 @@
+<template>
+<div class="airlineFormClss">
+  <div class="borderClss">
+  <el-form class="formClss" v-for="(item, index) in form.airlineList" :key="index" :model="form.airlineList[index]" label-position="top" label-width="80px" :ref="setFormid(index)">
+    <el-row :gutter="2">
+      <el-col :span="6">
+        <el-form-item
+          label="起飞地"
+          prop="origin"
+          label-width="70px"
+          :rules="[ { required: true, message: '请选择始发站', trigger: 'blur' },
+                    { validator: Rules.validSegment, message: '航线配置出错', preDestination: index !== 0 ? form.airlineList[index - 1].destination : index, trigger: 'change' } ]">
+          <el-select v-model="form.airlineList[index].origin" filterable placeholder="始发站" clearable :disabled="originDable">
+            <el-option
+              v-for="item in airportList"
+              :key="item.icaocode"
+              :label="item.cnabbr2w + '(' + item.icaocode + '/' + item.iatacode + ')'"
+              :value="item.icaocode">
+              <span style="float: left">{{ item.cnabbr2w }}</span>
+              <span style="float: right">{{ item.icaocode + '/' + item.iatacode }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="计划起飞时间"
+          prop="scheduleDepartTime"
+          :rules="[ { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: index !== 0 ? form.airlineList[index - 1].scheduleArriveTime : index, timeType: 'depTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].scheduleDepartTime" :visitTime="true" :visitDate="true" :allDisable="sdepTimeDable && isEditCurSeg && isCurStation()" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="计划起飞日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="预计起飞时间"
+          prop="estimateDepartTime"
+          :rules="[ { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: index !== 0 ? form.airlineList[index - 1].scheduleArriveTime : index, timeType: 'depTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].estimateDepartTime" :visitTime="true" :visitDate="true" :allDisable="edepTimeDable && isEditCurSeg && isCurStation()" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="预计起飞日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="实际起飞时间"
+          prop="actualDepartTime"
+          :rules="[ { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: index !== 0 ? form.airlineList[index - 1].scheduleArriveTime : index, timeType: 'depTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].actualDepartTime" :visitTime="true" :visitDate="true" :allDisable="adepTimeDable && isEditCurSeg && isCurStation()" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="实际起飞日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="3">
+        <el-form-item label="区域属性"  prop="flightNature">
+          <el-input v-model="item.description" placeholder="属性" disabled v-if="form.airlineList[index].flightNature === '' || form.airlineList[index].flightNature === null"></el-input>
+          <div v-for="item in $cache.fetch('flightnatures')" v-if="form.airlineList[index].flightNature !== null">
+            <el-input v-model="item.description" placeholder="属性" class="fontColor" disabled v-if="item.flightNatureCode === form.airlineList[index].flightNature"></el-input>
+          </div>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="2">
+      <el-col :span="6">
+        <el-form-item
+          label="目的地"
+          prop="destination"
+          label-width="70px"
+          :rules="[ { required: true, message: '请选择目的站', trigger: 'blur' } ]">
+          <el-select v-model="form.airlineList[index].destination" filterable placeholder="目的站" :disabled="desDable" clearable @change="setFlightNatureVal(index, form.airlineList[index].destination)">
+            <el-option
+              v-for="item in airportList"
+              :key="item.icaocode"
+              :label="item.cnabbr2w + '(' + item.icaocode + '/' + item.iatacode + ')'"
+              :value="item.icaocode">
+              <span style="float: left">{{ item.cnabbr2w }}</span>
+              <span style="float: right">{{ item.icaocode + '/' + item.iatacode }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="计划降落时间"
+          prop="scheduleArriveTime"
+          :rules="[ { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: form.airlineList[index].scheduleDepartTime, timeType: 'arrTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].scheduleArriveTime" :visitTime="true" :visitDate="true" :allDisable="sarrTimeDable && isEditCurSeg && isCurStation()" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="计划降落日期" timePlaceholder="时间" formatter="yyyy-MM-dd" :rules="[ { required: true, message: '请填写降落时间', trigger: 'blur' } ]"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="预计降落时间"
+          prop="estimateArriveTime"
+          :rules="[ { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: form.airlineList[index].scheduleDepartTime, timeType: 'arrTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].estimateArriveTime" :visitTime="true" :visitDate="true" :allDisable="earrTimeDable && isEditCurSeg && isCurStation()" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="预计降落日期" timePlaceholder="时间" formatter="yyyy-MM-dd" :rules="[ { required: true, message: '请填写降落时间', trigger: 'blur' } ]"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="实际降落时间"
+          prop="actualArriveTime"
+          :rules="[ { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: form.airlineList[index].scheduleDepartTime, timeType: 'arrTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].actualArriveTime" :visitTime="true" :visitDate="true" :allDisable="aarrTimeDable && isEditCurSeg && isCurStation()"  dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="实际降落日期" timePlaceholder="时间" formatter="yyyy-MM-dd" :rules="[ { required: true, message: '请填写降落时间', trigger: 'blur' } ]"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="3">
+        <el-form-item label=" ">
+          <el-button type="info" @click.native="addAirlineList(index)" class="el-icon-plus" size="mini" ></el-button>
+          <el-button type="info" @click.native="delAirSegment(index)" class="el-icon-minus" size="mini" v-if="index !== 0"></el-button>
+          <el-button type="info" @click.native="canAirSegment(index)" class="setCancelClss" size="mini">取消</el-button>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <div style="margin-top: 15px" v-if="index !== form.airlineList.length - 1">
+      <hr/>
+    </div>
+  </el-form>
+  </div>
+</div>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import Rules from '../../../common/js/rules'
+import DateTime from '../../../components/DateTime'
+// import API from '../../../api'
+
+export default {
+  data () {
+    return {
+      Rules: Rules,
+      operate: '',
+      isEditCurSeg: '',
+      segment: {},
+      form: {
+        airlineList: []
+      },
+      airSegment: {
+        id: null,
+        flightId: null,
+        origin: '',
+        destination: '',
+        flightNature: '',
+        flightStatus: '',
+        irregularStatus: '',
+        boardingStand: '',
+        stand: '',
+        gate: '',
+        segmentNature: '',
+        scheduleDepartTime: Util.formatDate.flightDateFmt('yyyy-MM-dd', new Date(), false),
+        estimateDepartTime: Util.formatDate.flightDateFmt('yyyy-MM-dd', new Date(), false),
+        actualDepartTime: Util.formatDate.flightDateFmt('yyyy-MM-dd', new Date(), false),
+        scheduleArriveTime: Util.formatDate.flightDateFmt('yyyy-MM-dd', new Date(), false),
+        estimateArriveTime: Util.formatDate.flightDateFmt('yyyy-MM-dd', new Date(), false),
+        actualArriveTime: Util.formatDate.flightDateFmt('yyyy-MM-dd', new Date(), false)
+      },
+      oldAirlineList: [],
+      delStopOverIdLs: [],
+      airportList: this.$cache.fetch('airports')
+    }
+  },
+  watch: {
+    '$store.state.cached' (val, oldVal) {
+      this.airportList = this.$cache.fetch('airports')
+    }
+  },
+  computed: {
+    originDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    },
+    desDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    },
+    sdepTimeDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    },
+    edepTimeDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt' || this.operate === 'flightDly')
+    },
+    adepTimeDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    },
+    sarrTimeDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    },
+    earrTimeDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    },
+    aarrTimeDable () {
+      return !(this.operate === 'Add' || this.operate === 'Edeit' || this.operate === 'flightArrAlt')
+    }
+  },
+  components: {
+    dateTime: DateTime
+  },
+  methods: {
+    isCurStation () {
+      // 判断是否为当前航段
+      if (this.segment.direction === 'A') {
+        return this.segment.destination === this.segment.airportCode
+      } else if (this.segment.direction === 'D') {
+        return this.segment.origin === this.segment.airportCode
+      }
+    },
+    show (isEditCurSeg, operate, segment, actAirlineLs) {
+      // 参数为：当前航段 操作名 航段 航线列表
+      this.isEditCurSeg = isEditCurSeg
+      this.operate = operate
+      this.segment = segment
+      this.airSegment.flightId = segment.flightId
+      if (actAirlineLs !== undefined && actAirlineLs !== null) {
+        this.bindAirlineList(actAirlineLs)
+      } else {
+        let array = []
+        array.push(Util.deepCopy(this.airSegment))
+        this.form.airlineList = array
+        this.oldAirlineList = []
+        this.delStopOverIdLs = []
+      }
+    },
+    bindAirlineList (actAirlineLs) {
+      // 绑定航线列表
+      let airlineList = []
+      for (var i = 0; i < actAirlineLs.length; i++) {
+        let airSeg = Util.deepCopy(this.airSegment)
+        // 设置经停站其他时间信息
+        for (let key in this.airSegment) {
+          airSeg[key] = actAirlineLs[i][key]
+        }
+        airlineList[i] = airSeg
+      }
+      this.form.airlineList = Util.deepCopy(airlineList)
+      this.oldAirlineList = Util.deepCopy(airlineList)
+    },
+    setFormid (index) {
+      return 'airlineForm' + index
+    },
+    setAirlineList (val) {
+      this.form.airlineList = val
+    },
+    getAirlineList () {
+      let obj = { newAirline: Util.deepCopy(this.form.airlineList), oldAirlineList: Util.deepCopy(this.oldAirlineList) }
+      return obj
+    },
+    addAirlineList (index) {
+      // 新增航段
+      let airSegment = Util.deepCopy(this.airSegment)
+      airSegment.origin = this.form.airlineList[index].destination
+      if (index === this.form.airlineList.length - 1) {
+        // 从航线列表末尾插入新增的航段信息
+        this.form.airlineList.push(airSegment)
+      } else {
+        // 从航线列表中间插入新增的航段信息
+        this.form.airlineList.splice(index + 1, 0, airSegment)
+      }
+    },
+    delAirSegment (index) {
+      // 1. 保存删除ID航段信息
+      if (this.form.airlineList[index].id !== null) {
+        this.delStopOverIdLs.push(this.form.airlineList[index].id)
+      }
+      this.form.airlineList.splice(index, 1)
+    },
+    canAirSegment (index) {
+      this.$confirm('确认取消该经停站吗？', '提示', {}).then(() => {
+        this.form.airlineList[index].segmentNature = '3'
+        this.$message({
+          type: 'info',
+          message: '已取消该经停站'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        })
+      })
+    },
+    setFlightNatureVal (index, val) {
+      // 设置航班属性
+      let obj = this.airportList.find((item) => {
+          return item.icaocode === val
+      })
+      let flightNature = (obj !== undefined ? obj.airportnature : null)
+      this.form.airlineList[index].flightNature = flightNature
+      // 设置下个航段的起飞地
+      if (index + 1 < this.form.airlineList.length) {
+         this.form.airlineList[index + 1].origin = val
+      }
+    },
+    initData () {
+      this.form.airlineList = []
+      this.oldAirlineList = []
+      this.delStopOverIdLs = []
+    },
+    resetForm () {
+      // 重置航线校验
+      for (let i = 0; i < this.form.airlineList.length; i++) {
+        this.$refs['airlineForm' + i][0].resetFields()
+      }
+    },
+    airlineValid () {
+      // 航线配置验证
+      let validResult = 'true'
+      for (let i = 0; i < this.form.airlineList.length; i++) {
+        this.$refs['airlineForm' + i][0].validate((valid) => {
+          if (valid) {
+            validResult += 'true'
+          } else {
+            validResult += 'false'
+          }
+        })
+      }
+      if (validResult.indexOf('false') > 0) {
+        return false
+      } else {
+        return true
+      }
+    }
+  },
+  mounted () {
+
+  }
+}
+</script>
+<style lang="scss">
+.airlineFormClss {
+  .el-form-item {
+    margin-bottom: 10px!important;
+  }
+  .fontColor input {
+    color: black!important;
+  }
+  .formClss {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  .borderClss {
+    position: relative;
+    border: 1px solid gray;
+    width: 100%;
+    height: 100%;
+    margin: 0px 0px 0px 0px;
+    overflow: auto;
+    min-height: 355px;
+    max-height: 355px;
+  }
+}
+</style>

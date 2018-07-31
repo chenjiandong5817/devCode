@@ -1,0 +1,140 @@
+import {axios, base} from './../raiis-axios'
+
+let defaultType = 'sourceData'
+
+export const getSource = () => {
+  let url = `${base}/source/entity`
+  return {
+    name: 'getSource',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取数据源第一张表',
+    go: params => { return axios.get(url, { params: params }).then(res => res.data) }
+  }
+}
+
+export const getSourceData = () => {
+  let url = `${base}/source`
+  return {
+    name: 'getSourceData',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取数据源第二张表信息',
+    go: params => { return axios.get(url, { params: params }).then(res => res.data) }
+  }
+}
+
+export const postSourceData = () => {
+  let url = `${base}/data`
+  return {
+    name: 'postSourceData',
+    type: defaultType,
+    url: url,
+    requetType: 'POST',
+    remark: '新增数据源第二张表信息',
+    go: params => { return axios.post(url, params).then(res => res.data) }
+  }
+}
+
+export const editSourceData = () => {
+  let url = `${base}/dataSourceTemp`
+  return {
+    name: 'editSourceData',
+    type: defaultType,
+    url: url,
+    requetType: 'PUT',
+    remark: '修改数据源第二张表信息',
+    go: params => { return axios.put(url, params).then(res => res.data) }
+  }
+}
+
+export const removeSourceData = () => {
+  let url = `${base}/data`
+  return {
+    name: 'removeSourceData',
+    type: defaultType,
+    url: url,
+    requetType: 'DELETE',
+    remark: '删除数据源第二张表信息',
+    go: params => { return axios.delete(url + '/' + params.id, params).then(res => res.data) }
+  }
+}
+
+export const getSql = () => {
+  let url = `${base}/data/sql`
+  return {
+    name: 'getSql',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取where后面完整的sql',
+    go: params => { return axios.get(url, { params: params }).then(res => res.data) }
+  }
+}
+
+export const getAfterModifyText = () => {
+  let url = `${base}/dataSourceTemp`
+  return {
+    name: 'getModifyText',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取修改后的text供管理员进行直接修改操作',
+    go: params => { return axios.get(url, { params: params }).then(res => res.data) }
+  }
+}
+
+// 模板相关数据源
+export const getDataSourceField = () => {
+  let url = `${base}/source/field`
+  return {
+    name: 'getDataSourceField',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取数据源的字段列表',
+    go: params => {
+      return axios.get(url, { params: params }).then(res => res.data).then(data => {
+        let matchData = data.ok && data.attr ? (data.attr.data ? (data.attr.data.list || data.attr.data) : data.attr) : {}
+        // sort
+        for (let key in matchData) {
+          if (matchData[key] instanceof Array) {
+            matchData[key].sort()
+          }
+        }
+        // object 对象
+        matchData['$current_device_info'] = ['scrollText', 'dynamicScrollText']
+        matchData['$main_pager'] = ['pageSize', 'pageNumber', 'pageCount', 'recordCount']
+        return {
+          ok: data.ok,
+          attr: matchData
+        }
+      })
+    }
+  }
+}
+
+export const getDataSourceNotSql = () => {
+  let url = `${base}/source/entitydes`
+  return {
+    name: 'getDataSourceNotSql',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取数据源列表，但是不包括数据源',
+    go: params => {
+      return axios.get(url, { params: params }).then(res => res.data).then(data => {
+        let matchData = data.ok && data.attr ? (data.attr.data ? (data.attr.data.list || data.attr.data) : data.attr) : []
+        return {
+          ok: data.ok,
+          attr: matchData.concat([
+            {des: '$当前设备数据', id: '$current_device_info'},
+            {des: '$分页信息数据', id: '$main_pager'}
+          ])
+        }
+      })
+    }
+  }
+}

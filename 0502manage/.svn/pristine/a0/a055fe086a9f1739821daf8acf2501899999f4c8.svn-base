@@ -1,0 +1,189 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<!-- 代码模块化预备 -->
+<template>
+  <section>
+    <!--工具条-->
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <div class="user_increment_operate">
+        <el-form :inline="true" :model="filters">
+          <el-form-item>
+            <el-button :type="exportExcelType" :loading="buttonLoading"  @click="exportMainData">{{ exportExcelName }}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-col>
+    <!--列表-->
+    <el-table v-bind:data="userIncrements" highlight-current-row v-loading="mainListLoading" :height="tableHeight" style="width: 100%;text-align: center;">
+      <el-table-column prop="distributionName" label="分销渠道名称" header-align="center" min-width="250">
+      </el-table-column>
+      <el-table-column prop="newFans" label="新粉丝（关注/取消）" header-align="center" min-width="250">
+      </el-table-column>
+      <el-table-column prop="oldFans" label="老粉丝（关注/取消）" header-align="center" min-width="250">
+      </el-table-column>
+      <el-table-column label="粉丝数据分析" width="180" header-align="center" fixed="right" >
+        <template slot-scope="scope">
+          <el-button size="small" @click="fansDataAnalysis(scope.$index, scope.row)"><span><i class="el-icon-download"></i> 查看 </span></el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180" header-align="center" fixed="right" >
+        <template slot-scope="scope">
+          <el-button size="small" @click="handleDel(scope.$index, scope.row)"><span><i class="el-icon-delete"></i> 删除 </span></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--分页-->
+    <pagination :to="getUserIncrements" ref="mainPage"></pagination>
+    <!-- 删除 -->
+    <common-delete
+        :to="API.removeUserIncrement().go"
+        :callback="getUserIncrements"
+        :labelWidth="100"
+        ref="delConfirm"></common-delete>
+  </section>
+</template>
+
+<script>
+  import Pagination from './../../components/Pagination'
+  import commonDelete from './../../components/CommDelete'
+  import API from './../../api'
+  import util from '../../common/js/util'
+  export default {
+    data () {
+      return {
+        // 查询的数据
+        filters: {
+          name: null
+        },
+        // 主表格的数据
+        userIncrements: [],
+        // 弹出框左边表格的数据
+        leftTableData: [],
+        // 弹出框右边表格的数据
+        rightTableData: [],
+        // 主要表格的高度
+        tableHeight: 495,
+        // 弹出框左边表格的高度
+        leftTableHeight: null,
+        // 弹出框右边表格的高度
+        rightTableHeight: null,
+        // 主要表格的加载
+        mainListLoading: false,
+        // 弹出框左边表格的加载
+        leftListLoading: false,
+        // 弹出框右边表格的加载
+        rightListLoading: false,
+        // 主页面导出订单的所需数据
+        pageExportData: [],
+        // 主页面导出订单的表头
+        pageCnHeader: [],
+        // 主页面导出订单的表头代表的字段
+        pageEnHeader: [],
+        // excel表的名称
+        excelName: 'userIncrements',
+        // 以下三个公用，但是得清空
+        // 导出EXCEL按钮名称
+        exportExcelName: '导出数据',
+        // 导出EXCEL按钮类型
+        exportExcelType: 'primary',
+        // 按钮加载状态
+        buttonLoading: false,
+        // 标签中使用
+        API: API
+      }
+    },
+    computed: {
+    },
+    components: {
+      commonDelete: commonDelete,
+      pagination: Pagination
+    },
+    methods: {
+      // 粉丝数据分析查看的点击事件
+      fansDataAnalysis (index, row) {
+        console.log('index', index)
+        console.log('row', row)
+      },
+      // 删除数据的事件
+      handleDel (index, row) {
+        this.$refs['delConfirm'].del(row.id)
+      },
+      // 主页面导出订单触发事件
+      exportMainData () {
+        this.setStartExportButton()
+        // 中文头赋值
+        this.pageCnHeader = ['分销渠道名称', '新粉丝（关注/取消）', '老粉丝（关注/取消）']
+        // 字段赋值
+        this.pageEnHeader = ['distributionName', 'newFans', 'oldFans']
+        // 导出数据赋值
+        this.pageExportData = this.userIncrements
+        // excel表的名称赋值
+        this.excelName = '用户增量数据'
+        this.exportExcel()
+      },
+      // 导出订单功能模块，主页面左边页面右边页面都调用这个方法快
+      // 导出按钮点击下去后的变化
+      setStartExportButton () {
+        this.exportExcelName = '正在导出，禁止操作'
+        this.exportExcelType = 'danger'
+        this.buttonLoading = true
+      },
+      // 导出订单成功后按钮的变化
+      setEndExportButton () {
+        this.exportExcelName = '导出订单'
+        this.exportExcelType = 'primary'
+        this.buttonLoading = false
+      },
+      // 导出excel的函数
+      exportExcel () {
+        require.ensure([], () => {
+        const { export_json_to_excel } = require('./../../common/vendor/Export2Excel')
+        const tHeader = this.pageCnHeader
+        const filterVal = this.pageEnHeader
+        const list = this.pageExportData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, this.excelName)
+        })
+        this.setEndExportButton()
+        // 提示语通用
+        this.$notify(util.notifyBody(true, '导出成功'))
+      },
+      formatJson (filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => v[j]))
+      },
+      // 获取主表格的数据
+      getUserIncrements () {
+        this.userIncrements = [
+          {
+            id: 1,
+            distributionName: '陈建东',
+            newFans: 5 + '/' + 2,
+            oldFans: 2 + '/' + 3
+          },
+          {
+            id: 2,
+            distributionName: '陈建南',
+            newFans: 8 + '/' + 5,
+            oldFans: 2 + '/' + 7
+          }
+        ]
+        this.$refs['mainPage'].set('total', 2)
+      }
+    },
+    mounted () {
+      this.getUserIncrements()
+    }
+  }
+</script>
+
+<style>
+  .user_increment_operate .el-form-item {
+    float: right;
+    margin-right: 30px;
+  }
+</style>

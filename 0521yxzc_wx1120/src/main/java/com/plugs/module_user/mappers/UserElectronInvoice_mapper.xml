@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ SummerSoft  YueYue-Travel Platform
+  ~ <p>
+  ~ Copyright (c) 2017-2018  SummerSoft Technology (Xiamen) Co.,LTD
+  ~ All rights reserved.
+  ~ <p>
+  ~ This software is the confidential and proprietary information of SummerSoft
+  ~ ("Confidential Information"). You shall not disclose such Confidential
+  ~ Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with SummerSoft.
+  ~ <p>
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_user.mappers.UserElectronInvoiceMapper">
+	<insert id="add" parameterType="userElectronInvoiceDto">
+		insert into ap_user_electron_invoice
+			(
+				uuid,
+				orderno,
+				saletaxnum,
+				saleaddress,
+				salephone,
+				saleaccount,
+				clerk,
+				payee,
+				checker,
+				invoicedate,
+				ordertotal,
+				kptype,
+				address,
+				phone,
+				taxnum,
+				buyername,
+				account,
+				message,
+				tsfs,
+				email,
+				qdbz,
+				qdxmmc,
+				telephone,
+				fpdm,
+				fphm,
+				fpqqlsh,
+				pdfUrl,
+				requestJson,
+				responseJson,
+				cancelFpqqlsh,
+				cancelPdfUrl,
+				cancelRequestJson,
+				cancelResponseJson,
+				cancelRemark,
+				ticketType,
+				accountType,
+				orderUuids,
+				status,
+				createTime,
+				updateTime,
+				creator,
+				updator
+			)
+		values
+			(
+				#{uuid},
+				#{orderno},
+				#{saletaxnum},
+				#{saleaddress},
+				#{salephone},
+				#{saleaccount},
+				#{clerk},
+				#{payee},
+				#{checker},
+				#{invoicedate},
+				#{ordertotal},
+				#{kptype},
+				#{address},
+				#{phone},
+				#{taxnum},
+				#{buyername},
+				#{account},
+				#{message},
+				#{tsfs},
+				#{email},
+				#{qdbz},
+				#{qdxmmc},
+				#{telephone},
+				#{fpdm},
+				#{fphm},
+				#{fpqqlsh},
+				#{pdfUrl},
+				#{requestJson},
+				#{responseJson},
+				#{cancelFpqqlsh},
+				#{cancelPdfUrl},
+				#{cancelRequestJson},
+				#{cancelResponseJson},
+				#{cancelRemark},
+				#{ticketType},
+				#{accountType},
+				#{orderUuids},
+				#{status},
+				#{createTime},
+				#{updateTime},
+				#{creator},
+				#{updator}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="userElectronInvoiceDto">
+		update ap_user_electron_invoice
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="orderno != null and '' != orderno"> orderno = #{orderno},</if>
+			<if test="saletaxnum != null and '' != saletaxnum"> saletaxnum = #{saletaxnum},</if>
+			<if test="saleaddress != null and '' != saleaddress"> saleaddress = #{saleaddress},</if>
+			<if test="salephone != null and '' != salephone"> salephone = #{salephone},</if>
+			<if test="saleaccount != null and '' != saleaccount"> saleaccount = #{saleaccount},</if>
+			<if test="clerk != null and '' != clerk"> clerk = #{clerk},</if>
+			<if test="payee != null and '' != payee"> payee = #{payee},</if>
+			<if test="checker != null and '' != checker"> checker = #{checker},</if>
+			<if test="invoicedate != null and '' != invoicedate"> invoicedate = #{invoicedate},</if>
+			<if test="ordertotal != null and '' != ordertotal"> ordertotal = #{ordertotal},</if>
+			<if test="kptype != null and '' != kptype"> kptype = #{kptype},</if>
+			<if test="address != null and '' != address"> address = #{address},</if>
+			<if test="phone != null and '' != phone"> phone = #{phone},</if>
+			<if test="taxnum != null and '' != taxnum"> taxnum = #{taxnum},</if>
+			<if test="buyername != null and '' != buyername"> buyername = #{buyername},</if>
+			<if test="account != null and '' != account"> account = #{account},</if>
+			<if test="message != null and '' != message"> message = #{message},</if>
+			<if test="tsfs != null and '' != tsfs"> tsfs = #{tsfs},</if>
+			<if test="email != null and '' != email"> email = #{email},</if>
+			<if test="qdbz != null and '' != qdbz"> qdbz = #{qdbz},</if>
+			<if test="qdxmmc != null and '' != qdxmmc"> qdxmmc = #{qdxmmc},</if>
+			<if test="telephone != null and '' != telephone"> telephone = #{telephone},</if>
+			<if test="fpdm != null and '' != fpdm"> fpdm = #{fpdm},</if>
+			<if test="fphm != null and '' != fphm"> fphm = #{fphm},</if>
+			<if test="fpqqlsh != null and '' != fpqqlsh"> fpqqlsh = #{fpqqlsh},</if>
+			<if test="pdfUrl != null and '' != pdfUrl"> pdfUrl = #{pdfUrl},</if>
+			<if test="requestJson != null and '' != requestJson"> requestJson = #{requestJson},</if>
+			<if test="responseJson != null and '' != responseJson"> responseJson = #{responseJson},</if>
+			<if test="cancelFpqqlsh != null and '' != cancelFpqqlsh"> cancelFpqqlsh = #{cancelFpqqlsh},</if>
+			<if test="cancelPdfUrl != null and '' != cancelPdfUrl"> cancelPdfUrl = #{cancelPdfUrl},</if>
+			<if test="cancelRequestJson != null and '' != cancelRequestJson"> cancelRequestJson = #{cancelRequestJson},</if>
+			<if test="cancelResponseJson != null and '' != cancelResponseJson"> cancelResponseJson = #{cancelResponseJson},</if>
+			<if test="cancelRemark != null and '' != cancelRemark"> cancelRemark = #{cancelRemark},</if>
+			<if test="ticketType != null and '' != ticketType"> ticketType = #{ticketType},</if>
+			<if test="accountType != null and '' != accountType"> accountType = #{accountType},</if>
+			<if test="orderUuids != null and '' != orderUuids"> orderUuids = #{orderUuids},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="updator != null and '' != updator"> updator = #{updator},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="userElectronInvoiceDto">
+		delete from
+			ap_user_electron_invoice
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="userElectronInvoiceDto">
+		select
+			*
+		from
+			ap_user_electron_invoice
+		where
+			uuid = #{uuid}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_user_electron_invoice
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="orderno != null and '' != orderno"> and orderno = #{orderno} </if>
+			<if test="saletaxnum != null and '' != saletaxnum"> and saletaxnum = #{saletaxnum} </if>
+			<if test="saleaddress != null and '' != saleaddress"> and saleaddress = #{saleaddress} </if>
+			<if test="salephone != null and '' != salephone"> and salephone = #{salephone} </if>
+			<if test="saleaccount != null and '' != saleaccount"> and saleaccount = #{saleaccount} </if>
+			<if test="clerk != null and '' != clerk"> and clerk = #{clerk} </if>
+			<if test="payee != null and '' != payee"> and payee = #{payee} </if>
+			<if test="checker != null and '' != checker"> and checker = #{checker} </if>
+			<if test="invoicedate != null and '' != invoicedate"> and invoicedate = #{invoicedate} </if>
+			<if test="ordertotal != null and '' != ordertotal"> and ordertotal = #{ordertotal} </if>
+			<if test="kptype != null and '' != kptype"> and kptype = #{kptype} </if>
+			<if test="address != null and '' != address"> and address = #{address} </if>
+			<if test="phone != null and '' != phone"> and phone = #{phone} </if>
+			<if test="taxnum != null and '' != taxnum"> and taxnum = #{taxnum} </if>
+			<if test="buyername != null and '' != buyername"> and buyername = #{buyername} </if>
+			<if test="account != null and '' != account"> and account = #{account} </if>
+			<if test="message != null and '' != message"> and message = #{message} </if>
+			<if test="tsfs != null and '' != tsfs"> and tsfs = #{tsfs} </if>
+			<if test="email != null and '' != email"> and email = #{email} </if>
+			<if test="qdbz != null and '' != qdbz"> and qdbz = #{qdbz} </if>
+			<if test="qdxmmc != null and '' != qdxmmc"> and qdxmmc = #{qdxmmc} </if>
+			<if test="telephone != null and '' != telephone"> and telephone = #{telephone} </if>
+			<if test="fpdm != null and '' != fpdm"> and fpdm = #{fpdm} </if>
+			<if test="fphm != null and '' != fphm"> and fphm = #{fphm} </if>
+			<if test="fpqqlsh != null and '' != fpqqlsh"> and fpqqlsh = #{fpqqlsh} </if>
+			<if test="pdfUrl != null and '' != pdfUrl"> and pdfUrl = #{pdfUrl} </if>
+			<if test="requestJson != null and '' != requestJson"> and requestJson = #{requestJson} </if>
+			<if test="responseJson != null and '' != responseJson"> and responseJson = #{responseJson} </if>
+			<if test="cancelFpqqlsh != null and '' != cancelFpqqlsh"> and cancelFpqqlsh = #{cancelFpqqlsh}</if>
+			<if test="cancelPdfUrl != null and '' != cancelPdfUrl"> and cancelPdfUrl = #{cancelPdfUrl}</if>
+			<if test="cancelRequestJson != null and '' != cancelRequestJson"> and cancelRequestJson = #{cancelRequestJson}</if>
+			<if test="cancelResponseJson != null and '' != cancelResponseJson"> and cancelResponseJson = #{cancelResponseJson}</if>
+			<if test="cancelRemark != null and '' != cancelRemark"> and cancelRemark = #{cancelRemark}</if>
+			<if test="ticketType != null and '' != ticketType"> and ticketType = #{ticketType} </if>
+			<if test="accountType != null and '' != accountType"> and accountType = #{accountType} </if>
+			<if test="orderUuids != null and '' != orderUuids"> and orderUuids = #{orderUuids} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="updator != null and '' != updator"> and updator = #{updator} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="userElectronInvoiceDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+		ORDER BY createTime DESC
+	</select>
+
+    <select id="queryPage" resultType="userElectronInvoiceDto">
+        select
+        *
+        <include refid="sqlForList"/>
+		ORDER BY createTime DESC
+    </select>
+
+    <select id="pageList" resultType="userElectronInvoiceDto">
+        select i.*,
+        p.mobile as userMobile
+		from ap_user_electron_invoice i
+		left join ap_user_passenger p on i.creator = p.uuid
+		<where>
+			<if test="status != null and '' != status"> and i.status = #{status} </if>
+			<if test="type != null and '' != type"> and i.ticketType = #{type} </if>
+			<if test="header != null and '' != header"> and i.buyername LIKE '%${header}%' </if>
+			<if test="uuid != null and '' != uuid"> and i.uuid = #{uuid} </if>
+		</where>
+    </select>
+
+	<select id="sum" resultType="java.lang.Double">
+		SELECT COALESCE (SUM (${sumField}),0)
+		<include refid="sqlForList"/>
+		AND status != 4
+	</select>
+</mapper>

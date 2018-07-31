@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysCityMapper">
+    <insert id="add" parameterType="sysCityDto">
+		insert into ap_sys_city
+			(
+				uuid,
+				name,
+				cityCode,
+				status,
+				createTime,
+				creator,
+				updateTime,
+				updator
+			)
+		values
+			(
+				#{uuid},
+				#{name},
+				#{cityCode},
+				#{status},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{updator}
+			)
+	</insert>
+
+    <update id="edit" parameterType="sysCityDto">
+        update ap_sys_city
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="name != null and '' != name">name = #{name},</if>
+            <if test="cityCode != null and '' != cityCode">name = #{cityCode},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="updator != null and '' != updator">updator = #{updator},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="sysCityDto">
+		delete from
+			ap_sys_city
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <select id="selInfo" resultType="sysCityDto">
+		select
+			*
+		from
+			ap_sys_city
+		where
+			uuid = #{uuid}
+	</select>
+
+    <sql id="sqlForList">
+        from
+        ap_sys_city
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="name != null and '' != name">and name = #{name}</if>
+            <if test="cityCode != null and '' != cityCode">and cityCode = #{cityCode}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="updator != null and '' != updator">and updator = #{updator}</if>
+        </where>
+        ORDER BY ${sortField} ${sortOrder}
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="sysCityDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="sysCityDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="findList" resultType="sysCityDto">
+        select
+        *
+        FROM
+        ap_sys_city
+    </select>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_common.mappers.CommonPayLogMapper">
+    <insert id="add" parameterType="commonPayLogDto">
+		insert into ap_common_pay_log
+			(
+				uuid,
+				fromType,
+				tradeNumber,
+				payPlatformSerialNum,
+				useType,
+				type,
+				payType,
+				payAccount,
+				payName,
+				collectAccount,
+				collectName,
+				collectType,
+				money,
+				status,
+				paidTime,
+				callbackTime,
+				createTime,
+				updateTime,
+				creator
+			)
+		values
+			(
+				#{uuid},
+				#{fromType},
+				#{tradeNumber},
+				#{payPlatformSerialNum},
+				#{useType},
+				#{type},
+				#{payType},
+				#{payAccount},
+				#{payName},
+				#{collectAccount},
+				#{collectName},
+				#{collectType},
+				#{money},
+				#{status},
+				#{paidTime},
+				#{callbackTime},
+				#{createTime},
+				#{updateTime},
+				#{creator}
+			)	
+	</insert>
+
+    <update id="edit" parameterType="commonPayLogDto">
+        update ap_common_pay_log
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="fromType != null">fromType = #{fromType},</if>
+            <if test="tradeNumber != null and '' != tradeNumber">tradeNumber = #{tradeNumber},</if>
+            <if test="payPlatformSerialNum != null and '' != payPlatformSerialNum">payPlatformSerialNum = #{payPlatformSerialNum},</if>
+            <if test="useType != null and '' != useType">useType = #{useType},</if>
+            <if test="type != null and '' != type">type = #{type},</if>
+            <if test="payType != null and '' != payType">payType = #{payType},</if>
+            <if test="payAccount != null and '' != payAccount">payAccount = #{payAccount},</if>
+            <if test="payName != null and '' != payName">payName = #{payName},</if>
+            <if test="collectAccount != null and '' != collectAccount">collectAccount = #{collectAccount},</if>
+            <if test="collectName != null and '' != collectName">collectName = #{collectName},</if>
+            <if test="collectType != null and '' != collectType">collectType = #{collectType},</if>
+            <if test="money != null and '' != money">money = #{money},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="paidTime != null and '' != paidTime">paidTime = #{paidTime},</if>
+            <if test="callbackTime != null and '' != callbackTime">callbackTime = #{callbackTime},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="commonPayLogDto">
+		delete from
+			ap_common_pay_log
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <select id="selInfo" resultType="commonPayLogDto">
+		select
+			*
+		from
+			ap_common_pay_log
+		where
+			uuid = #{uuid}
+	</select>
+
+    <sql id="sqlForList">
+        from
+        ap_common_pay_log
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="fromType != null">and fromType = #{fromType}</if>
+            <if test="tradeNumber != null and '' != tradeNumber">and tradeNumber = #{tradeNumber}</if>
+            <if test="payPlatformSerialNum != null and '' != payPlatformSerialNum">and payPlatformSerialNum =
+                #{payPlatformSerialNum}
+            </if>
+            <if test="useType != null and '' != useType">and useType = #{useType}</if>
+            <if test="type != null and '' != type">and type = #{type}</if>
+            <if test="payType != null and '' != payType">and payType = #{payType}</if>
+            <if test="payAccount != null and '' != payAccount">and payAccount = #{payAccount}</if>
+            <if test="payName != null and '' != payName">and payName = #{payName}</if>
+            <if test="collectAccount != null and '' != collectAccount">and collectAccount = #{collectAccount}</if>
+            <if test="collectName != null and '' != collectName">and collectName = #{collectName}</if>
+            <if test="collectType != null and '' != collectType">and collectType = #{collectType}</if>
+            <if test="money != null and '' != money">and money = #{money}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="paidTime != null and '' != paidTime">and paidTime = #{paidTime}</if>
+            <if test="callbackTime != null and '' != callbackTime">and callbackTime = #{callbackTime}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="commonPayLogDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="commonPayLogDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+</mapper>

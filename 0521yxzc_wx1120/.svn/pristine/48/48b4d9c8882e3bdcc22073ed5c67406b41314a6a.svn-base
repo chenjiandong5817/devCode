@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_user.mappers.UserHistoryInvoiceMapper">
+    <insert id="add" parameterType="userHistoryInvoiceDto">
+        insert into ap_user_history_invoice
+        (
+        uuid,
+        type,
+        invoiceUuid,
+        userUuid,
+        createTime
+        )
+        values
+        (
+        #{uuid},
+        #{type},
+        #{invoiceUuid},
+        #{userUuid},
+        #{createTime}
+        )
+    </insert>
+
+
+    <select id="selInfo" resultType="userHistoryInvoiceDto">
+        select
+        *
+        from
+        ap_user_history_invoice
+        where
+        uuid = #{uuid}
+    </select>
+
+    <sql id="sqlForList">
+        from
+        ap_user_history_invoice
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="type != null and '' != type">and type = #{type}</if>
+            <if test="invoiceUuid != null and '' != invoiceUuid">and invoiceUuid = #{invoiceUuid}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+        </where>
+    </sql>
+
+    <select id="list" resultType="userHistoryInvoiceDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="userHistoryInvoiceDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="getInvoiceUuids" resultType="String">
+        select
+          invoiceUuid
+        from
+        ap_user_history_invoice
+        <where>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+        </where>
+        order by createTime desc
+    </select>
+
+    <select id="historyInvoiceDtos" resultType="userHistoryInvoiceDto">
+        select
+        uuid invoiceUuid,
+        1 type,
+        case status when 1 then 1
+        when 2 then 2
+        when 3 then 2
+        when 4 then 2
+        when 5 then 4
+        else 4
+        end status,
+        type ticketType,
+        NVL(to_char(invoiceTime, 'yyyy-mm-dd hh24:mi:ss'), ' ') invoicedate,
+        headerType accountType,
+        header buyername,
+        taxNumber taxnum,
+        money ordertotal,
+        content qdxmmc,
+        createTime createTime,
+        remark message,
+        regAddress address,
+        regMobile telephone,
+        bankAccount account,
+        recipient recipient,
+        mobile mobile,
+        area area,
+        detailAddress detailAddress,
+        freightType freightType,
+        '' email,
+        '' pdfUrl,
+        orderUuids orderUuids
+        from ap_user_paper_invoice
+        <where>
+            <if test="uuids != null and '' != uuids">
+                and uuid IN
+                <foreach collection="uuids" item="invoiceUuid" open="(" close=")" separator=",">
+                    #{invoiceUuid}
+                </foreach>
+            </if>
+        </where>
+        UNION ALL
+        select
+        uuid invoiceUuid,
+        2 type,
+        status status,
+        ticketType ticketType,
+        invoicedate invoicedate,
+        accountType accountType,
+        buyername buyername,
+        taxnum taxnum,
+        ordertotal ordertotal,
+        qdxmmc qdxmmc,
+        createTime createTime,
+        message message,
+        address address,
+        telephone telephone,
+        account account,
+        '' recipient,
+        '' mobile,
+        '' area,
+        '' detailAddress,
+        '' freightType,
+        email email,
+        pdfUrl pdfUrl,
+        orderUuids orderUuids
+        from ap_user_electron_invoice
+        <where>
+            <if test="uuids != null and '' != uuids">
+                and uuid IN
+                <foreach collection="uuids" item="invoiceUuid" open="(" close=")" separator=",">
+                    #{invoiceUuid}
+                </foreach>
+            </if>
+        </where>
+        order by createTime desc
+    </select>
+
+    <select id="sum" resultType="java.lang.Double">
+        select sum(money) from (
+        SELECT COALESCE (SUM (ordertotal),0) money
+        from ap_user_electron_invoice
+        where
+        creator = #{userUuid}
+        AND status != 4
+        union
+        SELECT COALESCE (SUM (money),0) money
+        from ap_user_paper_invoice
+        where
+        useruuid = #{userUuid}
+        and status  &lt;=4
+        )
+    </select>
+
+
+</mapper>

@@ -1,0 +1,203 @@
+{
+  "type": "Layout",
+  "typeLabel": "布局",
+  "description": "国内进港",
+  "bodyStyle": {
+    "backgroundColor": "#FF0000",
+    "minWidth": 1920,
+    "minHeight": 1080
+  },
+  "langs": [
+    "zh-cn",
+    "en-ww"
+  ],
+  "defaultLang": "zh-cn",
+  "langTimer": 18000,
+  "extraParam": {},
+  "children": [
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 24,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Grid",
+              "typeLabel": "表格",
+              "hiddenHeader": false,
+              "bodyStyle": {
+                "defaultHeaderStyle": {
+                  "color": "#2578B4",
+                  "textAlign": "left",
+                  "backgroundColor": "#CC4BD7",
+                  "borderBottomStyle": "solid",
+                  "borderBottomColor": "#EBBB0D",
+                  "fontSize": 50,
+                  "height": 100,
+                  "lineHeight": 100,
+                  "borderBottomWidth": 1
+                },
+                "defaultRowStyle": {
+                  "color": "#FFFFFF",
+                  "rowStripe": [
+                    "#E8B7B7",
+                    "#6994A3"
+                  ],
+                  "fontSize": 45,
+                  "height": 89,
+                  "lineHeight": 89
+                }
+              },
+              "dataSource": "17EF84121B8F41FC9C5D9C5E049E0956",
+              "singleData": false,
+              "mainPager": true,
+              "mainSource": true,
+              "refreshInterval": 20000,
+              "pageInterval": 20000,
+              "children": [
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "图标",
+                  "label": "",
+                  "style": {
+                    "width": 100
+                  },
+                  "headerStyle": {},
+                  "children": [
+                    {
+                      "type": "Flop",
+                      "typeLabel": "翻牌",
+                      "interval": 3000,
+                      "style": {
+                        "height": 70,
+                        "lineHeight": 70
+                      },
+                      "columnName": "carrier",
+                      "multiSource": [
+                        {
+                          "name": "shareflight",
+                          "separator": "",
+                          "handle": {
+                            "split": "/",
+                            "regex": "/^[0-9a-zA-Z]{2}/"
+                          }
+                        }
+                      ],
+                      "children": [
+                        {
+                          "type": "Image",
+                          "typeLabel": "图片",
+                          "style": {
+                            "height": 70,
+                            "borderRadius": 70
+                          },
+                          "imgType": "flight_logo",
+                          "imgSize": "220x220",
+                          "columnName": ""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "航段",
+                  "label": {
+                    "zh-cn": "航段",
+                    "en-ww": "line"
+                  },
+                  "style": {
+                    "width": 480
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "height": 89,
+                        "lineHeight": 89,
+                        "display": "inline-block"
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {},
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "flight"
+                        },
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {},
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "carrier"
+                        },
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {},
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "shareflight",
+                          "transExist": "/"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "height": 89,
+                        "lineHeight": 89,
+                        "width": 280,
+                        "display": "inline-block"
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "div",
+                          "style": {},
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-11-16 10:01:42
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2018-01-03 14:12:32
+ */
+
+const monitorIp = '10.1.65.50'  // 宿主机ip
+const monitorOriginPort = '9093'  // 宿主机全屏端口
+const monitorSmallPort = '9092' // 宿主机非全屏端口
+
+export default {
+  monitorIp,
+  monitorOriginPort,
+  monitorSmallPort
+}

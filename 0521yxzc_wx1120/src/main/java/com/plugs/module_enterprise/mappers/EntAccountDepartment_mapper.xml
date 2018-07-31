@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_enterprise.mappers.EntAccountDepartmentMapper">
+	<insert id="add" parameterType="entAccountDepartmentDto">
+		insert into ap_ent_account_department
+			(
+				uuid,
+				entAccountUuid,
+				name,
+				monthlyLimit,
+				limitMoney,
+				remark,
+				creator,
+				createTime,
+				updator,
+				updateTime
+			)
+		values
+			(
+				#{uuid},
+				#{entAccountUuid},
+				#{name},
+				#{monthlyLimit},
+				#{limitMoney},
+				#{remark},
+				#{creator},
+				#{createTime},
+				#{updator},
+				#{updateTime}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="entAccountDepartmentDto">
+		update ap_ent_account_department
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="entAccountUuid != null and '' != entAccountUuid"> entAccountUuid = #{entAccountUuid},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="monthlyLimit != null and '' != monthlyLimit"> monthlyLimit = #{monthlyLimit},</if>
+			<if test="limitMoney != null and '' != limitMoney"> limitMoney = #{limitMoney},</if>
+			<if test="remark != null and '' != remark"> remark = #{remark},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="updator != null and '' != updator"> updator = #{updator},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="entAccountDepartmentDto">
+		delete from
+			ap_ent_account_department
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="entAccountDepartmentDto">
+		select
+			*
+		from
+			ap_ent_account_department
+		where
+			uuid = #{uuid}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_ent_account_department
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="entAccountUuid != null and '' != entAccountUuid"> and entAccountUuid = #{entAccountUuid} </if>
+			<if test="name != null and '' != name"> and name = #{name} </if>
+			<if test="monthlyLimit != null and '' != monthlyLimit"> and monthlyLimit = #{monthlyLimit} </if>
+			<if test="limitMoney != null and '' != limitMoney"> and limitMoney = #{limitMoney} </if>
+			<if test="remark != null and '' != remark"> and remark = #{remark} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="updator != null and '' != updator"> and updator = #{updator} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="entAccountDepartmentDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="entAccountDepartmentDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+</mapper>

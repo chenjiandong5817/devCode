@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysAreaMapper">
+	<insert id="add" parameterType="sysAreaDto">
+		insert into ap_sys_area
+			(
+				uuid,
+				areaName,
+				areaSubName,
+				contactName,
+				contactMobile,
+				cityUuids,
+				cityNames,
+				status,
+				remark,
+				closeTime,
+				closeReason,
+				createTime,
+				creator,
+				updateTime
+			)
+		values
+			(
+				#{uuid},
+				#{areaName},
+				#{areaSubName},
+				#{contactName},
+				#{contactMobile},
+				#{cityUuids},
+				#{cityNames},
+				#{status},
+				#{remark},
+				#{closeTime},
+				#{closeReason},
+				#{createTime},
+				#{creator},
+				#{updateTime}
+			)
+	</insert>
+
+	<update id="edit" parameterType="sysAreaDto">
+		update ap_sys_area
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="areaName != null and '' != areaName"> areaName = #{areaName},</if>
+			<if test="areaSubName != null and '' != areaSubName"> areaSubName = #{areaSubName},</if>
+			<if test="contactName != null and '' != contactName"> contactName = #{contactName},</if>
+			<if test="contactMobile != null and '' != contactMobile"> contactMobile = #{contactMobile},</if>
+			<if test="'' != cityUuids"> cityUuids = #{cityUuids},</if>
+			<if test="'' != cityNames"> cityNames = #{cityNames},</if>
+			<if test="'' != status"> status = #{status},</if>
+			<if test="remark != null and '' != remark"> remark = #{remark},</if>
+			<if test="closeTime != null and '' != closeTime"> closeTime = #{closeTime},</if>
+			<if test="closeReason != null and '' != closeReason"> closeReason = #{closeReason},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+		</set>
+		where
+		uuid = #{uuid}
+	</update>
+
+	<delete id="del" parameterType="sysAreaDto">
+		delete from
+		ap_sys_area
+		where
+		uuid = #{uuid}
+	</delete>
+
+	<select id="selInfo" resultType="sysAreaDto">
+		select
+		*
+		from
+		ap_sys_area
+		where
+		uuid = #{uuid}
+	</select>
+
+	<sql id="sqlForList">
+		from
+		ap_sys_area
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="areaName != null and '' != areaName"> and areaName = #{areaName} </if>
+			<if test="areaSubName != null and '' != areaSubName"> and areaSubName = #{areaSubName} </if>
+			<if test="contactName != null and '' != contactName"> and contactName = #{contactName} </if>
+			<if test="contactMobile != null and '' != contactMobile"> and contactMobile = #{contactMobile} </if>
+			<if test="cityUuids != null and '' != cityUuids"> and cityUuids = #{cityUuids} </if>
+			<if test="cityNames != null and '' != cityNames"> and cityNames = #{cityNames} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="remark != null and '' != remark"> and remark = #{remark} </if>
+			<if test="closeTime != null and '' != closeTime"> and closeTime = #{closeTime} </if>
+			<if test="closeReason != null and '' != closeReason"> and closeReason = #{closeReason} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+
+			<if test="areaNameLike != null and '' != areaNameLike"> and areaName  LIKE '%${areaNameLike}%' </if>
+			<if test="contactMobileLike != null and '' != contactMobileLike"> and contactMobile  LIKE '%${contactMobileLike}%' </if>
+			<if test="contactNameLike != null and '' != contactNameLike"> and contactName  LIKE '%${contactNameLike}%' </if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select
+		count(*)
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="list" resultType="sysAreaDto">
+		select
+		*
+		<include refid="sqlForList"/>
+	</select>
+
+
+	<select id="queryPage" resultType="sysAreaDto">
+		select
+		*
+		<include refid="sqlForList"/>
+	</select>
+
+</mapper>

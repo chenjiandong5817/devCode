@@ -1,0 +1,94 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>对齐方式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="11">
+              <selector v-model="conf.align" :options="alignOptions" filterable label="垂直方向(align)" placeholder="选择垂直对齐方向"></selector>          
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <selector v-model="conf.justify" :options="justifyOptions" filterable label="水平方向(justify)" placeholder="选择水平对齐方向"></selector>
+            </el-col>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="11">
+              <span class="editor-label">宽度(width)</span>
+              <el-input type="number" :value="conf.bodyStyle.width" @input="val => changeStr2Number(conf.bodyStyle, 'width', val)"></el-input>
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <span class="editor-label">高度(height)</span>
+              <el-input type="number" :value="conf.bodyStyle.height" @input="val => changeStr2Number(conf.bodyStyle, 'height', val)"></el-input>
+            </el-col>
+          </el-form-item>
+          <color-picker v-model="conf.bodyStyle.backgroundColor" label="背景色(backgroundColor)" :inputScale="9" :pickerScale="3"></color-picker>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import ColorPicker from './form-items/ColorPicker'
+  import Selector from './form-items/Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      ColorPicker, Selector
+    },
+    data () {
+      return {
+        conf: {},
+        alignOptions: [
+          {value: 'top', label: '顶部'},
+          {value: 'middle', label: '中间'},
+          {value: 'bottom', label: '底部'}
+        ],
+        justifyOptions: [
+          {value: 'start', label: '左边'},
+          {value: 'center', label: '中间'},
+          {value: 'end', label: '右边'},
+          {value: 'space-around', label: '均匀分布'},
+          {value: 'space-between', label: '两端对齐'}
+        ]
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Row',
+          typeLabel: '行',
+          align: 'top',
+          justify: 'start',
+          bodyStyle: {},
+          children: []
+        }
+      } else {
+        this.conf = this.value
+      }
+    },
+    methods: {
+      changeStr2Number (target, property, value) {
+        this.$set(target, property, Number(value))
+      }
+    }
+  }
+</script>

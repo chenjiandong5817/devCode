@@ -1,0 +1,48 @@
+package com.plugs.module_order.services;
+
+import com.plugs.module_order.dtos.OrderDto;
+import com.plugs.utils.RequestUtil;
+import com.util.MD5Util;
+import com.utils.log4j.QxLog;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by Administrator on 2017/6/26.
+ */
+public class OrderVipHelper {
+    private static final Logger qxLogger = Logger.getLogger(OrderVipHelper.class);
+
+//    private static final String POST_URL = "http://yuanxiang.sjdzp.com/Api/Seller/api.json?g_cid=21452";
+    private static final String POST_URL = "http://demo.demo1.sjdzp.com/Api/Seller/api.json?g_cid=1";
+    private static final String CHARSET = "UTF-8";
+
+    public static void sendVipCountMsgByOrder(OrderDto order) {
+        qxLogger.log(QxLog.LEVEL, "[微信订单[" + order.getUuid() + "],调取接口创建vip订单接口");
+        //调取接口
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("method", "item_orders");
+        map.put("_pid", "4");
+        map.put("item_id", "41");
+//        map.put("_pid", "1142484");
+//        map.put("item_id", "1810758");
+        map.put("is_pay", "1");
+        map.put("orders_id", order.getOrderNumber());
+        map.put("name", null != order.getActualPassengeName() ? order.getActualPassengeName() : "乘客" + StringUtils.substring(order.getActualPassengeMobile(), 7, 11));
+        map.put("mobile", order.getActualPassengeMobile());
+        map.put("size", Integer.toString(order.getVipCounts()));
+//        map.put("_sig", signMD5(map, "b69e77cf91392dc07b1b18b8cad92445"));
+        map.put("_sig", signMD5(map, "111"));
+        RequestUtil.doPost(POST_URL, map, CHARSET);
+    }
+
+
+    private static String signMD5(Map<String, String> map, String key) {
+        String url = RequestUtil.buildUrl(map, false);
+        String signUrl = key + "&" + url + "&" + key;
+        return MD5Util.MD5Encode(signUrl);
+    }
+}

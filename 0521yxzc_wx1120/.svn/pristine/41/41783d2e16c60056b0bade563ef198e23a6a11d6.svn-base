@@ -1,0 +1,128 @@
+<!-- 详细地址自动补全 -->
+<template>
+  <div class="autocompleteList">
+    <scroll class="wrapper" v-bind:data="location.tips">
+        <ul class="matchlist">
+            <li v-for="(item ,index) in location.tips" class="list-item" @click="selectItem(item);">
+              <p>{{item.name}}</p>
+              <p class="subAddress">{{item.district+item.address}}</p></li>
+        </ul>
+    </scroll>
+  </div>
+</template>
+<script>
+import { mapState, mapActions } from 'vuex'
+import api from '@/store/index/api'
+const scroll = () => import('@/components/scroll')
+export default {
+  data () {
+    return {
+    }
+  },
+  computed: {
+    ...mapState([
+      'location',
+      'openCityData'
+    ])
+  },
+  methods: {
+    ...mapActions({
+      'switch_state': 'switch_location',
+      'resetLocation': 'resetLocation'
+    }),
+    selectItem (val) {
+      let isOpen = false
+      // 检验当前选择地址城市是否在已开通城市列表中
+      this.openCityData.forEach(function (el, index) {
+        let reg = new RegExp(el.name)
+        if (reg.test(val.district)) {
+          isOpen = true
+        }
+      })
+      // 若起点城市未开通服务
+      if (!isOpen && this.location.startOrEnd) {
+        let toast = this.$createToast({
+          txt: '该地址暂未开通服务，目前仅开通福州和厦门地区',
+          type: 'warn',
+          mask: true
+        })
+        toast.show()
+      } else {
+        this.switch_state({name: 'location', val: val})
+        this.resetLocation()
+        this.setHistory(val)
+        this.back_home()
+      }
+    },
+    // 将搜索历史推进本地存储
+    setHistory (obj) {
+      var searchHistory = api.getLocalStorage('searchHistory') ? api.getLocalStorage('searchHistory', 'object') : []
+      searchHistory.push(obj)
+      // 历史搜索数据数组-翻转-去重
+      searchHistory = api.removeDup(searchHistory.reverse())
+      searchHistory = (searchHistory.length > 10) ? searchHistory.slice(0, 10) : searchHistory
+      api.setLocalStorage('searchHistory', searchHistory)
+    },
+    back_home () {
+      this.$router.go(-1)
+    }
+  },
+  components: {
+    scroll
+  }
+}
+</script>
+<style lang="less" scoped>
+.autocompleteList {
+  .wrapper {
+    max-height: 500px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    ul.matchlist {
+      position: relative;
+      display: block;
+      background-color: #fff;
+      overflow: hidden;
+      li.list-item {
+        display: flex;
+        flex-direction:column;
+        justify-content:center;
+        position: relative;
+        height: 50px;
+        line-height: 1.5;
+        //line-height: 50px;
+        padding: 0 16px;
+        font-size: 14px;
+        color: #666;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        &:active {
+          background: rgba(0, 0, 0, 0.04)
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 0;
+          border-bottom: 1px solid #eee;
+          transform: scaleY(.5)
+        }
+        p{
+          font-size: 14px;
+          color: #4b4e51;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+          &.subAddress{
+            font-size: 12px;
+            color: #a8abaf;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

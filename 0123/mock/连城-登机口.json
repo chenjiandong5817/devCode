@@ -1,0 +1,423 @@
+{
+  "type": "Layout",
+  "typeLabel": "布局",
+  "description": "登机口",
+  "bodyStyle": {
+    "backgroundColor": "#212E5B",
+    "minWidth": 1920,
+    "minHeight": 1080
+  },
+  "langs": [
+    "zh-cn",
+    "en-ww"
+  ],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "extraParam": {
+    "destination": "DESTINATION"
+  },
+  "dataSource": "AD794D19CFFF4A27A47ECC2F7C67F4EE",
+  "singleData": true,
+  "mainPager": true,
+  "mainSource": true,
+  "refreshInterval": 20000,
+  "pageInterval": 0,
+  "children": [
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 13,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "color": "#FAC35A",
+                "padding": "50px 80px 15px",
+                "borderBottomWidth": 5,
+                "borderBottomStyle": "solid"
+              },
+              "bottomStyle": {},
+              "slicePoint": 3,
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "span",
+                  "style": {
+                    "fontSize": 160,
+                    "height": 124,
+                    "lineHeight": 124
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "columnName": "carrier"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "span",
+                  "style": {
+                    "fontSize": 160,
+                    "height": 124,
+                    "lineHeight": 124
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "columnName": "flight"
+                },
+                {
+                  "type": "MarqueeText",
+                  "typeLabel": "滚动文本",
+                  "speed": 80,
+                  "hiddenBy": [],
+                  "seamless": false,
+                  "always": false,
+                  "vertical": false,
+                  "backZero": false,
+                  "style": {},
+                  "children": [
+                    {
+                      "type": "Text",
+                      "typeLabel": "文本",
+                      "tag": "div",
+                      "style": {
+                        "height": 64,
+                        "lineHeight": 64,
+                        "color": "#FFFFFF",
+                        "fontSize": 60
+                      },
+                      "langLock": "",
+                      "langExcept": [],
+                      "columnName": "shareflight"
+                    }
+                  ]
+                },
+                {
+                  "type": "Row",
+                  "typeLabel": "行",
+                  "align": "middle",
+                  "justify": "start",
+                  "bodyStyle": {},
+                  "children": [
+                    {
+                      "type": "Column",
+                      "typeLabel": "列",
+                      "span": 12,
+                      "bodyStyle": {},
+                      "children": [
+                        {
+                          "type": "DoubleLayerText",
+                          "typeLabel": "双层文本",
+                          "align": "left",
+                          "translateX": 0,
+                          "translateY": 0,
+                          "topStyle": {
+                            "color": "#FFFFFF",
+                            "padding": "0px 0px 0px 80px"
+                          },
+                          "bottomStyle": {
+                            "color": "#FFFFFF",
+                            "padding": "0px 0px 0px 80px"
+                          },
+                          "slicePoint": 1,
+                          "children": [
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "",
+                              "langExcept": [],
+                              "value": "预计登机"
+                            },
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "",
+                              "langExcept": [],
+                              "value": "Boarding Time"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Column",
+                      "typeLabel": "列",
+                      "span": 12,
+                      "bodyStyle": {},
+                      "children": [
+                        {
+                          "type": "DoubleLayerText",
+                          "typeLabel": "双层文本",
+                          "align": "left",
+                          "translateX": 0,
+                          "translateY": 0,
+                          "topStyle": {
+                            "color": "#FAC35A"
+                          },
+                          "bottomStyle": {},
+                          "slicePoint": 1,
+                          "children": [
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "",
+                              "langExcept": [],
+                              "columnName": "scheduleopen",
+                              "date": {
+                                "formatForm": "yyyy-MM-dd HH:mm:ss",
+                                "formatTo": "HH:mm"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Row",
+                  "typeLabel": "行",
+                  "align": "middle",
+                  "justify": "start",
+                  "bodyStyle": {},
+                  "children": [
+                    {
+                      "type": "Column",
+                      "typeLabel": "列",
+                      "span": 12,
+                      "bodyStyle": {},
+                      "children": [
+                        {
+                          "type": "DoubleLayerText",
+                          "typeLabel": "双层文本",
+                          "align": "left",
+                          "translateX": 0,
+                          "translateY": 0,
+                          "topStyle": {
+                            "color": "#FFFFFF",
+                            "padding": "0px 0px 0px 80px"
+                          },
+                          "bottomStyle": {
+                            "color": "#FFFFFF",
+                            "padding": "0px 0px 0px 80px"
+                          },
+                          "slicePoint": 1,
+                          "children": [
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "",
+                              "langExcept": [],
+                              "value": "航班状态"
+                            },
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "",
+                              "langExcept": [
+                                "zh-cn"
+                              ],
+                              "value": {
+                                "ja-jp": "状態",
+                                "en-ww": "Status"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Column",
+                      "typeLabel": "列",
+                      "span": 12,
+                      "bodyStyle": {},
+                      "children": [
+                        {
+                          "type": "DoubleLayerText",
+                          "typeLabel": "双层文本",
+                          "align": "left",
+                          "translateX": 0,
+                          "translateY": 0,
+                          "topStyle": {
+                            "color": "#FAC35A"
+                          },
+                          "bottomStyle": {
+                            "color": "#FAC35A"
+                          },
+                          "slicePoint": 1,
+                          "children": [
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "zh-cn",
+                              "langExcept": [],
+                              "columnName": "flightstatus",
+                              "transColor": {
+                                "matchType": "begin",
+                                "matchSet": {
+                                  "ARR": "#FF0000"
+                                }
+                              }
+                            },
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 42
+                              },
+                              "langLock": "",
+                              "langExcept": [
+                                "zh-cn"
+                              ],
+                              "columnName": "flightstatus",
+                              "transColor": {
+                                "matchType": "begin",
+                                "matchSet": {
+                                  "ARR": "#FF0000"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 11,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "padding": "20px 20px 0px 0px",
+                "textAlign": "center"
+              },
+              "bottomStyle": {},
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Image",
+                  "typeLabel": "图片",
+                  "style": {
+                    "width": 700,
+                    "height": 400
+                  },
+                  "imgType": "flight_logo",
+                  "imgSize": "700x400",
+                  "columnName": "carrier"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 24,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "color": "#FAC35A",
+                "padding": "0 0 0 80px"
+              },
+              "bottomStyle": {
+                "color": "#FAC35A",
+                "padding": "0 0 0 80px"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 144
+                  },
+                  "langLock": "zh-cn",
+                  "langExcept": [],
+                  "columnName": "route"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 96
+                  },
+                  "langLock": "",
+                  "langExcept": [
+                    "zh-cn"
+                  ],
+                  "columnName": "route"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

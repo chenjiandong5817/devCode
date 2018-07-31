@@ -1,0 +1,223 @@
+<!-- 更换乘车人视图 -->
+<template>
+    <div>
+        <div class="changePassenger" @click="showMask(true)">
+            <i class="user"></i> {{txt}}
+        </div>
+        <div class="changePassengerForm" v-if="isMask">
+            <p class="title">请输入乘车人联系电话</p>
+            <div class="form-item">
+                <input type="tel" class="phone" placeholder="请输入手机号" v-model.trim="phone" maxlength="11">
+                <span class="clearBtn" v-show="phone" @click="clear"></span>
+            </div>
+            <div class="form-item">
+                <label class="style-label">
+                    <input type="checkbox" checked="true" hidden="hidden" v-model="payOrNot">
+                    <span class="style-checkbox">
+                      <span class="style-checkbox-inner"></span>
+                    </span>
+                    由乘车人支付费用
+                </label>
+            </div>
+            <cube-button :disabled="!phone" @click="submit">确定</cube-button>
+            <p class="labelMsg">司机会直接联系乘车人，请确保号码正确</p>
+            <span class="close" @click="showMask(false)"></span>
+        </div>
+        <comMask :show="isMask" :event="default_event"></comMask>
+    </div>
+</template>
+<script>
+import { mapState } from 'vuex'
+const comMask = () => import('@/components/Mask.vue')
+export default{
+  name: 'changePassenger',
+  data () {
+    return {
+      isMask: false,
+      payOrNot: this.$store.state.passenger.payOrNot,
+      phone: this.$store.state.passenger.phone
+    }
+  },
+  watch: {
+    phone (newValue, oldValue) {
+      let re = /^[0-9]*$/
+      if (!re.test(newValue)) {
+        this.phone = oldValue || ''
+      } else {
+        this.phone = newValue
+      }
+    }
+  },
+  computed: mapState({
+    payType (state) {
+      return state.payType
+    },
+    txt (state) {
+      return this.$store.state.passenger.phone ? ('乘客' + (this.$store.state.passenger.phone).slice(-4)) : '换乘车人'
+    }
+  }),
+  methods: {
+    // 余额不满200元时的提示对话框
+    showAlert () {
+      this.$createDialog({
+        type: 'alert',
+        title: '余额不足',
+        content: '代人叫车功能需账户余额满200元以上即可使用',
+        confirmBtn: {
+          text: '好的',
+          active: false,
+          disabled: false,
+          href: 'javascript:;'
+        }
+        // cancelBtn: {
+        //   text: '好的',
+        //   active: false,
+        //   disabled: false,
+        //   href: 'javascript:;'
+        // }
+        /* onConfirm: () => {
+          // 充值跳转地址
+          this.$createToast({
+            type: 'warn',
+            time: 1000,
+            txt: '充值跳转'
+          }).show()
+        }, */
+        /* onCancel: () => {
+        } */
+      }).show()
+    },
+    // 显示换乘视图
+    showMask (val) {
+      this.phone = this.$store.state.passenger.phone
+      if (this.payType.money >= 0) {
+        this.isMask = val
+      } else {
+        // this.showAlert()
+      }
+    },
+    // 清空输入框
+    clear () {
+      this.phone = ''
+    },
+    showToastTime (text) {
+      const toast = this.$createToast({
+        type: 'warn',
+        time: 1000,
+        txt: text
+      })
+      toast.show()
+    },
+    // 提交乘车人信息
+    submit () {
+      let RE = /^((13[0-9])|(14[0-9])|(15[0-9])|(17[0-9])|(18[0-9]))\d{8}$/
+      if (!RE.test(this.phone) || this.phone.length !== 11) {
+        this.showToastTime('手机格式不正确')
+        return
+      }
+      this.$store.commit('SET_PASSENGER', {phone: this.phone, payOrNot: this.payOrNot})
+      this.showToastTime('乘客已更改')
+      this.isMask = false
+    },
+    default_event () {
+      return false
+    }
+  },
+  components: {
+    comMask
+  }
+}
+</script>
+<style lang='less'>
+@import "../../assets/css/less/variable.less";
+.changePassenger {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 12px;
+  color: #6b7886;
+  background: #ffffff;
+  .user {
+    position: relative;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+    margin-bottom: -2.5px;
+    background: url('../../assets/images/user_gray.png') no-repeat center;
+    background-size:100% 100%; 
+  }
+}
+.changePassengerForm {
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 11;
+  top: 50%;
+  left: 50%;
+  padding: 35px 15px 20px;
+  margin-left: -145px;
+  margin-top: -140px;
+  width: 290px;
+  display: block;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+  .close {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 15px;
+    right: 15px;
+    background: url('../../assets/images/close.png') no-repeat center;
+  }
+  .title {
+    line-height: 30px;
+    text-align: center;
+    font-size: 16px;
+    color: #4f5a67;
+  }
+  .form-item {
+    position: relative;
+    display: table;
+    width: 100%;
+    padding: 15px 0;
+    line-height: 16px;
+    font-size: 14px;
+    &:nth-child(2) {
+      border-bottom: .5px solid #e5e5e5;
+    }
+    &:after {
+      .clear()
+    }
+    input {
+      display: inline-block;
+      text-align: center;
+      height: 20px;
+      line-height: 20px;
+    }
+    .style-label {
+      font-size: 12px;
+    }
+    .clearBtn {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      margin-top: -8px;
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: url('../../assets/images/wrong.png');
+    }
+  }
+  .labelMsg {
+    padding: 15px 0;
+    font-size: 12px;
+    color: #a9abb0;
+    text-align: center;
+  }
+}
+
+</style>
+
+

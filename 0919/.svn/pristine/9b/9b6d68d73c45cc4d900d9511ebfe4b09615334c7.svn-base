@@ -1,0 +1,52 @@
+<template>
+  <el-select placeholder="选择机场" v-model="airportCode" @change="clickItem">
+    <el-option v-for="item in cities" :key="item.value" :label="item.label" :value="item.value">
+      <span style="float: left">{{ item.chineseName }}</span>
+      <span style="float: right; color: #8492a6; font-size: 13px">{{ item.code }}</span>
+    </el-option>
+  </el-select>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      obj: {value: '', label: '', code: '', chineseName: ''},
+      airportCode: '',
+      cities: [
+        {
+          value: '',
+          label: '',
+          code: ''
+        }
+      ]   // 存放value和label,code值
+    }
+  },
+  methods: {
+    clickItem () {
+      this.$emit('getAirportName', this.airportCode)
+    },
+    setCitys (airports) {  // 传递的是citys的列表['XMN','LCX']
+      let airportInfo = this.$cache.fetch('airports')
+      this.cities = []
+      for (let j = 0; j < airports.length; j++) {
+        for (let i = 0; i < airportInfo.length; i++) {
+          if (airports[j] === airportInfo[i].iatacode) {
+            this.obj = {value: '', label: '', code: ''}
+            this.obj.value = airportInfo[i].iatacode
+            this.obj.label = airportInfo[i].cnabbr2w + '(' + airportInfo[i].iatacode + ')'
+            this.obj.code = airportInfo[i].iatacode + '/' + airportInfo[i].icaocode
+            this.obj.chineseName = airportInfo[i].cnabbr2w
+            this.cities.push(this.obj)
+            break
+          }
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

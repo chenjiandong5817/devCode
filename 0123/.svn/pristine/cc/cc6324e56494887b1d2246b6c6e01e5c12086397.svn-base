@@ -1,0 +1,215 @@
+{
+  "type": "Layout",
+  "description": "行李转盘",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "langs": [ "zh-cn", "en-ww"],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "rows": [
+    {
+      "type": "Row",
+      "align": "middle",
+      "justify": "start",
+      "bodyStyle": {
+        "height": 1080
+      },
+      "cols": [
+        {
+          "type": "Column",
+          "span": 24,
+          "children": [
+            {
+              "type": "Grid",
+              "description": "行李转盘",
+              "dataSource": "3CCD44C17FB9456E97F74D27E416CB1D",
+              "mainSource": true,
+              "refreshInterval": 20000,
+              "hiddenHeader": true,
+              "bodyStyle": {
+                "defaultRowStyle": {
+                  "rowStripe": [ "#284682", "#1E2D5A" ],
+                  "fontSize": 42,
+                  "color": "#fff",
+                  "height": 124,
+                  "lineHeight":124
+                }
+              },
+              "columns": [
+                {
+                  "type": "GridColumn",
+                  "name": "carrier",
+                  "label": {},
+                  "style": {
+                    "textAlign": "center",
+                    "width": 180
+                  },
+                  "children": [
+                    {
+                      "type": "Flop",
+                      "style": {
+                        "height": 124,
+                        "lineHeight": 124
+                      },
+                      "columnName": "carrier",
+                      "multiSource": [
+                        {
+                          "name": "shareflight",
+                          "separator": "",
+                          "handle": {
+                            "split": "/",
+                            "regex": "/^[0-9a-zA-Z]{2}/"
+                          }
+                        }
+                      ],
+                      "item": {
+                        "type": "Image",
+                        "style": {
+                          "height": 124,
+                          "lineHeight": 124,
+                          "borderRadius": "124px"
+                        },
+                        "imgType": "flight_logo",
+                        "imgSize": "220x220",
+                        "flopItemValue": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "name": "carrier",
+                  "style": {
+                    "width": 680,
+                    "fontSize": 122,
+                    "color": "#FAC35A",
+                    "padding": 0
+                  },
+                  "children": [
+                    {
+                      "type": "Text",
+                      "tag": "span",
+                      "style": {
+                        "height": 124,
+                        "lineHeight": 124
+                      },
+                      "columnName": "carrier"
+                    },
+                    {
+                      "type": "Text",
+                      "tag": "span",
+                      "columnName": "flight"
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 500
+                      },
+                      "hiddenBy": ["shareflight"],
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 124,
+                            "lineHeight": 124,
+                            "color": "#fff",
+                            "fontSize": 82
+                          },
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "route",
+                  "style": {
+                    "width": 720,
+                    "fontSize": 82,
+                    "color": "#fff"
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 720
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "langLock": "zh-cn",
+                          "style": {
+                            "height": 124,
+                            "lineHeight": 124,
+                            "color": "#fff",
+                            "fontSize": 90
+                          },
+                          "columnName": "route"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 720
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "langExcept": ["zh-cn"],
+                          "style": {
+                            "height": 124,
+                            "lineHeight": 124,
+                            "color": "#fff",
+                            "fontSize": 60
+                          },
+                          "columnName": "route"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "actualclose",
+                  "style": {
+                    "minWidth": 320,
+                    "fontSize": 82,
+                    "color": "#fff",
+                    "paddingLeft": 60
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 120,
+                      "always": true,
+                      "hiddenBy": [{"actualclose": false}],
+                      "style": {
+                        "width": 220
+                      },
+                      "content": [
+                        {
+                          "type": "Image",
+                          "style": {
+                            "width": 160,
+                            "height": 160
+                          },
+                          "url": "./../../static/logo/123.png"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}                                                                      

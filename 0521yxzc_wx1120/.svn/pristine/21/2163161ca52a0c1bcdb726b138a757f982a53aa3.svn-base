@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysTagMapper">
+	<insert id="add" parameterType="sysTagDto">
+		insert into ap_sys_tag
+			(
+				uuid,
+				tagName,
+				star,
+				tagType,
+				tagStatus,
+				createTime,
+				creator
+			)
+		values
+			(
+				#{uuid},
+				#{tagName},
+				#{star},
+				#{tagType},
+				#{tagStatus},
+				#{createTime},
+				#{creator}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="sysTagDto">
+		update ap_sys_tag
+		<set>
+			<if test="tagName != null and '' != tagName"> tagName = #{tagName},</if>
+			<if test="star != null and '' != star"> star = #{star},</if>
+			<if test="tagType != null and '' != tagType"> tagType = #{tagType},</if>
+			<if test="tagStatus != null and '' != tagStatus"> tagStatus = #{tagStatus},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="sysTagDto">
+		delete from
+			ap_sys_tag
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="sysTagDto">
+		select
+			*
+		from
+			ap_sys_tag
+		where
+			uuid = #{uuid}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_sys_tag
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="tagName != null and '' != tagName"> and tagName = #{tagName} </if>
+			<if test="likeTagName != null and '' != likeTagName"> and tagName LIKE '%'||#{likeTagName}||'%' </if>
+			<if test="star != null and '' != star"> and star = #{star} </if>
+			<if test="tagType != null and '' != tagType"> and tagType = #{tagType} </if>
+			<if test="tagStatus != null and '' != tagStatus"> and tagStatus = #{tagStatus} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="sysTagDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="sysTagDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+</mapper>

@@ -1,0 +1,182 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-09-21 17:14:14
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-09-29 10:41:48
+ */
+
+ <template>
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="true" :modal="false" :before-close="handleClose" size="small" :modal-append-to-body="false">
+    <!--<el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" class="demo-ruleForm" >-->
+    <el-form ref="checkin" :model="checkinFiled">
+      <el-col :gutter="20">
+        <el-row :span="6">
+          <el-form-item label="航空公司">
+            <el-select v-model="checkinFiled.airCompany" placeholder="选择航空公司">
+              <el-option v-for="item in bindDataCompany" :key="item.value" :label="item.text" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-row>
+        <el-row :span="6">
+          <el-form-item label="服务模式">
+            <el-select v-model="checkinFiled.serviceMode" placeholder="选择服务模式">
+              <el-option v-for="item in bindDataServiceMode" :key="item.value" :label="item.text" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-row>
+        <el-row :span="6">
+          <el-form-item label="服务类型">
+            <el-select v-model="checkinFiled.serviceType" placeholder="选择服务类型">
+              <el-option v-for="item in bindDataServiceType" :key="item.value" :label="item.text" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-row>
+      </el-col>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="visible = false">取消</el-button>
+      <el-button @click="resetForm('checkin')">重置</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+ <script>
+import Util from '../../../common/js/util'
+import API from '../../../api'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () { }
+    },
+    callback: {
+      type: Function,
+      default: function () { }
+    }
+  },
+  data () {
+    return {
+      visible: false,
+      loading: false,
+      oldValue: {},
+      airLinesList: [],
+      checkInModeList: [],
+      checkInTypeList: [],
+      bindDataCompany: [],
+      bindDataServiceMode: [],
+      bindDataServiceType: [],
+      checkinFiled: { airCompany: '', serviceMode: '', serviceType: '' }
+      // deviceStatusList: [ { text: '删除', value: -1 }, { text: '在线', value: 0 }, { text: '离线', value: 1 }, { text: '异常', value: 2 } ],
+      // 动态插入
+    }
+  },
+  methods: {
+    getAir () {
+      let para = Object.assign({}, {pageSize: 0})  // 分页问题
+      this.listLoading = true
+      API.getAirlines().go(para).then((data) => {
+        if (data.ok) {
+          // console.log('进来了')
+          this.airLinesList = data.attr.data.list
+          // console.log(this.airLinesList.length)
+          this.bindDataCompany = []
+          for (let i = 0; i < this.airLinesList.length; i++) {
+            let label = {text: this.airLinesList[i].cnabbr + ' ' + this.airLinesList[i].iatacode, value: this.airLinesList[i].iatacode}
+            this.bindDataCompany.push(label)
+          }
+          // console.log(this.airLinesList)
+        } else {
+          this.$notify(Util.notifyBody(false, data.msg))
+        }
+        this.listLoading = false
+      })
+    },
+    getCheckinMode () {
+      let para = Object.assign({}, {pageSize: 0})  // 分页问题
+      this.listLoading = true
+      API.getCkcounteropmodesListPage().go(para).then((data) => {
+        if (data.ok) {
+          this.checkInModeList = data.attr.data.list
+          this.bindDataServiceMode = []
+          for (let j = 0; j < this.checkInModeList.length; j++) {
+            let label = {text: this.checkInModeList[j].description + ' ' + this.checkInModeList[j].opModeCode, value: this.checkInModeList[j].opModeCode}
+            this.bindDataServiceMode.push(label)
+          }
+          // console.log(this.checkInModeList.length)
+        } else {
+          this.$notify(Util.notifyBody(false, data.msg))
+        }
+        this.listLoading = false
+      })
+    },
+    getCheckinType () {
+      let para = Object.assign({}, {pageSize: 0})  // 分页问题
+      this.listLoading = true
+      API.getCkcounterservicetypesListPage().go(para).then((data) => {
+        if (data.ok) {
+          this.checkInTypeList = data.attr.data.list
+          this.bindDataServiceType = []
+          for (let z = 0; z < this.checkInTypeList.length; z++) {
+            let label = {text: this.checkInTypeList[z].description + ' ' + this.checkInTypeList[z].serviceTypeCode, value: this.checkInTypeList[z].serviceTypeCode}
+            this.bindDataServiceType.push(label)
+          }
+          // console.log(this.checkInTypeList.length)
+        } else {
+          this.$notify(Util.notifyBody(false, data.msg))
+        }
+        this.listLoading = false
+      })
+    },
+    show: function () {
+      this.getAir()
+      this.getCheckinMode()
+      this.getCheckinType()
+
+      this.visible = true
+    },
+    handleClose: function (params) {
+      console.log('取消')
+      this.visible = false
+      this.$refs['checkin'].resetFields()
+      this.checkinFiled.airCompany = ''
+      this.checkinFiled.serviceMode = ''
+      this.checkinFiled.serviceType = ''
+    },
+    handleSubmit: function (params) {
+      this.$refs['checkin'].validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            let name = this.checkinFiled.airCompany + '_' + this.checkinFiled.serviceMode + '_' + this.checkinFiled.serviceType
+            this.loading = true
+            this.visible = false
+            this.$emit('getCheckin', name)
+            this.$refs['checkin'].resetFields()
+            this.loading = false
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    },
+    resetForm (formName) {
+      // console.log(formName)
+      this.$refs[formName].resetFields()
+      this.checkinFiled.airCompany = ''
+      this.checkinFiled.serviceMode = ''
+      this.checkinFiled.serviceType = ''
+    }
+  }
+}
+</script>

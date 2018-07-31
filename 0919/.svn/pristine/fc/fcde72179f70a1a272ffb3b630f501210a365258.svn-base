@@ -1,0 +1,76 @@
+/*
+* @Author: chenjiandong
+* @Date:   last_modified_time
+* @Last Modified by:   chenjiandong
+* @Last Modified time: last_modified_time
+*/
+import * as login from './login'
+import * as user from './system/user'
+import * as role from './system/role'
+import * as permission from './system/permission'
+import * as baseAiisAirport from './system/aiis-airport'
+import * as baseAirport from './base/airport'
+import * as deviceInfo from './device/device-manage'
+import * as enumInfo from './enuminfo'
+import * as dynamicFlight from './fids/dynamic-flight'
+import * as aircraftcategory from './base/aircraftcategory'
+import * as registration from './registration'
+import * as aircrafttype from './aircrafttype'
+import * as airlines from './airlines'
+import * as direction from './direction'
+import * as generalagent from './generalagent'
+import * as terminal from './terminal'
+import * as commontable from './commontable'
+import * as versionManagement from './system/version-management'
+import * as multiLang from './device/multilang'
+import * as gates from './resource/gates'
+import * as stands from './resource/stands'
+import * as baggagecarousels from './resource/baggagecarousels'
+import * as checkincounters from './resource/checkincounters'
+import * as irregularcodes from './base/irregularcodes'
+import * as generalagents from './base/generalagents'
+import * as flighttask from './base/flighttask'
+import * as tablesInfo from './base/tablesInfo'
+import * as imageManage from './device/image-manage'
+import * as display from './fids/display'
+import * as template from './fids/template'
+import * as flightstatus from './base/flightstatus'
+import * as aircraftregistrations from './base/aircraftregistrations'
+import * as gateAllocation from './fids/gate-allocation'
+import * as carouselAllocation from './fids/carousel-allocation'
+import * as standAllocation from './fids/stand-allocation'
+import * as ckCounterAllocation from './fids/ckcounter-allocation'
+import * as checkinTime from './fids/checkin-time'
+import * as deviceGroups from './device/device-groups'
+import * as boardingTime from './fids/boarding-time'
+import * as vipranks from './base/vipranks'
+import * as schedulesources from './base/schedulesources'
+import * as resourcestatus from './base/resourcestatus'
+import * as resourcenatures from './base/resourcenatures'
+import * as flightnatures from './base/flightnatures'
+import * as flightdirections from './base/flightdirections'
+import * as ckcounteropmodes from './base/ckcounteropmodes'
+import * as ckcounterservicetypes from './base/ckcounterservicetypes'
+import * as airportcontacts from './base/airportcontacts'
+import * as waitinghalls from './resource/waitinghalls'
+import * as terminals from './resource/terminals'
+import * as bridges from './resource/bridges'
+import * as aprons from './resource/aprons'
+import * as enuminfos from './base/enuminfos'
+import * as planFlightSchedule from './fids/plan-flightschedule'
+import * as vip from './fids/vip'
+import * as planSeasonSchedule from './fids/plan-seasonschedule'
+import * as destlans from './base/destlans'
+import * as seasonName from './base/seasonname'
+import * as flightLoad from './fids/flightload'
+import * as dataSource from './fids/datasouce'
+import * as morFlightGenTime from './fids/morFlightGenTime'
+// import * as airlinemanagement from './base/airlines'
+export default Object.assign({}, login, user, role, permission, baseAiisAirport, baseAirport, deviceInfo, enumInfo,
+dynamicFlight, aircraftcategory, registration, aircrafttype, airlines, direction, generalagent, terminal, commontable,
+versionManagement, multiLang, gates, stands, baggagecarousels, checkincounters, irregularcodes, generalagents, tablesInfo,
+flighttask, display, template, flightstatus, aircraftregistrations, imageManage, gateAllocation, carouselAllocation, standAllocation,
+ckCounterAllocation, checkinTime, deviceGroups, boardingTime, vipranks, schedulesources, resourcestatus, resourcenatures, flightnatures,
+flightdirections, ckcounteropmodes, ckcounterservicetypes, airportcontacts, waitinghalls, terminals, bridges, aprons, enuminfos, planFlightSchedule, vip,
+planSeasonSchedule, destlans, seasonName, flightLoad, dataSource, morFlightGenTime)
+

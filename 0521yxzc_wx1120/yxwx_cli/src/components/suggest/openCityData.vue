@@ -1,0 +1,89 @@
+<!-- 本地城市数据视图 -->
+<template>
+  <div class="autocompleteList">
+    <scroll class="wrapper" v-bind:data="openCityData">
+        <ul class="matchlist">
+            <li v-for="(item ,index) in openCityData" class="list-item" @click="selectCity(item);sendMsgToParent(item)">{{item.name}}</li>
+        </ul>
+    </scroll>
+    <!-- <p>其他城市陆续开通中...</p> -->
+  </div>
+</template>
+<script>
+import { mapState, mapActions } from 'vuex'
+const scroll = () => import('@/components/scroll')
+export default {
+  data () {
+    return {
+    }
+  },
+  computed: mapState({
+    ...mapState([
+      'openCityData',
+      'location'
+    ]),
+    // location (state) {
+    //   return state.location
+    // },
+    // openCityData (state) {
+    //   return state.openCityData
+    // },
+    state (state) {
+      return state
+    }
+  }),
+  methods: {
+    ...mapActions({
+      'selectCity': 'selectCity'
+    }),
+    sendMsgToParent (item) {
+      this.$emit('listenChildEvent', item)
+    }
+  },
+  components: {
+    scroll
+  }
+}
+</script>
+<style lang="less" scoped>
+.autocompleteList {
+  .wrapper {
+    max-height: 500px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    ul.matchlist {
+      position: relative;
+      display: block;
+      background-color: #fff;
+      overflow: hidden;
+      li.list-item {
+        position: relative;
+        height: 50px;
+        line-height: 50px;
+        padding: 0 16px;
+        font-size: 14px;
+        color: #666;
+        &:active {
+          background: rgba(0, 0, 0, 0.04)
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          left: 0;
+          border-bottom: 1px solid #eee;
+          transform: scaleY(.5)
+        }
+      }
+    }
+  }
+  p{
+    text-align: center;
+    color: #7a7c81;
+    font-size: 12px;
+    line-height: 2;
+    padding: 15px 0;
+  }
+}
+</style>

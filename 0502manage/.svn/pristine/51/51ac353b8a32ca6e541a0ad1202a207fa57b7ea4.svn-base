@@ -1,0 +1,695 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section id="remoteControlSection">
+  <div v-loading="statusLoading">
+    <!-- 大标题 -->
+    <!-- <el-row>
+      <el-col :span="24" class="bg-purple">
+        根据section的高度获得远程控制的高度
+        <div class="statistics" style="display:table-cell;vertical-align:middle;" id="remoteChinese">
+          <span>远程控制</span>
+        </div>
+      </el-col>
+    </el-row> -->
+    <!-- 一体机运行情况 -->
+    <el-row class="data-row" style="position: relative" id="operaRow">
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="20" style="margin-top: 30px;" class="data-panel">
+        <div>
+          <el-row class="title-panel">
+            <el-col :span="6">
+              <!-- 一体机运行情况的高度根据js来获取 -->
+              <div class="title" style="display:table-cell;vertical-align:middle;padding-left:20px;" id="operaSituationChinese">
+                <span>一体机运行情况</span>
+              </div>
+            </el-col>
+            <el-col :span="18">
+            </el-col>
+          </el-row>
+          <el-row >
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;"></div>
+            </el-col>
+            <el-col :span="4" v-for="item in machineOperation" :key="item.id">
+              <el-row style="margin-top: 10px;">
+                <el-col>
+                  <!-- 设置标题的高度 -->
+                  <div class="titleChinese fontsize-show" style="display:table-cell;vertical-align:middle;" id="titleChinese">
+                    <span>{{ item.title }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col>
+                  <!-- 设置数据的高度 -->
+                  <div class="dataChinese fontsize-show" style="display:table-cell;vertical-align:middle;" id="dataChinese">
+                      <span style="font-size: 28px;">{{ item.result }}</span>
+                      <span>/</span>
+                      <span>{{ item.sum }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <!-- <div style="width: 5px;height: 5px;">
+        </div> -->
+        <!-- 刷新页面 -->
+        <div style="margin-top: 10px;float: right;">
+          <el-button type="success" size="small" v-on:click="stateFresh">状态刷新</el-button>
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 一体机运行列表 -->
+    <el-row>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="19">
+        <div style="display:table-cell;vertical-align:middle;" id="runListChinese">
+          <span style="font-size: 18px;">一体机运行列表</span>
+        </div>
+      </el-col>
+      <el-col :span="1" style="position: static">
+         <div style="position: absolute;top: 20px;">
+          <el-button type="primary" size="small" @click="handleAdd">新增</el-button>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 表格显示 -->
+    <el-row style="margin-top: 30px;margin-bottom: 60px;">
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="20" class="table-border">
+        <el-table :data="devices" highlight-current-row style="width: 100%" :height="remoteControlTableHeight">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
+          <el-table-column type="index" width="70">
+            <template slot-scope="scope">
+              {{pageSize * (pageNumber - 1) + scope.$index + 1 }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="deviceid" label="设备编号" min-width="200">
+          </el-table-column>
+          <el-table-column prop="area" label="所属区域" min-width="100">
+          </el-table-column>
+          <el-table-column prop="sellStationid" label="售票站点" min-width="150" :formatter="formatterStation">
+          </el-table-column>
+          <el-table-column prop="islock" label="是否锁定" min-width="120" :formatter="formatterLock">
+          </el-table-column>
+          <el-table-column prop="lockAddress" label="锁定站点" min-width="150">
+          </el-table-column>
+          <el-table-column prop="address" label="地址" min-width="120">
+          </el-table-column>
+          <el-table-column label="当前状态" min-width="120">
+             <template slot-scope="scope">
+                <el-tag type="success" v-if="scope.row.isOnLine===1">在线</el-tag>
+                <el-tag type="warning" v-if="scope.row.isOnLine===0">不在线</el-tag>
+             </template>
+          </el-table-column>
+          <el-table-column label="操作" width="150" fixed="right" >
+            <template slot-scope="scope">
+              <el-dropdown @command="handleCommand">
+                <el-button size="small" >更多操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="open" :index="scope.$index" :row="scope.row"><span><i class="el-icon-setting"></i> 开启 </span></el-dropdown-item>
+                  <el-dropdown-item command="maintain" :index="scope.$index" :row="scope.row"><span><i class="el-icon-setting"></i> 维护 </span></el-dropdown-item>
+                  <el-dropdown-item command="edit" :index="scope.$index" :row="scope.row"><span><i class="el-icon-edit"></i> 修改 </span></el-dropdown-item>
+                  <el-dropdown-item command="del" :index="scope.$index" :row="scope.row"><span><i class="el-icon-delete"></i> 删除 </span></el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 用于分页 -->
+    <el-row class="footerPage">
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="20">
+         <el-row>
+            <pagination :to="getDeviceList" ref="page"></pagination>
+         </el-row>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+    </el-row>
+    <!--编辑界面-->
+    <common-add-or-update
+        title="编辑"
+        type="update"
+        :to="API.editDevice().go"
+        :callback="getDeviceList"
+        :callbackother="getRunDevices"
+        :labelWidth="100"
+        ref="editForm"></common-add-or-update>
+    <!--新增界面-->
+    <common-add-or-update
+        title="新增"
+        type="add"
+        :to="API.addDevice().go"
+        :callback="getDeviceList"
+        :callbackother="getRunDevices"
+        :labelWidth="100"
+        ref="addForm"></common-add-or-update>
+    <!--删除窗口-->
+    <common-delete
+        :to="API.removeDevice().go"
+        :callback="getDeviceList"
+        :callbackother="getRunDevices"
+        :labelWidth="100"
+        ref="delConfirm"></common-delete>
+    </div>
+  </section>
+</template>
+
+<script>
+  import Util from '../../common/js/util'
+  import Pagination from '../../components/Pagination'
+  // import commonAddOrUpdate from './../../components/CommAddOrUpdate'
+  import commonAddOrUpdate from './../../components/CommAddOrUpdate'
+  import commonDelete from './../../components/CommDelete'
+  import API from './../../api'
+  export default {
+    data () {
+      return {
+        machineOperation: [
+           {
+            id: 0,
+            title: '正常运行台数',
+            numberOfRunning: null
+           },
+           {
+            id: 1,
+            title: '暂停服务台数',
+            pauseNumber: null
+           },
+           {
+            id: 2,
+            title: '厦门地区正常运行台数',
+            numberOfRunning: null
+           },
+           {
+            id: 3,
+            title: '福州地区正常运行台数',
+            numberOfRunning: null
+           }
+        ],
+        devices: null,
+        // 站点list
+        stationList: [],
+        // 锁定的站点
+        lockStationList: [],
+        // 维护状态
+        statusList: [
+          { text: '维修状态', value: 0 },
+          { text: '运行中', value: 1 }
+        ],
+        // 使用JS设置高度
+        remoteControlTableHeight: null,
+        remoteControlOpeHeight: null,
+        // 弹出框的是否显示
+        dialogFormVisible: false,
+        // 一体机运行情况请求成功的tag
+        requestSuccessTag: null,
+        addOrUpdateTag: null,
+        // 厦门地区的设备数量
+        XMDeviceSum: null,
+        // 福州地区的设备数量
+        FZDevicesSum: null,
+        // 页面刷新的loading
+        statusLoading: false,
+        // 状态刷新的标记1位刷新0为不刷新
+        statusTag: 0,
+        // 请求的次数的标记
+        requestNumTag: 0,
+        // 新增编辑需要的字段
+        fields: [
+          { name: 'id', value: '', hidden: true },
+          { name: 'deviceid', value: '', label: '设备编号', type: 'text', disabled: false, rules: [ { required: true, message: '请输入设备编号' } ], placeholder: '请输入设备编号', span: 12 },
+          { name: 'area', value: '', label: '所属区域', type: 'select', choose: [ { text: '福州', value: '福州' }, { text: '厦门', value: '厦门' } ], rules: [ { required: true, message: '请选择所属区域' } ], placeholder: '请选择所属区域', span: 12 },
+          { name: 'sellStationid', value: '', label: '售票站点', type: 'select', choose: [], filterable: true, rules: [ { required: true, message: '请选择售票站点' } ], placeholder: '请选择售票站点', span: 12 },
+          { name: 'lockAddress', value: '', label: '锁定站点', type: 'select', choose: [], filterable: true, rules: [ { message: '请选择锁定站点' } ], placeholder: '请选择锁定站点', span: 12 },
+          { name: 'address', value: '', label: '地址', type: 'text', rules: [ { required: true, message: '请输入地址' } ], placeholder: '请输入地址', span: 12 }
+        ],
+        API: API
+      }
+    },
+    computed: {
+      pageNumber () {
+        return this.$refs['page'].get('pageNumber')
+      },
+      pageSize () {
+        return this.$refs['page'].get('pageSize')
+      }
+    },
+    components: {
+      // commonAddOrUpdate: commonAddOrUpdate,
+      commonAddOrUpdate: commonAddOrUpdate,
+      commonDelete: commonDelete,
+      pagination: Pagination
+    },
+    methods: {
+      handleCommand: function (command, self) {
+        var node = self.$vnode.data.attrs
+        /* eslint-disable */
+        eval('this.' + command).call(this, node.index, node.row)
+        /* eslint-enable */
+      },
+      // 获取设备列表
+      getDeviceList () {
+        let para = {
+          pageNum: this.pageNumber,
+          pageSize: this.pageSize
+        }
+        this.listLoading = true
+        API.getAllDevicesListPage().go(para).then((data) => {
+            if (data.status === 1) {
+              this.$refs['page'].set('total', data.data.total)
+              this.devices = data.data.list
+              // 刷新的方法块
+              if (this.statusTag === 1) {
+                this.requestNumTag = this.requestNumTag + 1
+                if (this.requestNumTag === 2) {
+                  this.statusLoading = false
+                  this.requestNumTag = 0
+                  this.statusTag = 0
+                  this.$notify(Util.notifyBody(true, '刷新成功！'))
+                }
+              }
+            } else {
+              this.$notify(Util.notifyBody(false, data.msg))
+              // 刷新的方法块
+              this.statusTag = 0
+              this.statusLoading = false
+              this.requestNumTag = 0
+            }
+            this.listLoading = false
+          })
+      },
+      // 订单概况的数据
+      getMachineOperationData () {
+        // 获取到经过处理的数据
+        var result = null
+        result = this.resolveData(this.machineOperation)
+        this.machineOperation = result
+        // 获取总的数据
+        this.machineOperation[0].sum = this.getSumNumber(this.machineOperation)
+        this.machineOperation[1].sum = this.getSumNumber(this.machineOperation)
+        this.machineOperation[2].sum = this.XMDeviceSum
+        this.machineOperation[3].sum = this.FZDevicesSum
+      },
+      // 处理数据，为了在页面上进行显示
+      resolveData (value) {
+        var result = null
+        result = Util.deepCopy(value)
+        for (var i = 0; i < result.length; i++) {
+          var key = Object.keys(result[i])[2]
+          result[i]['result'] = result[i][key]
+          result[i]['sum'] = ''
+        }
+        return result
+      },
+      // 获取总的台数
+      getSumNumber (value) {
+        var result = 0
+        for (var i = 0; i < 2; i++) {
+          result = value[i].result + result
+        }
+        return result
+      },
+      // 正常运行台数
+      getRunDevices () {
+        this.listLoading = true
+        var area = ''
+        API.devicesRun().go(area).then((data) => {
+          if (data.status === 1) {
+            this.machineOperation[0].numberOfRunning = data.data
+            this.getSuspendDevices()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 暂停运行台数
+      getSuspendDevices () {
+        this.listLoading = true
+        var area = ''
+        API.devicesSuspend().go(area).then((data) => {
+          if (data.status === 1) {
+            this.machineOperation[1].pauseNumber = data.data
+            this.getFZRunDevices()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 福州地区正常运行台数
+      getFZRunDevices () {
+        this.listLoading = true
+        var area = '福州'
+        API.devicesRun().go(area).then((data) => {
+          if (data.status === 1) {
+            this.machineOperation[3].numberOfRunning = data.data
+            this.getXMRunDevices()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 厦门地区正常运行台数
+      getXMRunDevices () {
+        this.listLoading = true
+        var area = '厦门'
+        API.devicesRun().go(area).then((data) => {
+          if (data.status === 1) {
+            this.machineOperation[2].numberOfRunning = data.data
+            this.getFZDevices()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 福州地区设备数量
+      getFZDevices () {
+        this.listLoading = true
+        var area = '福州'
+        API.getAreaDevices().go(area).then((data) => {
+          if (data.status === 1) {
+            this.getXMDevices()
+            this.FZDevicesSum = data.data
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 厦门地区设备数量
+      getXMDevices () {
+        this.listLoading = true
+        var area = '厦门'
+        API.getAreaDevices().go(area).then((data) => {
+          if (data.status === 1) {
+            this.XMDeviceSum = data.data
+            this.getMachineOperationData()
+            // 刷新的方法块
+            if (this.statusTag === 1) {
+              this.requestNumTag = this.requestNumTag + 1
+              if (this.requestNumTag === 2) {
+                this.statusLoading = false
+                this.requestNumTag = 0
+                this.statusTag = 0
+                this.$notify(Util.notifyBody(true, '刷新成功！'))
+              }
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+            // 刷新的方法块
+            this.requestNumTag = 0
+            this.statusLoading = false
+            this.statusTag = 0
+          }
+          this.listLoading = false
+        })
+      },
+      // 开启
+      open (index, row) {
+        this.listLoading = true
+        API.startDevice().go(row.deviceid).then((data) => {
+          if (data.status === 1) {
+            this.$notify(Util.notifyBody(true, data.message))
+            this.getDeviceList()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      maintain (index, row) {
+        this.listLoading = true
+        API.maintainDevice().go(row.deviceid).then((data) => {
+          if (data.status === 1) {
+            this.$notify(Util.notifyBody(true, data.message))
+            this.getDeviceList()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 停机
+      stop (index, row) {
+        this.listLoading = true
+        API.stopDevice().go(row.deviceid).then((data) => {
+          if (data.status === 1) {
+            this.$notify(Util.notifyBody(true, data.message))
+            this.getDeviceList()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 显示新增界面
+      handleAdd: function () {
+        this.addOrUpdateTag = 'add'
+        this.fields[1].disabled = false
+        this.fields[3].choose = this.stationList
+        this.fields[4].choose = this.lockStationList
+        this.fields[4].value = ''
+        let addFields = Util.deepCopy(this.fields)
+        this.$refs['addForm'].show(addFields)
+      },
+      edit (index, row) {
+        this.addOrUpdateTag = 'edit'
+        // 设备编号不能编辑
+        this.fields[1].disabled = true
+        this.fields[3].choose = this.stationList
+        this.fields[4].choose = this.lockStationList
+        if (row.lockAddress === null) {
+          row.lockAddress = ''
+        }
+        this.fields[4].value = row.lockAddress
+        // 赋值
+        let editFields = Util.deepCopy(this.fields)
+        for (let i = 0; i < editFields.length; i++) {
+          editFields[i].value = row[editFields[i].name]
+        }
+        this.$refs['editForm'].show(editFields)
+      },
+      del (index, row) {
+        this.$refs['delConfirm'].del(row.deviceid)
+      },
+      // 获取section的高度
+      // 获取表格高度
+      getTableHeight () {
+        console.log('this.JIM', this.JIM)
+        this.$nextTick(() => {
+          // 获取section的高度
+          var sectionHeight = document.getElementById('remoteControlSection').offsetHeight
+          // 获取表格的高度用于设置表格的高度
+          this.remoteControlTableHeight = sectionHeight * 0.47
+          var operaRow = document.getElementById('operaRow')
+          this.remoteControlOpeHeight = sectionHeight * 0.30
+          operaRow.style.height = this.remoteControlOpeHeight + 'px'
+          // 设置远程控制文字的高度
+          // var remoteChineseHeight = sectionHeight * 0.08
+          // var remoteChinese = document.getElementById('remoteChinese')
+          // remoteChinese.style.height = remoteChineseHeight + 'px'
+          // 设置一体机运行情况文字的高度
+          var operaSituationChineseHeight = sectionHeight * 0.05
+          var operaSituationChinese = document.getElementById('operaSituationChinese')
+          operaSituationChinese.style.height = operaSituationChineseHeight + 'px'
+          // 一体机运行情况标题的高度
+          var titleChineseHeight = sectionHeight * 0.08
+          var titleChinese = document.getElementsByClassName('titleChinese')
+          for (var i = 0; i < titleChinese.length; i++) {
+            titleChinese[i].style.height = titleChineseHeight + 'px'
+          }
+          // 一体机运行情况数据的高度
+          var dataChineseHeight = sectionHeight * 0.08
+          var dataChinese = document.getElementsByClassName('dataChinese')
+          for (var j = 0; j < dataChinese.length; j++) {
+            dataChinese[j].style.height = dataChineseHeight + 'px'
+          }
+          // 一体机运行列表文字的高度
+          var runListChineseHeight = sectionHeight * 0.05
+          var runListChinese = document.getElementById('runListChinese')
+          runListChinese.style.height = runListChineseHeight + 'px'
+        })
+      },
+      // 获取所有的站点并且组织数据结构
+      getAllStationList () {
+        let para = {
+          pageNum: null,
+          pageSize: null
+        }
+        para.pageNum = 1
+        para.pageSize = 10000
+        API.getSellStationListPage().go(para).then((data) => {
+          if (data.status === 1) {
+            // 组织数据结构
+            this.stationList = []
+            for (var i = 0; i < data.data.list.length; i++) {
+              var result = {}
+              result['text'] = data.data.list[i].sellStationName
+              result['value'] = data.data.list[i].sellStationId
+              this.stationList.push(result)
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.msg))
+          }
+        })
+      },
+      formatterStation (row, column, cellValue) {
+        var result = null
+        for (var i = 0; i < this.stationList.length; i++) {
+          if (cellValue === this.stationList[i].value) {
+            result = this.stationList[i].text
+          }
+        }
+        return result
+      },
+      // 状态刷新
+      stateFresh () {
+        // window.location.reload()
+        this.statusLoading = true
+        this.statusTag = 1
+        this.getTableHeight()
+        this.getDeviceList()
+        this.getRunDevices()
+      },
+      // 格式化锁定
+      formatterLock (row, column, cellValue) {
+        if (cellValue === '1') {
+          return '是'
+        }
+        if (cellValue === '0') {
+          return '否'
+        }
+      },
+      // 获取所有的用于锁定的站点
+      getAllLockStationList () {
+        let para = {
+          pageNum: null,
+          pageSize: null
+        }
+        para.pageNum = 1
+        para.pageSize = 10000
+        API.getAllStationListPage().go(para).then((data) => {
+          if (data.status === 1) {
+            // 组织数据结构
+            this.lockStationList = []
+            this.lockStationList = [ { text: '无', value: '' } ]
+            for (var i = 0; i < data.data.list.length; i++) {
+              var result = {}
+              result['text'] = data.data.list[i].stationName
+              result['value'] = data.data.list[i].stationName
+              this.lockStationList.push(result)
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.msg))
+          }
+        })
+      }
+    },
+    mounted () {
+      this.getTableHeight()
+      this.getDeviceList()
+      this.getAllStationList()
+      this.getRunDevices()
+      this.getAllLockStationList()
+    }
+  }
+</script>
+
+<style scoped>
+  .data-row {
+    /*height: 300px;*/
+  }
+  .data-panel {
+    /*height: 210px;*/
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 121, 121, 1);
+    border-radius: 10px;
+  }
+  .title-panel {
+    margin-top: 0;
+    background: #e4e4e4;
+    border-radius: 10px 10px 0 0;
+  }
+  .table-border .el-table {
+    border-right: 1px solid #dfe6ec;
+  }
+  .toolbar-bottom {
+    border: 0;
+    z-index: 90;
+    background: #fff;
+    padding: 10px 0 10px 10px;
+    position: absolute;
+    width: 100%!important;
+  }
+  .footerPage {
+    width: 100%;
+  }
+    @media screen and (min-height: 0px) and (max-height: 767px) {
+      .fontsize-show {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 14px!important;
+      }
+      .title {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 14px;
+      }
+    }
+    @media screen and (min-height: 768px) and (max-height: 1080px) {
+      .fontsize-show {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 18px!important;
+      }
+      .title {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 18px;
+      }
+    }
+</style>

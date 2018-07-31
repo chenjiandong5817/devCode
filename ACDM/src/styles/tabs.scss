@@ -1,0 +1,73 @@
+.tabs-container {
+  $main-tabs-height: 33px;
+  height: 100%;
+  background-color: $footer-background-color;
+  & > .el-tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    & > .el-tabs__header {
+      margin: 0 0 5px;
+      color: $content-text-color;
+      background-color: $content-background-color;
+      border-radius: 4px 0 0 4px;
+      border-bottom-color: $sidebar-logo-background-color;
+      .el-tabs__nav-prev {
+        line-height: $main-tabs-height;
+      }
+      .el-tabs__nav-next {
+        line-height: $main-tabs-height;
+      }
+      .el-tabs__nav {
+        height: $main-tabs-height;
+        border: 1px solid $sidebar-logo-background-color !important;
+        &:first-child {
+          border-top-left-radius: 0px;
+        }
+        .el-tabs__item {
+          color: $content-text-color;
+          font-weight: 400;
+          // height: $main-tabs-height;
+          line-height: calc(#{$main-tabs-height} + 1px);
+          border-left: 1px solid $sidebar-logo-background-color !important;
+          &.is-active {
+            font-weight: 700;
+            color: $color-primary;
+            background-color: $footer-background-color;
+            border-bottom-color: transparent;
+          }
+        }
+      }
+    }
+    & > .el-tabs__content {
+      flex: 1;
+      .el-tab-pane {
+        height: 100%;
+        padding: 5px 8px;
+        // background-color: $footer-background-color;
+        & > .my-iframe {
+          width: 100%;
+          height: 100%;
+          max-height: 100%;
+          padding: 5px;
+          border-radius: 4px;
+          border: 0;
+          overflow: hidden;
+          box-sizing: border-box;
+          background-color: $content-background-color;
+        }
+        & > .router-view {
+          position: relative;
+          padding: 5px;
+          height: 100%;
+          max-height: 100%;
+          box-sizing: border-box;
+          border: 0;
+          background-color: $content-background-color;
+          border-radius: 4px;
+          overflow-y: auto;
+        }
+      }
+    }
+  }
+}

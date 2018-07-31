@@ -1,0 +1,578 @@
+{
+  "type": "Layout",
+  "typeLabel": "布局",
+  "description": "值机引导",
+  "bodyStyle": {
+    "backgroundColor": "#212E5B",
+    "minWidth": 1920,
+    "minHeight": 1080
+  },
+  "langs": [
+    "zh-cn",
+    "en-ww"
+  ],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "extraParam": {
+    "dynaScrollText": {
+      "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+      "singleData": true,
+      "columnName": "scrolltext"
+    },
+    "virtualRowSize": 10
+  },
+  "children": [
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 24,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Grid",
+              "typeLabel": "表格",
+              "hiddenHeader": false,
+              "bodyStyle": {
+                "defaultHeaderStyle": {
+                  "color": "#FAC35A",
+                  "textAlign": "left",
+                  "backgroundColor": "#1E2D5A",
+                  "borderBottomStyle": "solid",
+                  "borderBottomColor": "#FAC35A",
+                  "fontSize": 50,
+                  "borderBottomWidth": 1,
+                  "height": 100,
+                  "lineHeight": 100
+                },
+                "defaultRowStyle": {
+                  "color": "#FFFFFF",
+                  "rowStripe": [
+                    "#284682",
+                    "#1E2D5A"
+                  ],
+                  "fontSize": 42,
+                  "height": 89,
+                  "lineHeight": 89
+                }
+              },
+              "dataSource": "99F56190730141459A61D6D443075299",
+              "singleData": false,
+              "mainPager": true,
+              "mainSource": true,
+              "refreshInterval": 20000,
+              "children": [
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "图标",
+                  "label": "",
+                  "style": {
+                    "textAlign": "center",
+                    "width": 120
+                  },
+                  "children": [
+                    {
+                      "type": "Flop",
+                      "typeLabel": "翻牌",
+                      "interval": 3000,
+                      "style": {
+                        "height": 70,
+                        "lineHeight": 70
+                      },
+                      "columnName": "carrier",
+                      "multiSource": [
+                        {
+                          "name": "shareflight",
+                          "separator": "",
+                          "handle": {
+                            "split": "/",
+                            "regex": "/^[0-9a-zA-Z]{2}/"
+                          }
+                        }
+                      ],
+                      "children": [
+                        {
+                          "type": "Image",
+                          "typeLabel": "图片",
+                          "style": {
+                            "borderRadius": 70,
+                            "height": 70
+                          },
+                          "imgType": "flight_logo",
+                          "imgSize": "220x220",
+                          "columnName": "carrier"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "航班号",
+                  "label": {
+                    "zh-cn": "航班号",
+                    "en-ww": "Flight"
+                  },
+                  "style": {
+                    "fontSize": 42,
+                    "width": 460
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "display": "inline-block"
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {
+                            "fontSize": 42,
+                            "color": "#FFFFFF",
+                            "height": 89,
+                            "lineHeight": 89
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "carrier"
+                        },
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "fontSize": 42,
+                            "color": "#FFFFFF"
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "flight"
+                        },
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontSize": 42,
+                            "height": 89,
+                            "lineHeight": 89
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "shareflight",
+                          "transExist": "/"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "width": 280,
+                        "display": "inline-block"
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "div",
+                          "style": {
+                            "fontSize": 42,
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#FFFFFF"
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "经停",
+                  "label": {
+                    "zh-cn": "经停/目的地",
+                    "en-ww": "Via/To"
+                  },
+                  "style": {
+                    "minWidth": 360,
+                    "fontSize": 42
+                  },
+                  "headerStyle": {},
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "width": 350
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "div",
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontSize": 42,
+                            "height": 88,
+                            "lineHeight": 88
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "route"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "办理时间",
+                  "label": {
+                    "zh-cn": "办理时间",
+                    "en-ww": "Check-in Time"
+                  },
+                  "style": {
+                    "minWidth": 380,
+                    "fontSize": 42
+                  },
+                  "headerStyle": {},
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "width": 300
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontSize": 42,
+                            "height": 89,
+                            "lineHeight": 89
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "checkinopen",
+                          "date": {
+                            "formatForm": "yyyy-MM-dd HH:mm:ss",
+                            "formatTo": "HH:mm"
+                          }
+                        },
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontSize": 42,
+                            "height": 88,
+                            "lineHeight": 88
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "checkinclose",
+                          "transExist": "-"
+                        },
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "span",
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontSize": 42,
+                            "height": 89,
+                            "lineHeight": 89
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "checkinclose",
+                          "date": {
+                            "formatForm": "yyyy-MM-dd HH:mm:ss",
+                            "formatTo": "HH:mm"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "柜台",
+                  "label": {
+                    "zh-cn": "办理柜台",
+                    "en-ww": "Desk"
+                  },
+                  "style": {
+                    "fontSize": 42,
+                    "minWidth": 280
+                  },
+                  "headerStyle": {},
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "width": 280
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "div",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "special": "induceCounter",
+                          "columnName": "checkincounter"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "GridColumn",
+                  "typeLabel": "表格列",
+                  "name": "航班状态",
+                  "label": {
+                    "zh-cn": "航班状态",
+                    "en-ww": "Status"
+                  },
+                  "style": {
+                    "fontSize": 42,
+                    "width": 280
+                  },
+                  "headerStyle": {},
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {
+                        "width": 280
+                      },
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "div",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "transColor": {
+                            "matchType": "begin",
+                            "matchSet": {
+                              "BDO": "#FF0000",
+                              "BDF": "#FF0000"
+                            }
+                          },
+                          "twinkle": {
+                            "matchType": "equals",
+                            "matchSet": {
+                              "BDF": true
+                            }
+                          },
+                          "columnName": "flightstatus"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {
+        "backgroundColor": "#212E5B",
+        "color": "#FAC35A",
+        "width": 1920,
+        "height": 90,
+        "lineHeight": 90,
+        "borderTopWidth": 2,
+        "borderTopStyle": "solid",
+        "borderTopColor": "#FAC35A",
+        "position": "absolute",
+        "zIndex": 999,
+        "bottom": 0
+      },
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 4,
+          "bodyStyle": {
+            "textAlign": "center"
+          },
+          "dataSource": "$main_pager",
+          "singleData": true,
+          "mainPager": false,
+          "mainSource": false,
+          "refreshInterval": 0,
+          "pageInterval": 0,
+          "children": [
+            {
+              "type": "Text",
+              "typeLabel": "文本",
+              "tag": "div",
+              "style": {
+                "fontSize": 50
+              },
+              "langLock": "",
+              "langExcept": [],
+              "value": {
+                "zh-cn": "第  ${pageNumber}/${pageCount}  页",
+                "en-ww": "Page  ${pageNumber}/${pageCount}"
+              },
+              "replace": [
+                {
+                  "key": "pageNumber",
+                  "columnName": "pageNumber"
+                },
+                {
+                  "key": "pageCount",
+                  "columnName": "pageCount"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 18,
+          "bodyStyle": {},
+          "dataSource": "$current_device_info",
+          "singleData": true,
+          "mainPager": false,
+          "mainSource": false,
+          "refreshInterval": 0,
+          "pageInterval": 0,
+          "children": [
+            {
+              "type": "MarqueeText",
+              "typeLabel": "滚动文本",
+              "speed": 80,
+              "hiddenBy": [],
+              "seamless": false,
+              "always": false,
+              "vertical": false,
+              "backZero": false,
+              "style": {},
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "span",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "columnName": "scrollText"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "span",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "columnName": "dynamicScrollText"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 2,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Clock",
+              "typeLabel": "时钟",
+              "style": {
+                "fontSize": 50
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

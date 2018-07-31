@@ -1,0 +1,52 @@
+$padding: 3px;
+$padding-left-right: 0 3px;
+$padding-top-bottom: 3px 0;
+
+$margin: 6px;
+$margin-left-right: 0 6px;
+$margin-top-bottom: 6px 0;
+
+/* 主题颜色 */
+$header-background-color: #181f29;
+$header-text-color: #bec5d2;
+
+$sidebar-logo-background-color: #272a35;
+$sidebar-background-color: #181f29;
+$sidebar-background-submenu-color: #212b34;
+$sidebar-icon-color: #989eaa;
+$sidebar-text-color: #989eaa;
+
+$content-background-color: #181f29;
+$content-text-color: #bec5d2;
+$content-striped-color: #12171d;
+$content-border-color: #292f36;
+$content-input-color: #272a35;
+$content-placeholder-color: #707375;
+
+$footer-background-color: rgb(15, 18, 27);
+$footer-text-color: #989eaa;
+
+$color-primary: teal;
+$color-primary-text: #f1f1f1;
+$color-active: #1c4444;
+$color-hover: teal;
+$color-hover-text: #f2f2f2;
+
+/* 页面头部高度 */
+$main-header-height: 40px;
+
+/* 页面头部高度 */
+$main-footer-height: 25px;
+
+/* 头部和身体的间距 */
+$main-header-body-padding: 0px;
+
+/* 右键菜单相关参数 */
+$contextmenu-background-color: #181f29;
+$contextmenu-text-color: #bec5d2;
+$contextmenu-active-color: $color-primary;
+$contextmenu-active-color-bright: #ef5350;
+$contextmenu-border-color: #1c242d;
+$contextmenu-shadow-color: rgba(150, 150, 150, 0.2);
+$contextmenu-padding-vertical: 5px;
+$contextmenu-item-padding-horizonal: 14px;

@@ -1,0 +1,76 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <el-button type="default" @click="Tools.addDataSource(conf)" plain v-if="!Tools.haveDataSource(conf)">添加数据源</el-button>
+      <el-button type="danger" @click="Tools.removeDataSource(conf)" plain v-else>删除数据源</el-button>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">列占比(span)</span>
+      <el-input type="number" :value="conf.span" @input="val => changeStr2Number(conf, 'span', val)"></el-input>
+    </el-form-item>
+    <data-source-form-item v-model="conf"></data-source-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="11">
+              <span class="editor-label">宽度(width)</span>
+              <el-input type="number" :value="conf.bodyStyle.width" @input="val => changeStr2Number(conf.bodyStyle, 'width', val)"></el-input>
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <span class="editor-label">高度(height)</span>
+              <el-input type="number" :value="conf.bodyStyle.height" @input="val => changeStr2Number(conf.bodyStyle, 'height', val)"></el-input>
+            </el-col>
+          </el-form-item>
+          <color-picker v-model="conf.bodyStyle.backgroundColor" label="背景色(backgroundColor)" :inputScale="9" :pickerScale="3"></color-picker>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import DataSourceFormItem from './form-items/DataSource'
+  import ColorPicker from './form-items/ColorPicker'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      DataSourceFormItem, ColorPicker
+    },
+    data () {
+      return {
+        conf: {},
+        Tools
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Column',
+          typeLabel: '列',
+          span: 24,
+          bodyStyle: {},
+          children: []
+        }
+      } else {
+        this.conf = this.value
+      }
+    },
+    methods: {
+      changeStr2Number (target, property, value) {
+        this.$set(target, property, Number(value))
+      }
+    }
+  }
+</script>

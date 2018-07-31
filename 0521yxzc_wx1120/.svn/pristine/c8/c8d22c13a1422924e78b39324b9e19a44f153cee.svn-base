@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_order.mappers.OrderCostDetailMapper">
+	<insert id="add" parameterType="orderCostDetailDto">
+		insert into ap_order_cost_detail
+			(
+				uuid,
+				orderUuid,
+				startMileage,
+				startTimeLength,
+				startFee,
+				beyondMileage,
+				mileageFee,
+				beyondTimeLength,
+				timeFee,
+				nightMileage,
+				nightSubsidyFee,
+				haulBackMileage,
+				haulBackSubsidyFee,
+				extraServiceFee,
+				freeWaitTime,
+				beyondWaitTime,
+				beyondWaitFee,
+				couponName,
+				couponFee,
+				adjusteFee,
+				adjustRemark,
+				createTime
+			)
+		values
+			(
+				#{uuid},
+				#{orderUuid},
+				#{startMileage},
+				#{startTimeLength},
+				#{startFee},
+				#{beyondMileage},
+				#{mileageFee},
+				#{beyondTimeLength},
+				#{timeFee},
+				#{nightMileage},
+				#{nightSubsidyFee},
+				#{haulBackMileage},
+				#{haulBackSubsidyFee},
+				#{extraServiceFee},
+				#{freeWaitTime},
+				#{beyondWaitTime},
+				#{beyondWaitFee},
+				#{couponName},
+				#{couponFee},
+				#{adjusteFee},
+				#{adjustRemark},
+				#{createTime}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="orderCostDetailDto">
+		update ap_order_cost_detail
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="orderUuid != null and '' != orderUuid"> orderUuid = #{orderUuid},</if>
+			<if test="startMileage != null and '' != startMileage"> startMileage = #{startMileage},</if>
+			<if test="startTimeLength != null and '' != startTimeLength"> startTimeLength = #{startTimeLength},</if>
+			<if test="startFee != null and '' != startFee"> startFee = #{startFee},</if>
+			<if test="beyondMileage != null and '' != beyondMileage"> beyondMileage = #{beyondMileage},</if>
+			<if test="mileageFee != null and '' != mileageFee"> mileageFee = #{mileageFee},</if>
+			<if test="beyondTimeLength != null and '' != beyondTimeLength"> beyondTimeLength = #{beyondTimeLength},</if>
+			<if test="timeFee != null and '' != timeFee"> timeFee = #{timeFee},</if>
+			<if test="nightMileage != null and '' != nightMileage"> nightMileage = #{nightMileage},</if>
+			<if test="nightSubsidyFee != null and '' != nightSubsidyFee"> nightSubsidyFee = #{nightSubsidyFee},</if>
+			<if test="haulBackMileage != null and '' != haulBackMileage"> haulBackMileage = #{haulBackMileage},</if>
+			<if test="haulBackSubsidyFee != null and '' != haulBackSubsidyFee"> haulBackSubsidyFee = #{haulBackSubsidyFee},</if>
+			<if test="extraServiceFee != null and '' != extraServiceFee"> extraServiceFee = #{extraServiceFee},</if>
+			<if test="freeWaitTime != null and '' != freeWaitTime"> freeWaitTime = #{freeWaitTime},</if>
+			<if test="beyondWaitTime != null and '' != beyondWaitTime"> beyondWaitTime = #{beyondWaitTime},</if>
+			<if test="beyondWaitFee != null and '' != beyondWaitFee"> beyondWaitFee = #{beyondWaitFee},</if>
+			<if test="couponName != null and '' != couponName"> couponName = #{couponName},</if>
+			<if test="couponFee != null and '' != couponFee"> couponFee = #{couponFee},</if>
+			<if test="adjusteFee != null and '' != adjusteFee"> adjusteFee = #{adjusteFee},</if>
+			<if test="adjustRemark != null and '' != adjustRemark"> adjustRemark = #{adjustRemark},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+		</set>
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="orderUuid != null and '' != orderUuid"> and orderUuid = #{orderUuid} </if>
+		</where>
+	</update>
+	
+	<delete id="del" parameterType="orderCostDetailDto">
+		delete from
+			ap_order_cost_detail
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="orderCostDetailDto">
+		SELECT  t.* FROM (select
+			*
+		from
+			ap_order_cost_detail
+		where
+			orderUuid = #{orderUuid}
+			)t
+			WHERE ROWNUM &lt; 2
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_order_cost_detail
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="orderUuid != null and '' != orderUuid"> and orderUuid = #{orderUuid} </if>
+			<if test="startMileage != null and '' != startMileage"> and startMileage = #{startMileage} </if>
+			<if test="startTimeLength != null and '' != startTimeLength"> and startTimeLength = #{startTimeLength} </if>
+			<if test="startFee != null and '' != startFee"> and startFee = #{startFee} </if>
+			<if test="beyondMileage != null and '' != beyondMileage"> and beyondMileage = #{beyondMileage} </if>
+			<if test="mileageFee != null and '' != mileageFee"> and mileageFee = #{mileageFee} </if>
+			<if test="beyondTimeLength != null and '' != beyondTimeLength"> and beyondTimeLength = #{beyondTimeLength} </if>
+			<if test="timeFee != null and '' != timeFee"> and timeFee = #{timeFee} </if>
+			<if test="nightMileage != null and '' != nightMileage"> and nightMileage = #{nightMileage} </if>
+			<if test="nightSubsidyFee != null and '' != nightSubsidyFee"> and nightSubsidyFee = #{nightSubsidyFee} </if>
+			<if test="haulBackMileage != null and '' != haulBackMileage"> and haulBackMileage = #{haulBackMileage} </if>
+			<if test="haulBackSubsidyFee != null and '' != haulBackSubsidyFee"> and haulBackSubsidyFee = #{haulBackSubsidyFee} </if>
+			<if test="extraServiceFee != null and '' != extraServiceFee"> and extraServiceFee = #{extraServiceFee} </if>
+			<if test="freeWaitTime != null and '' != freeWaitTime"> and freeWaitTime = #{freeWaitTime} </if>
+			<if test="beyondWaitFee != null and '' != beyondWaitFee"> and beyondWaitFee = #{beyondWaitFee} </if>
+			<if test="beyondWaitTime != null and '' != beyondWaitTime"> and beyondWaitTime = #{beyondWaitTime} </if>
+			<if test="couponName != null and '' != couponName"> and couponName = #{couponName} </if>
+			<if test="couponFee != null and '' != couponFee"> and couponFee = #{couponFee} </if>
+			<if test="adjusteFee != null and '' != adjusteFee"> and adjusteFee = #{adjusteFee} </if>
+			<if test="adjustRemark != null and '' != adjustRemark"> and adjustRemark = #{adjustRemark} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="orderCostDetailDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="orderCostDetailDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+</mapper>

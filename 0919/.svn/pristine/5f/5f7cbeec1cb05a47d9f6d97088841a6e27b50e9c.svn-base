@@ -1,0 +1,291 @@
+<template>
+<div class="PAirlineFormClss">
+  <el-form v-for="(item, index) in form.airlineList" :key="index" :model="form.airlineList[index]" label-position="top" label-width="80px" :ref="setFormid(index)">
+    <el-row :gutter="5">
+      <el-col :span="5">
+        <el-form-item
+          label="起飞地"
+          prop="origin"
+          label-width="70px"
+          :rules="[ { required: true, message: '请选择始发站', trigger: 'blur' },
+                    { validator: Rules.validSegment, message: '航线配置出错', preDestination: index !== 0 ? form.airlineList[index - 1].destination : index, trigger: 'change' } ]">
+          <el-select v-model="form.airlineList[index].origin" filterable placeholder="始发站" clearable @change="setFlightNatureVal(index, form.airlineList[index].destination)">
+            <el-option
+              v-for="item in airportList"
+              :key="item.icaocode"
+              :label="item.cnabbr2w + '(' + item.icaocode + '/' + item.iatacode + ')'"
+              :value="item.icaocode">
+              <span style="float: left">{{ item.cnabbr2w }}</span>
+              <span style="float: right">{{ item.icaocode + '/' + item.iatacode }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="计划起飞时间"
+          prop="scheduleDepartTime"
+          :rules="[ { required: true, message: '请填写起飞时间', trigger: 'blur' },
+                    { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: index !== 0 ? form.airlineList[index - 1].scheduleArriveTime : index, timeType: 'depTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].scheduleDepartTime" :visitTime="true" :visitDate="true" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="计划起飞日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="目的地"
+          prop="destination"
+          label-width="70px"
+          :rules="[ { required: true, message: '请选择目的站', trigger: 'blur' } ]">
+          <el-select v-model="form.airlineList[index].destination" filterable placeholder="目的站" clearable @change="setFlightNatureVal(index, form.airlineList[index].destination)">
+            <el-option
+              v-for="item in airportList"
+              :key="item.icaocode"
+              :label="item.cnabbr2w + '(' + item.icaocode + '/' + item.iatacode + ')'"
+              :value="item.icaocode">
+              <span style="float: left">{{ item.cnabbr2w }}</span>
+              <span style="float: right">{{ item.icaocode + '/' + item.iatacode }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="5">
+        <el-form-item
+          label="计划降落时间"
+          prop="scheduleArriveTime"
+          :rules="[ { required: true, message: '请填写降落时间', trigger: 'blur' },
+                    { validator: Rules.validSegTimeType, message: '非法时间格式', trigger: 'blur'},
+                    { validator: Rules.validSegTime, message: '时间配置错', preTime: form.airlineList[index].scheduleDepartTime, timeType: 'arrTime', trigger: 'change,blur' } ]">
+          <date-time v-model="form.airlineList[index].scheduleArriveTime" :visitTime="true" :visitDate="true" dateStyle="width: 65%;" timeStyle="width: 32%;" datePlaceholder="计划降落日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+       <el-col :span="2">
+        <el-form-item label="区域属性"  prop="flightNature">
+          <el-input v-model="item.description" placeholder="属性" v-if="form.airlineList[index].flightNature === '' || form.airlineList[index].flightNature === null" disabled></el-input>
+          <div v-for="(item, iindex) in $cache.fetch('flightnatures')" :key="iindex" v-else-if="form.airlineList[index].flightNature !== null">
+            <el-input v-model="item.description" placeholder="属性" class="fontColor" v-if="item.flightNatureCode === form.airlineList[index].flightNature" disabled></el-input>
+          </div>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="2">
+        <el-form-item label=" ">
+          <el-button type="info" @click.native="addAirlineList(index)" class="el-icon-plus buttonClss" size="mini" ></el-button>
+          <el-button type="info" @click.native="delAirSegment(index)" class="el-icon-minus buttonClss" size="mini" v-if="index !== 0"></el-button>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
+</div>
+</template>
+
+<script>
+import Util from '../../../../common/js/util'
+import Rules from '../../../../common/js/rules'
+import DateTime from '../../../../components/DateTime'
+// import API from '../../../api'
+
+export default {
+  props: {
+
+  },
+  data () {
+    return {
+      form: {
+        airlineList: []
+      },
+      Rules: Rules,
+      airSegment: {
+        id: null,
+        flightId: null,
+        origin: '',
+        destination: '',
+        boardingStand: '',
+        stand: '',
+        gate: '',
+        flightNature: '',
+        segmentNature: '',
+        scheduleDepartTime: this.setDefauleDate(),
+        scheduleArriveTime: this.setDefauleDate()
+      },
+      oldAirlineList: [],
+      delStopOverIdLs: [],
+      airportList: this.$cache.fetch('airports'),
+      segment: {}
+    }
+  },
+  watch: {
+    '$store.state.cached' (val, oldVal) {
+      this.airportList = this.$cache.fetch('airports')
+    }
+  },
+  components: {
+    dateTime: DateTime
+  },
+  methods: {
+    setDefauleDate () {
+      let moment = require('moment')
+      let nextDate = moment().add(1, 'days').format('YYYY-MM-DD')
+      return nextDate
+    },
+    bindAirport (segment) {
+      let airportCode = segment.airportCode
+      if (segment.airportCode !== null && segment.airportCode !== undefined && segment.airportCode !== '' && segment.airportCode.length === 3) {
+        airportCode = this.$cache.findByName('airports', 'iatacode', segment.airportCode, 'icaocode')
+      }
+      if (segment.direction === 'A') {
+        // 进港
+        this.airSegment.origin = ''
+        this.airSegment.destination = airportCode
+        if (this.form.airlineList.length > 0) {
+          this.form.airlineList[this.form.airlineList.length - 1].destination = airportCode
+        }
+      } else if (segment.direction === 'D') {
+        // 出港
+        this.airSegment.origin = airportCode
+        this.airSegment.destination = ''
+        if (this.form.airlineList.length > 0) {
+          this.form.airlineList[0].origin = airportCode
+        }
+      }
+    },
+    show (segment, flightId, actAirlineLs) {
+      this.segment = Util.deepCopy(segment)
+      this.bindAirport(this.segment)
+      this.setSegFlightid(flightId)
+      if (actAirlineLs !== undefined && actAirlineLs !== null) {
+        this.bindAirlineList(actAirlineLs)
+      } else {
+        let array = []
+        array.push(Util.deepCopy(this.airSegment))
+        this.form.airlineList = array
+        this.oldAirlineList = []
+        this.delStopOverIdLs = []
+      }
+    },
+    setSegFlightid (flightid) {
+      // 保存编辑时航段的flightId
+      this.airSegment.flightId = flightid
+    },
+    bindAirlineList (actAirlineLs) {
+      // 绑定航线列表
+      let airlineList = []
+      for (var i = 0; i < actAirlineLs.length; i++) {
+        let airSeg = Util.deepCopy(this.airSegment)
+        // 设置经停站其他时间信息
+        for (let key in this.airSegment) {
+          airSeg[key] = actAirlineLs[i][key]
+        }
+        airlineList[i] = airSeg
+      }
+      this.form.airlineList = Util.deepCopy(airlineList)
+      this.oldAirlineList = Util.deepCopy(airlineList)
+    },
+    setFormid (index) {
+      return 'pairlineForm' + index
+    },
+    setAirlineList (val) {
+      this.form.airlineList = val
+    },
+    getAirlineList () {
+      let obj = { newAirline: Util.deepCopy(this.form.airlineList), oldAirlineList: Util.deepCopy(this.oldAirlineList) }
+      return obj
+    },
+    addAirlineList (index) {
+      // 新增航段
+      let airSegment = Util.deepCopy(this.airSegment)
+      airSegment.origin = this.form.airlineList[index].destination
+      if (index === this.form.airlineList.length - 1) {
+        // 从航线列表末尾插入新增的航段信息
+        this.form.airlineList.push(airSegment)
+      } else {
+        // 从航线列表中间插入新增的航段信息
+        this.form.airlineList.splice(index + 1, 0, airSegment)
+      }
+      this.setSegFlightNature(index + 1)
+    },
+    delAirSegment (index) {
+      // 1. 保存删除ID航段信息
+      if (this.form.airlineList[index].id !== null) {
+        this.delStopOverIdLs.push(this.form.airlineList[index].id)
+      }
+      this.form.airlineList.splice(index, 1)
+    },
+    setFlightNatureVal (index, val) {
+      // 设置航班属性
+      this.setSegFlightNature(index)
+      // 设置下个航段的起飞地
+      if (index + 1 < this.form.airlineList.length) {
+         this.form.airlineList[index + 1].origin = val
+      }
+    },
+    setSegFlightNature (index) {
+      let originList = this.airportList.find((item) => {
+          return item.icaocode === this.form.airlineList[index].origin
+      })
+      let originNature = (originList !== undefined ? originList.airportnature : null)
+      let desList = this.airportList.find((item) => {
+          return item.icaocode === this.form.airlineList[index].destination
+      })
+      let desNature = (desList !== undefined ? desList.airportnature : null)
+      if (originNature === null || desNature === null) {
+        this.form.airlineList[index].flightNature = ''
+      } else if (originNature !== 'D') {
+        this.form.airlineList[index].flightNature = originNature
+      } else {
+        this.form.airlineList[index].flightNature = desNature
+      }
+    },
+    initData () {
+      this.form.airlineList = []
+      this.oldAirlineList = []
+      this.delStopOverIdLs = []
+    },
+    resetForm () {
+      // 重置航线校验
+      for (let i = 0; i < this.form.airlineList.length; i++) {
+        this.$refs['pairlineForm' + i][0].resetFields()
+      }
+    },
+    airlineValid () {
+      // 航线配置验证
+      let validResult = 'true'
+      for (let i = 0; i < this.form.airlineList.length; i++) {
+        this.$refs['pairlineForm' + i][0].validate((valid) => {
+          if (valid) {
+            validResult += 'true'
+          } else {
+            validResult += 'false'
+          }
+        })
+      }
+      if (validResult.indexOf('false') > 0) {
+        return false
+      } else {
+        return true
+      }
+    }
+  },
+  mounted () {
+
+  }
+}
+</script>
+<style lang="scss">
+.PAirlineFormClss {
+  .el-form-item {
+    margin-bottom: 20px!important;
+  }
+  .buttonClss {
+    margin-top: 15px!important;
+    margin-left: 7px!important;
+  }
+  .fontColor input {
+    color: black!important;
+  }
+}
+</style>

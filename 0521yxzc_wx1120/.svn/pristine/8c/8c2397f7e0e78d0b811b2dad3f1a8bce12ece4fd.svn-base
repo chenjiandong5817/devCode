@@ -1,0 +1,56 @@
+#alipay config
+alipay.partner=2088221663194639
+alipay.seller=xdy@iport.com.cn
+alipay.key=6vfw520ctzr9vxdxlr7xp6gjbwd7kwpt
+alipay.req.url=https://wappaygw.alipay.com/service/rest.htm
+#callback url
+#alipay.callback.server=http://114.55.115.102/TravelPlatform
+alipay.callback.server=http://59.60.12.62:7000
+
+
+#wechat pay config
+#passenger
+wxpay.passenger.appid=wxcd9508c0b0f4643c
+wxpay.passenger.appsecret=2b8fa5184ccab7ae0e288d5422b94277
+wxpay.passenger.appkey=4884864952918534167782zdrtyuiihg
+wxpay.passenger.partner=1403301502
+wxpay.passenger.partnerkey=
+#-------------------------------------------------------
+#driver
+wxpay.driver.appid=wxad848f8b26d3ae96
+wxpay.driver.appsecret=3a5fff457c5a65347240f35a816c717d
+wxpay.driver.appkey=ldsjfljeritcvawr45458rtc2x4aa5wr
+wxpay.driver.partner=1403309702
+wxpay.driver.partnerkey=
+#-------------------------------------------------------
+#wxuser
+
+#正式
+#wxpay.wxuser.appid=wx41b740bd51ede7fe
+#wxpay.wxuser.appsecret=add20f17407bbae4e2f0146d4ad51288
+
+#测试
+#wxpay.wxuser.appid=wxaf9e466c7fb853b6
+#wxpay.wxuser.appsecret=23484ef21bf6cf8af20885021a3328f7
+#
+#wxpay.wxuser.appkey=yuanxiangzhuanche142173580214217
+#wxpay.wxuser.partner=1421735802
+#wxpay.wxuser.partnerkey=
+#wxpay.wxuser.callback=http://wxtest02.yxzc01.com
+wxpay.wxuser.appid=wx04c8887748cfd860
+wxpay.wxuser.appsecret=affc58c5966e0f45b7a01fe4b1a2c8cd
+
+wxpay.wxuser.appkey=yuanxiangzhuanche142173580214217
+wxpay.wxuser.partner=1305900801
+wxpay.wxuser.key=Ajld1fer42mx3kwKAL2dswiw312AMZx3
+wxpay.wxuser.partnerkey=
+wxpay.wxuser.callback=ticket.panport-fjexpress.com
+#-------------------------------------------------------
+
+
+#common
+#\u8d22\u4ed8\u901a\u7528\u6237\u6743\u9650\u79d8\u94a5key
+wxpay.gate.url=https\://api.weixin.qq.com/pay/genprepay?access_token\=
+# callback url
+#wxpay.callback.server=http://114.55.115.102/TravelPlatform
+wxpay.callback.server=http://wxtest02.yxzc01.com

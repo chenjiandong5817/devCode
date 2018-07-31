@@ -1,0 +1,817 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item style="margin-bottom: 10px;">
+      <el-col :span="11">
+        <selector v-model="conf.tag" :options="[{label: 'div', value: 'div'}, {label: 'span', value: 'span'}]" filterable :showValue="false" label="标签(tag)" placeholder="选择标签名称"></selector>
+      </el-col>
+      <el-col :span="11" :offset="1">
+        <span class="editor-label">
+          文本值(columnName/value)
+          <el-switch v-model="switchOptions.columnName.switch" active-color="#13ce66" inactive-color="#ff4949" on-text="静态" off-text="字段"></el-switch>
+        </span>
+        <el-form-item v-if="switchOptions.columnName.switch">
+          <el-col :span="17">
+            <el-input v-model="conf.value"  placeholder="输入文本值" v-if="!switchOptions.value.switch"></el-input>
+            <el-input placeholder="正在选择多语言固定值" disabled v-else></el-input>
+          </el-col>
+          <el-col :span="4" :offset="1">
+            <el-switch v-model="switchOptions.value.switch" active-color="#13ce66" inactive-color="#ff4949" on-text="多语言" off-text="静态" :width="72"></el-switch>
+          </el-col>
+        </el-form-item>
+        <selector v-model="switchOptions.columnName.value" :options="columnNameOptions" filterable :showValue="false" :showLabel="false" placeholder="选择字段名称" v-else></selector>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <div v-show="switchOptions.value.switch" class="editor-inner-pannel editor-inner-pannel-right">
+        <el-form-item>
+          <el-button type="primary" size="mini" icon="plus" @click="handleAddValueLang"></el-button>
+        </el-form-item>
+        <el-form-item v-show="switchOptions.value.value && switchOptions.value.value.length > 0">
+          <el-col :span="11">
+            <span class="editor-label">语言类型</span>
+          </el-col>
+          <el-col :span="11" style="margin-left: 4px;">
+            <span class="editor-label">语言文本</span>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.value.value" :key="index">
+          <el-col :span="7">
+            <selector v-model="item.label" :options="Tools.langOptions()" :showValue="false" :showLabel="false" placeholder="选择语言类型"></selector>
+          </el-col>
+          <el-col :span="14" style="margin-left: 4px;">
+            <el-input v-model="item.value" placeholder="输入语言文本"></el-input>
+          </el-col>
+          <el-col :span="2" style="margin-left: 4px;">
+            <el-button type="default" icon="close" @click="handleRemoveValueLang(index)"></el-button>
+          </el-col>
+        </el-form-item>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <el-col :span="7">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-width`" placement="top-start" width="250" trigger="hover">
+            <div>
+              仅当文本值为对象类型时有效，用于显示被多语言化的字段，显示出原本的值。
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          原始属性(property)
+        </span>
+        <selector v-model="conf.property" :options="propertyOptions" clearable :showValue="false" :showLabel="false"></selector>
+      </el-col>
+      <el-col :span="7" :offset="1">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-prefix`" placement="top-start" width="250" trigger="hover">
+            <div>
+              前缀，文本值为空不显示。
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          前缀(prefix)
+        </span>
+        <el-input v-model="conf.prefix" placeholder="输入前缀"></el-input>
+      </el-col>
+      <el-col :span="7" :offset="1">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-suffix`" placement="top-start" width="250" trigger="hover">
+            <div>
+              后缀，文本值为空不显示。
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          后缀(suffix)
+        </span>
+        <el-input v-model="conf.suffix" placeholder="输入后缀"></el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <el-col :span="7">
+        <selector v-model="conf.special" :options="Tools.specialMethodOptions()" clearable label="特殊函数(special)" :showValue="false" placeholder="选择特殊函数"></selector>
+      </el-col>
+      <el-col :span="7" :offset="1">
+        <selector v-model="conf.langLock" :options="Tools.langOptions()" clearable label="锁定语言(langLock)" placeholder="选择锁定语言"></selector>
+      </el-col>
+      <el-col :span="7" :offset="1">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-langExcept`" placement="top-start" width="250" trigger="hover">
+            <div>
+              【锁定语言】的优先级高于【去除语言】。
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          去除语言(langExcept)
+        </span>
+        <selector v-model="conf.langExcept" :options="Tools.langOptions()" clearable multiple :showLabel="false" placeholder="选择去除语言"></selector>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-emptyReplace`" placement="top-start" width="250" trigger="hover">
+          <div>
+            当文本值为空时，选择其他字段的值，直到所选字段有值为止。
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        空值替换(emptyReplace)
+        <el-switch v-model="switchOptions.emptyReplace.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+      <div v-show="switchOptions.emptyReplace.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <selector v-model="switchOptions.emptyReplace.value" :options="columnNameOptions" filterable multiple :showValue="false" :showLabel="false" placeholder="选择空值替换字段"></selector>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-transExist`" placement="top-start" width="250" trigger="hover">
+          <div>
+            当文本值有值时，将其转化为其他文本。
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        有值转换(transExist)
+        <el-switch v-model="switchOptions.transExist.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+      <div v-show="switchOptions.transExist.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <el-input v-model="switchOptions.transExist.value" placeholder="输入转化文本"></el-input>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-date`" placement="top-start" width="250" trigger="hover">
+          <div>
+            转换日期格式。
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        日期转换(date)
+        <el-switch v-model="switchOptions.date.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+      <div v-show="switchOptions.date.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <div>
+          <el-col :span="11">
+            <span class="editor-label">转化格式(formatForm)</span>
+            <el-input v-model="switchOptions.date.value.formatForm" placeholder="需要转化的日期格式"></el-input>
+          </el-col>
+          <el-col :span="11" :offset="1">
+            <span class="editor-label">目标格式(formatTo)</span>
+            <el-input v-model="switchOptions.date.value.formatTo" placeholder="目标日期格式"></el-input>
+          </el-col>
+        </div>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-transColor`" placement="top-start" width="250" trigger="hover">
+          <div>
+            根据匹配值判断转换的颜色。
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        颜色转换(transColor)
+        <el-switch v-model="switchOptions.transColor.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+       <div v-show="switchOptions.transColor.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <el-form-item style="margin-bottom: 6px;">
+          <el-col :span="7">
+            <selector v-model="switchOptions.transColor.value.matchType" :options="matchTypeOptions" :showValue="false" :showLabel="false" placeholder="选择匹配类型"></selector>
+          </el-col>
+          <el-col :span="3" :offset="1">
+            <el-button type="primary" size="mini" icon="plus" @click="handleAddTransColor"></el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-show="switchOptions.transColor.value.matchSetArray && switchOptions.transColor.value.matchSetArray.length > 0">
+          <el-col :span="11">
+            <span class="editor-label">目标文本</span>
+          </el-col>
+          <el-col :span="11" style="margin-left: 4px;">
+            <span class="editor-label">颜色</span>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.transColor.value.matchSetArray" :key="index">
+          <el-col :span="11">
+            <el-input v-model="item.label" placeholder="输入目标文本"></el-input>
+          </el-col>
+          <el-col :span="9" style="margin-left: 4px;">
+            <color-picker v-model="item.value" :showLabel="false" placeholder="选择颜色"></color-picker>
+          </el-col>
+          <el-col :span="2" style="margin-left: 4px;">
+            <el-button type="default" icon="close" @click="handleRemoveTransColor(index)"></el-button>
+          </el-col>
+        </el-form-item>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-twinkle`" placement="top-start" width="250" trigger="hover">
+          <div>
+            根据匹配值判断是否需要闪烁。
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        闪烁设置(twinkle)
+        <el-switch v-model="switchOptions.twinkle.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+      <div v-show="switchOptions.twinkle.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <el-form-item style="margin-bottom: 6px;">
+          <el-col :span="7">
+            <selector v-model="switchOptions.twinkle.value.matchType" :options="matchTypeOptions" :showValue="false" :showLabel="false" placeholder="选择匹配类型"></selector>
+          </el-col>
+          <el-col :span="3" :offset="1">
+            <el-button type="primary" size="mini" icon="plus" @click="handleAddTwinkle"></el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-show="switchOptions.twinkle.value.matchSetArray && switchOptions.twinkle.value.matchSetArray.length > 0">
+          <el-col :span="11">
+            <span class="editor-label">目标文本</span>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.twinkle.value.matchSetArray" :key="index">
+          <el-col :span="11">
+            <el-input v-model="item.label" placeholder="输入目标文本"></el-input>
+          </el-col>
+          <el-col :span="2" style="margin-left: 4px;">
+            <el-button type="default" icon="close" @click="handleRemoveTwinkle(index)"></el-button>
+          </el-col>
+        </el-form-item>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-replace`" placement="top-start" width="250" trigger="hover">
+          <div>
+            文本替换规则集合, 匹配类型为${key}, 其中key为集合内对象的key属性值。
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        占位文本替换(replace)
+        <el-switch v-model="switchOptions.replace.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+      <div v-show="switchOptions.replace.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <el-form-item>
+          <el-button type="primary" size="mini" icon="plus" @click="handleAddReplace"></el-button>
+        </el-form-item>
+         <el-form-item v-show="switchOptions.replace.value && switchOptions.replace.value.length > 0">
+          <el-col :span="9">
+            <span class="editor-label">目标字段</span>
+          </el-col>
+          <el-col :span="9" style="margin-left: 4px;">
+            <span class="editor-label">替换参数</span>
+          </el-col>
+          <el-col :span="3" style="margin-left: 4px;">
+            <span class="editor-label">参数类型</span>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.replace.value" :key="index">
+          <el-col :span="9">
+            <selector v-model="item.label" :options="columnNameOptions" filterable :showLabel="false" :showValue="false" placeholder="选择目标字段"></selector>
+          </el-col>
+          <el-col :span="9" style="margin-left: 4px;">
+            <el-input v-if="item.type === 'value'" v-model="item.value" placeholder="输入替换文本"></el-input>
+            <selector v-else v-model="item.value" :options="columnNameOptions" filterable  :showLabel="false" :showValue="false" placeholder="选择替换字段"></selector>
+          </el-col>
+          <el-col :span="3" style="margin-left: 4px;">
+            <el-switch v-model="item.type" active-color="#13ce66" inactive-color="#ff4949" on-value="columnName" off-value="value" on-text="字段" off-text="静态"></el-switch>
+          </el-col>
+          <el-col :span="2" style="margin-left: 4px;">
+            <el-button type="default" icon="close" @click="handleRemoveReplace(index)"></el-button>
+          </el-col>
+        </el-form-item>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-mergeText`" placement="top-start" width="250" trigger="hover">
+          <div>
+            把当前组件的文本值与其他字段进行拼接
+          </div>
+          <i class="el-icon-warning" slot="reference" />
+        </el-popover>
+        合并字段(mergeText)
+        <el-switch v-model="switchOptions.mergeText.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </span>
+       <div v-show="switchOptions.mergeText.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <el-form-item>
+          <el-button type="primary" size="mini" icon="plus" @click="handleAddMergeText"></el-button>
+        </el-form-item>
+        <el-form-item v-show="switchOptions.mergeText.value && switchOptions.mergeText.value.length > 0">
+          <el-col :span="3">
+            <span class="editor-label">
+              <el-popover :ref="`popover-text-mergeText`" placement="top-start" width="250" trigger="hover">
+                <div>
+                  连接符只会在主文本和合并字段都有值的时候才显示
+                </div>
+                <i class="el-icon-warning" slot="reference" />
+              </el-popover>
+              连接符
+            </span>
+          </el-col>
+          <el-col :span="12" style="margin-left: 4px;">
+            <span class="editor-label">
+              <el-popover :ref="`popover-text-mergeText`" placement="top-start" width="250" trigger="hover">
+                <div>
+                  完全匹配时才能进行拼接，多个值请使用【逗号(,)】隔开<br />
+                  空格也属于匹配值，因此使用逗号隔开请不要加空格<br />
+                  需要匹配空对象,请使用【#null】
+                </div>
+                <i class="el-icon-warning" slot="reference" />
+              </el-popover>
+              匹配值
+            </span>
+          </el-col>
+          <el-col :span="6" style="margin-left: 4px;">
+            <span class="editor-label">字段名称</span>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.mergeText.value" :key="index">
+          <el-col :span="3">
+            <el-input v-model="item.separator"></el-input>
+          </el-col>
+          <el-col :span="12" style="margin-left: 4px;">
+            <el-input v-model="item.value" placeholder="输入匹配值"></el-input>
+          </el-col>
+          <el-col :span="6" style="margin-left: 4px;">
+            <selector v-model="item.label" :options="columnNameOptions" filterable  :showLabel="false" :showValue="false" placeholder="选择合并字段"></selector>
+          </el-col>
+          <el-col :span="2" style="margin-left: 4px;">
+            <el-button type="default" icon="close" @click="handleRemoveMergeText(index)"></el-button>
+          </el-col>
+        </el-form-item>
+       </div>
+    </el-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <span class="editor-label">
+              宽度(width)
+              <el-switch v-model="switchOptions.width.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+            </span>
+            <div v-show="switchOptions.width.switch" class="editor-inner-pannel editor-inner-pannel-left">
+              <el-input type="number" :value="switchOptions.width.value" @input="val => Tools.inputStr2Number(switchOptions.width, 'value', val)"></el-input>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <span class="editor-label">
+              高度(height)
+              <el-switch v-model="switchOptions.height.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+            </span>
+            <div v-show="switchOptions.height.switch" class="editor-inner-pannel editor-inner-pannel-left">
+              <el-input type="number" :value="switchOptions.height.value" @input="val => Tools.inputStr2Number(switchOptions.height, 'value', val)"></el-input>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <span class="editor-label">
+              字体大小(fontSize)
+              <el-switch v-model="switchOptions.fontSize.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+            </span>
+            <div v-show="switchOptions.fontSize.switch" class="editor-inner-pannel editor-inner-pannel-left">
+              <el-input type="number" :value="switchOptions.fontSize.value" @input="val => Tools.inputStr2Number(switchOptions.fontSize, 'value', val)"></el-input>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <span class="editor-label">
+              字体颜色(color)
+              <el-switch v-model="switchOptions.color.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+            </span>
+            <div v-show="switchOptions.color.switch" class="editor-inner-pannel editor-inner-pannel-left">
+              <color-picker v-model="switchOptions.color.value" :showLabel="false" placeholder="选择颜色" :inputScale="20"></color-picker>
+            </div>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import Selector from './form-items/Selector'
+  import ColorPicker from './form-items/ColorPicker'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      Selector, ColorPicker
+    },
+    data () {
+      return {
+        conf: {},
+        Tools,
+        tagOptions: [
+          {label: 'div', value: 'div'},
+          {label: 'span', value: 'span'}
+        ],
+        propertyOptions: [
+          {label: 'key', value: 'key'}
+        ],
+        matchTypeOptions: [
+          {label: '开头', value: 'begin'},
+          {label: '包含', value: 'like'},
+          {label: '结尾', value: 'end'},
+          {label: '相等', value: 'equals'}
+        ],
+        switchOptions: {
+          columnName: {
+            // 打开siwtch，即使用value静态值
+            switch: false,
+            value: ''
+          },
+          value: {
+            // 开关，判断是否使用多语言
+            switch: false,
+            value: [
+              {label: 'zh-cn', value: ''},
+              {label: 'en-ww', value: ''}
+            ]
+          },
+          emptyReplace: {
+            switch: false,
+            value: []
+          },
+          transExist: {
+            switch: false,
+            value: ''
+          },
+          date: {
+            switch: false,
+            value: {
+              formatForm: 'yyyy-MM-dd HH:mm:ss',
+              formatTo: 'HH:mm'
+            }
+          },
+          transColor: {
+            switch: false,
+            value: {
+              matchType: '',
+              matchSetArray: []
+            }
+          },
+          twinkle: {
+            switch: false,
+            value: {
+              matchType: '',
+              matchSetArray: []
+            }
+          },
+          replace: {
+            switch: false,
+            value: [
+              {label: '', value: '', type: ''}
+            ]
+          },
+          mergeText: {
+            switch: false,
+            value: [
+              {label: '', value: '', separator: ''}
+            ]
+          },
+          width: {
+            switch: false,
+            value: 0
+          },
+          height: {
+            switch: false,
+            value: 0
+          },
+          fontSize: {
+            switch: false,
+            value: 0
+          },
+          color: {
+            switch: false,
+            value: ''
+          }
+        }
+      }
+    },
+    computed: {
+      columnNameOptions () {
+        return Tools.getDataSourceColumns(this.$parent.currentDataSource)
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          // 简单的空值判断，去掉参数
+          let params = ['special']
+          params.forEach(item => {
+            if (val[item] === '') {
+              delete val[item]
+            }
+          })
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      'switchOptions.columnName': {
+        handler (val) {
+          if (val.switch) {
+            delete this.conf.columnName
+          } else {
+            delete this.conf.value
+            this.$set(this.switchOptions.value, 'switch', false)
+            this.$set(this.conf, 'columnName', val.value)
+          }
+        },
+        deep: true
+      },
+      'switchOptions.value': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.value = {}
+            for (let item of val.value) {
+              this.conf.value[item.label] = item.value
+            }
+          } else {
+            this.conf.value = ''
+          }
+        },
+        deep: true
+      },
+      'switchOptions.emptyReplace': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.emptyReplace = val.value
+          } else {
+            delete this.conf.emptyReplace
+          }
+        },
+        deep: true
+      },
+      'switchOptions.transExist': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.transExist = val.value
+          } else {
+            delete this.conf.transExist
+          }
+        },
+        deep: true
+      },
+      'switchOptions.date': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.date = val.value
+          } else {
+            delete this.conf.date
+          }
+        },
+        deep: true
+      },
+      'switchOptions.transColor': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.transColor = {matchType: '', matchSet: {}}
+            this.$set(this.conf.transColor, 'matchType', val.value.matchType)
+            for (let item of val.value.matchSetArray) {
+              if (!item.label) {
+                continue
+              }
+              this.$set(this.conf.transColor.matchSet, item.label, item.value)
+            }
+          } else {
+            delete this.conf.transColor
+          }
+        },
+        deep: true
+      },
+      'switchOptions.twinkle': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.twinkle = {matchType: '', matchSet: {}}
+            this.$set(this.conf.twinkle, 'matchType', val.value.matchType)
+            for (let item of val.value.matchSetArray) {
+              if (!item.label) {
+                continue
+              }
+              this.$set(this.conf.twinkle.matchSet, item.label, item.value)
+            }
+          } else {
+            delete this.conf.twinkle
+          }
+        },
+        deep: true
+      },
+      'switchOptions.replace': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.replace = []
+            for (let item of val.value) {
+              this.conf.replace.push({
+                key: item.label,
+                [item.type === 'value' ? 'value' : 'columnName']: item.value
+              })
+            }
+          } else {
+            delete this.conf.replace
+          }
+        },
+        deep: true
+      },
+      'switchOptions.mergeText': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.mergeText = []
+            for (let item of val.value) {
+              let matchArray = item.value.split(',')
+              this.conf.mergeText.push({
+                separator: item.separator,
+                matchArray: matchArray.map(matchItem => {
+                  if (matchItem === '') {
+                    return ''
+                  } else if (matchItem === '#null') {
+                    return null
+                  } else {
+                    return matchItem
+                  }
+                }),
+                addsName: item.label
+              })
+            }
+          } else {
+            delete this.conf.mergeText
+          }
+        },
+        deep: true
+      },
+      'switchOptions.width': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'width', val.value)
+          } else {
+            delete this.conf.style.width
+          }
+        },
+        deep: true
+      },
+      'switchOptions.height': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'height', val.value)
+            this.$set(this.conf.style, 'lineHeight', val.value)
+          } else {
+            delete this.conf.style.height
+            delete this.conf.style.lineHeight
+          }
+        },
+        deep: true
+      },
+      'switchOptions.fontSize': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'fontSize', val.value)
+          } else {
+            delete this.conf.style.fontSize
+          }
+        },
+        deep: true
+      },
+      'switchOptions.color': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'color', val.value)
+          } else {
+            delete this.conf.style.color
+          }
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Text',
+          typeLabel: '文本',
+          tag: 'div',
+          style: {},
+          langLock: '',
+          langExcept: []
+        }
+      } else {
+        this.conf = this.value
+        this.initSwitch()
+      }
+    },
+    methods: {
+      initSwitch () {
+        // columnName
+        if (this.conf.columnName) {
+          this.$set(this.switchOptions.columnName, 'value', this.conf.columnName)
+          this.$set(this.switchOptions.columnName, 'switch', false)
+        } else if (this.conf.value || this.conf.value === '') {
+          this.$set(this.switchOptions.columnName, 'switch', true)
+          if (typeof this.conf.value === 'string') {
+            this.$set(this.switchOptions.value, 'switch', false)
+          } else {
+            this.switchOptions.value.value.splice(0, this.switchOptions.value.value.length)
+            for (let key in this.conf.value) {
+              this.switchOptions.value.value.push({label: key, value: this.conf.value[key]})
+            }
+            this.$set(this.switchOptions.value, 'switch', true)
+          }
+        }
+        // emptyReaplace
+        if (this.conf.emptyReplace) {
+          this.setSwitchElements(this.switchOptions.emptyReplace, this.conf.emptyReplace)
+        }
+        // transExist
+        if (!Tools.isEmptyObject(this.conf.transExist)) {
+          this.setSwitchElements(this.switchOptions.transExist, this.conf.transExist)
+        }
+        // date
+        if (!Tools.isEmptyObject(this.conf.date)) {
+          this.setSwitchElements(this.switchOptions.date, this.conf.date)
+        }
+        // transColor
+        if (!Tools.isEmptyObject(this.conf.transColor)) {
+          this.$set(this.switchOptions.transColor.value, 'matchType', this.conf.transColor.matchType)
+          this.$set(this.switchOptions.transColor.value, 'matchSetArray', Object.keys(this.conf.transColor.matchSet).map(item => {
+            return { label: item, value: this.conf.transColor.matchSet[item] }
+          }))
+          this.$set(this.switchOptions.transColor, 'switch', true)
+        }
+        // twinkle
+        if (!Tools.isEmptyObject(this.conf.twinkle)) {
+          this.$set(this.switchOptions.twinkle.value, 'matchType', this.conf.twinkle.matchType)
+          this.$set(this.switchOptions.twinkle.value, 'matchSetArray', Object.keys(this.conf.twinkle.matchSet).map(item => {
+            return { label: item, value: this.conf.twinkle.matchSet[item] }
+          }))
+          this.$set(this.switchOptions.twinkle, 'switch', true)
+        }
+        // replace
+        if (!Tools.isEmptyObject(this.conf.replace)) {
+          this.$set(this.switchOptions.replace, 'value', this.conf.replace.map(item => {
+            let valueKey = item.value !== undefined ? 'value' : 'columnName'
+            return { label: item.key, value: item[valueKey], type: valueKey }
+          }))
+          this.$set(this.switchOptions.replace, 'switch', true)
+        }
+        // mergeText
+        if (!Tools.isEmptyObject(this.conf.mergeText)) {
+          this.$set(this.switchOptions.mergeText, 'value', this.conf.mergeText.map(item => {
+            let transArray = item.matchArray.map(item => {
+              if (item === null) {
+                return '#null'
+              } else {
+                return item
+              }
+            })
+            return { label: item.addsName, value: transArray.join(','), separator: item.separator }
+          }))
+          this.$set(this.switchOptions.mergeText, 'switch', true)
+        }
+        // width
+        if (this.conf.style && this.conf.style.width > -1) {
+          this.setSwitchElements(this.switchOptions.width, this.conf.style.width)
+        }
+        // hegiht 和 lineheight
+        if (this.conf.style && this.conf.style.height > -1) {
+          this.setSwitchElements(this.switchOptions.height, this.conf.style.height)
+        }
+        // fontSize
+        if (this.conf.style && this.conf.style.fontSize > -1) {
+          this.setSwitchElements(this.switchOptions.fontSize, this.conf.style.fontSize)
+        }
+        // color
+        if (this.conf.style && this.conf.style.color) {
+          this.setSwitchElements(this.switchOptions.color, this.conf.style.color)
+        }
+      },
+      setSwitchElements (target, value) {
+        this.$set(target, 'value', value)
+        this.$set(target, 'switch', true)
+      },
+      handleAddValueLang () {
+        this.switchOptions.value.value.push({label: '', value: ''})
+      },
+      handleRemoveValueLang (index) {
+        this.switchOptions.value.value.splice(index, 1)
+      },
+      handleAddTransColor () {
+        this.switchOptions.transColor.value.matchSetArray.push({label: '', value: ''})
+      },
+      handleRemoveTransColor (index) {
+        this.switchOptions.transColor.value.matchSetArray.splice(index, 1)
+      },
+      handleAddTwinkle () {
+        this.switchOptions.twinkle.value.matchSetArray.push({label: '', value: true})
+      },
+      handleRemoveTwinkle (index) {
+        this.switchOptions.twinkle.value.matchSetArray.splice(index, 1)
+      },
+      handleAddReplace () {
+        this.switchOptions.replace.value.push({label: '', value: '', type: 'value'})
+      },
+      handleRemoveReplace (index) {
+        this.switchOptions.replace.value.splice(index, 1)
+      },
+      handleAddMergeText () {
+        this.switchOptions.mergeText.value.push({label: '', value: '', separator: ''})
+      },
+      handleRemoveMergeText (index) {
+        this.switchOptions.mergeText.value.splice(index, 1)
+      }
+    }
+  }
+</script>

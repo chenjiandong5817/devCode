@@ -1,0 +1,169 @@
+// variable 
+// 基础黑色
+@fc_base: #4f5a67;
+// 基础蓝色
+@fc_active: #00b5e6;
+// 基础灰色
+@fc_gray: #7e8c8d;
+
+@font-face {
+  font-family: 'PingFang-SC-Regular';
+  src: url('../../images/font/PingFang-SC-Regular.ttf')
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  background: #f3f3f3;
+  font-family: 'PingFang-SC-Regular';
+}
+
+ul,
+li,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  outline: none;
+  &::-webkit-input-placeholder {
+    color: #c5c7ca;
+  }
+}
+
+input[type="radio"] {
+  vertical-align: bottom;
+}
+
+input[type="checkbox"] {
+  vertical-align: middle;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clear() {
+  content: '';
+  position: relative;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+
+.fix() {
+  position: fixed!important;
+}
+
+/* .fixbottom() {
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  bottom: 40!important;
+  left: 0;
+  padding: 10px;
+} */
+
+// .fixbottom {
+//   .fixbottom()
+// }
+
+//按钮组
+.cube-btn-group {
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+// checkbox美化
+ .style-label {
+  color: @fc_active;
+  input[type='checkbox'] {
+    display: none!important;
+  }
+  input[type='checkbox']:checked+.style-checkbox {
+    .style-checkbox-inner {
+      background: @fc_active;
+      border: 1px solid @fc_active;
+      &:after {
+        transform: rotate(45deg) scale(1);
+      }
+    }
+  }
+  .style-checkbox {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+    cursor: pointer;
+    outline: 0;
+    line-height: 1;
+    position: relative;
+    .style-checkbox-inner {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      position: relative;
+      top: 0;
+      left: 0;
+      border: 1px solid #dddee1;
+      border-radius: 2px;
+      background-color: #fff;
+      transition: border-color .2s ease-in-out, background-color .2s ease-in-out;
+      &:after {
+        content: '';
+        display: table;
+        position: absolute;
+        width: 4px;
+        height: 8px;
+        z-index: 9;
+        top: 0;
+        left: 3px;
+        border: 1.5px solid #fff;
+        border-top: 0;
+        border-left: 0;
+        transform: rotate(45deg) scale(0);
+        transition: all .2s ease-in-out;
+      }
+    }
+  }
+} 
+
+// 修饰
+.boxShadow {
+  box-shadow: 4px 4px 6px 0 rgba(0, 0, 0, 0.05);
+}
+
+.marginFun(@num) when ( @num >0) {
+  .mar-t@{num}0 {
+    margin-top: @num*10px;
+  }
+  .mar-b@{num}0 {
+    margin-bottom: @num*10px;
+  }
+  .marginFun((@num - 1));
+}
+
+.marginFun(5);
+
+.paddingFun(@num) when ( @num >0) {
+  .pad-t@{num}0 {
+    padding-top: @num*10px;
+  }
+  .pad-b@{num}0 {
+    padding-bottom: @num*10px;
+  }
+  .paddingFun((@num - 1));
+}
+
+.paddingFun(5);

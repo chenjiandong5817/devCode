@@ -1,0 +1,164 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="7">
+              <span class="editor-label">
+                宽度(width)
+                <el-switch v-model="switchOptions.width.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.width.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <el-input type="number" :value="switchOptions.width.value" @input="val => Tools.inputStr2Number(switchOptions.width, 'value', val)"></el-input>
+              </div>
+            </el-col>
+            <el-col :span="7" :offset="1">
+              <span class="editor-label">
+                高度(height)
+                <el-switch v-model="switchOptions.height.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.height.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <el-input type="number" :value="switchOptions.height.value" @input="val => Tools.inputStr2Number(switchOptions.height, 'value', val)"></el-input>
+              </div>
+            </el-col>
+            <el-col :span="8" :offset="1">
+              <span class="editor-label">
+               圆角大小(radius)
+                <el-switch v-model="switchOptions.borderRadius.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.borderRadius.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <el-input type="number" :value="switchOptions.borderRadius.value" @input="val => Tools.inputStr2Number(switchOptions.borderRadius, 'value', val)"></el-input>
+              </div>
+            </el-col>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+    <el-form-item>
+      <el-col :span="7">
+        <selector v-model="conf.imgType" filterable :options="Tools.imgTypeOptions()" label="类型(imgType)" placeholder="选择图片尺寸"></selector>
+      </el-col>
+      <el-col :span="7" :offset="1">
+        <selector v-model="conf.imgSize" :options="Tools.imgSizeOptions()" :showValue="false" label="尺寸(imgSize)" placeholder="选择图片尺寸"></selector>
+      </el-col>
+      <el-col :span="7" :offset="1">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-columnName`" placement="top-start" width="250" trigger="hover">
+            <div>
+              如果没有选项可供选择，请检查父级节点是否正确配置数据源
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          字段名(columnName)
+        </span>
+        <selector v-model="conf.columnName" :options="columnNameOptions" :showValue="false" :showLabel="false" placeholder="选择字段名称"></selector>
+      </el-col>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import Selector from './form-items/Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      Selector
+    },
+    data () {
+      return {
+        conf: {},
+        Tools,
+        switchOptions: {
+          width: {
+            switch: false,
+            value: 0
+          },
+          height: {
+            switch: false,
+            value: 0
+          },
+          borderRadius: {
+            switch: false,
+            value: 0
+          }
+        }
+      }
+    },
+    computed: {
+      columnNameOptions () {
+        return Tools.getDataSourceColumns(this.$parent.currentDataSource)
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      'switchOptions.width': {
+        handler (val) {
+          this.operateSwitch(val.switch, this.conf.style, 'width', val.value)
+        },
+        deep: true
+      },
+      'switchOptions.height': {
+        handler (val) {
+          this.operateSwitch(val.switch, this.conf.style, 'height', val.value)
+        },
+        deep: true
+      },
+      'switchOptions.borderRadius': {
+        handler (val) {
+          this.operateSwitch(val.switch, this.conf.style, 'borderRadius', val.value)
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Image',
+          typeLabel: '图片',
+          style: {},
+          imgType: '',
+          imgSize: '',
+          columnName: ''
+        }
+      } else {
+        this.conf = this.value
+        this.initSwitch()
+      }
+    },
+    methods: {
+      operateSwitch (open, target, key, value) {
+        if (open) {
+          this.$set(target, key, value)
+        } else {
+          delete target[key]
+        }
+      },
+      initSwitch () {
+        // width
+        if (this.conf.style && this.conf.style.width > -1) {
+          this.$set(this.switchOptions.width, 'value', this.conf.style.width)
+          this.$set(this.switchOptions.width, 'switch', true)
+        }
+        // height
+        if (this.conf.style && this.conf.style.height > -1) {
+          this.$set(this.switchOptions.height, 'value', this.conf.style.height)
+          this.$set(this.switchOptions.height, 'switch', true)
+        }
+        // borderRadius
+        if (this.conf.style && this.conf.style.borderRadius > -1) {
+          this.$set(this.switchOptions.borderRadius, 'value', this.conf.style.borderRadius)
+          this.$set(this.switchOptions.borderRadius, 'switch', true)
+        }
+      }
+    }
+  }
+</script>

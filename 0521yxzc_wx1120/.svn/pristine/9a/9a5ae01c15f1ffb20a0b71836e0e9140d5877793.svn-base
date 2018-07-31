@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_driver.mappers.DriverAccountDetailMapper">
+	<insert id="add" parameterType="driverAccountDetailDto">
+		insert into ap_driver_account_detail
+			(
+				uuid,
+				serialNumber,
+				payOrderUuid,
+				type,
+				driverUuid,
+				driverMobile,
+				money,
+				balance,
+				payType,
+				payed,
+				status,
+				createTime,
+				creator,
+				updateTime,
+				remark
+			)
+		values
+			(
+				#{uuid},
+				#{serialNumber},
+				#{payOrderUuid},
+				#{type},
+				#{driverUuid},
+				#{driverMobile},
+				#{money},
+				#{balance},
+				#{payType},
+				#{payed},
+				#{status},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{remark}
+			)
+	</insert>
+
+	<update id="edit" parameterType="driverAccountDetailDto">
+		update ap_driver_account_detail
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="serialNumber != null and '' != serialNumber"> serialNumber = #{serialNumber},</if>
+			<if test="payOrderUuid != null and '' != payOrderUuid"> payOrderUuid = #{payOrderUuid},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="driverUuid != null and '' != driverUuid"> driverUuid = #{driverUuid},</if>
+			<if test="driverMobile != null and '' != driverMobile"> driverMobile = #{driverMobile},</if>
+			<if test="money != null and '' != money"> money = #{money},</if>
+			<if test="balance != null and '' != balance"> balance = #{balance},</if>
+			<if test="payType != null and '' != payType"> payType = #{payType},</if>
+			<if test="payed != null and '' != payed"> payed = #{payed},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+
+	<delete id="del" parameterType="driverAccountDetailDto">
+		delete from
+			ap_driver_account_detail
+		where
+			uuid = #{uuid}
+	</delete>
+
+	<select id="selInfo" resultType="driverAccountDetailDto">
+		select
+			*
+		from
+			ap_driver_account_detail
+		where
+			uuid = #{uuid}
+	</select>
+
+	<sql id="sqlForList">
+		from
+			ap_driver_account_detail
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="serialNumber != null and '' != serialNumber"> and serialNumber = #{serialNumber} </if>
+			<if test="payOrderUuid != null and '' != payOrderUuid"> and payOrderUuid = #{payOrderUuid} </if>
+			<if test="type != null and '' != type"> and type = #{type} </if>
+			<if test="driverUuid != null and '' != driverUuid"> and driverUuid = #{driverUuid} </if>
+			<if test="driverMobile != null and '' != driverMobile"> and driverMobile = #{driverMobile} </if>
+			<if test="money != null and '' != money"> and money = #{money} </if>
+			<if test="balance != null and '' != balance"> and balance = #{balance} </if>
+			<if test="payType != null and '' != payType"> and payType = #{payType} </if>
+			<if test="payed != null and '' != payed"> and payed = #{payed} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+			<if test="searchBeginTime != null">and createTime &gt;= #{searchBeginTime}</if>
+			<if test="searchEndTime != null">and createTime &lt;= #{searchEndTime}</if>
+			<if test="countTodayCreateTime != null">and trunc(sysdate) = trunc(createTime)</if>
+		</where>
+        <if test="sortField != null and sortOrder!=null">order by ${sortField} ${sortOrder}</if>
+	</sql>
+
+	<select id="count" resultType="int">
+		select
+			count(*)
+		<include refid="sqlForList"/>
+	</select>
+
+	<!--根据条件统计某个字段的值-->
+	<select id="sum" resultType="java.lang.Double">
+		SELECT COALESCE (SUM (${sumField}),0)
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="list" resultType="driverAccountDetailDto">
+		select
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="driverAccountDetailDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+	<select id="sumDriverPayWithPassenger" resultType="Double">
+		select COALESCE(sum(COALESCE(money,0)), 0)
+		from ap_driver_account_detail adad
+		INNER JOIN ap_order ao on adad.payOrderuuid = ao.uuid
+		where ao.passengeUuid = #{passengeUuid}
+		and adad.status = 1
+		and adad.type = 100
+	</select>
+
+</mapper>

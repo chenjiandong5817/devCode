@@ -1,0 +1,190 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section id="section">
+    <!--列表-->
+    <el-table v-bind:data="chatLogs" highlight-current-row v-loading="listLoading" @selection-change="selsChange" :height="tableHeight" style="width: 100%;">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="80">
+        <template slot-scope="scope">
+          {{pageSize * (pageNumber - 1) + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="req_msg" label="问题" width="250" sortable show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="resp_msg" label="答案" min-width="450" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="chatlogRobotId" label="机器人名称" width="200" :formatter="getRobotName">
+      </el-table-column>
+      <!-- <el-table-column prop="chat_category" label="日志类别" width="120" :formatter="formatterCategory">
+      </el-table-column> -->
+      <el-table-column label="日志类别" width="120">
+        <template slot-scope="scope">
+           <el-tag type="success" v-if="scope.row.chat_category==='航班'">航班信息</el-tag>
+           <el-tag type="danger" v-if="scope.row.chat_category==='tulingRobot'">图灵机器人</el-tag>
+           <el-tag type="primary" v-if="scope.row.chat_category!=='航班'&&scope.row.chat_category!=='tulingRobot'">{{formatterCategory(scope.row.chat_category)}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="create_time" label="创建时间" min-width="180">
+      </el-table-column>
+    </el-table>
+
+    <!--分页-->
+    <pagination :to="getChatLogList" ref="page"></pagination>
+
+  </section>
+</template>
+
+<script>
+  import Util from '../../common/js/util'
+  import chooseDialog from './../../components/CommChooseGrid'
+  import API from '../../api'
+  import Pagination from '../../components/Pagination'
+
+  export default {
+    data () {
+      return {
+        chatLogs: [],
+        robotNameOptions: [],
+        tableHeight: null,
+        listLoading: false,
+        sels: [],
+        API: API,
+        chatLogCounts: null
+      }
+    },
+    computed: {
+      pageNumber () {
+        return this.$refs['page'].get('pageNumber')
+      },
+      pageSize () {
+        return this.$refs['page'].get('pageSize')
+      }
+    },
+    components: {
+      chooseDialog: chooseDialog,
+      pagination: Pagination
+    },
+    methods: {
+      // 获取日志的总条数
+      getChatLogCount: function () {
+        API.getChatLogCount().go().then((data) => {
+          if (data.success) {
+            this.chatLogCounts = data.chatlogCount
+            this.getChatLogList()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      // 获取日志信息列表
+      getChatLogList: function () {
+        this.listLoading = true
+        API.getChatLogListPage(this.pageNumber, this.pageSize).go().then((data) => {
+          if (data.success) {
+            this.$refs['page'].set('total', this.chatLogCounts)
+            this.chatLogs = data.chatlogList
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      selsChange: function (sels) {
+        this.sels = sels
+      },
+      handleCommand: function (command, self) {
+        var node = self.$vnode.data.attrs
+        /* eslint-disable */
+        eval('this.' + command).call(this, node.index, node.row)
+        /* eslint-enable */
+      },
+      // 获取全部机器人
+      getAllRobotInfoList () {
+        API.getRobotInfoListPage(1, 10000).go().then((data) => {
+          if (data.success) {
+            var robotArray = data.robotInfoList
+            this.robotNameOptions = []
+            for (var i = 0; i < robotArray.length; i++) {
+              var result = {}
+              result['text'] = robotArray[i].name
+              result['value'] = robotArray[i].robotId
+              this.robotNameOptions.push(result)
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 转换机器人名称
+      getRobotName (row, column, cellValue) {
+        for (var i = 0; i < this.robotNameOptions.length; i++) {
+          if (cellValue === this.robotNameOptions[i].value) {
+            return this.robotNameOptions[i].text
+          }
+        }
+      },
+      getKnowledgeCategoryList () {
+        API.getKnowledgeCategoryListPage(1, 10000).go().then((data) => {
+          if (data.success) {
+            var knowledgeCategoryArray = data.knowledgeCategoryList
+            this.knowledgeCategoryOptions = []
+            this.knowledgeCategoryOptions = [ {
+              text: '全部',
+              value: ''
+            } ]
+            for (var i = 0; i < knowledgeCategoryArray.length; i++) {
+              var result = {}
+              result['text'] = knowledgeCategoryArray[i].knowledgeCategoryCNName
+              result['value'] = knowledgeCategoryArray[i].knowledgeCategoryId
+              this.knowledgeCategoryOptions.push(result)
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      formatterCategory (cellValue) {
+        var result = null
+        for (var i = 0; i < this.knowledgeCategoryOptions.length; i++) {
+          if (this.knowledgeCategoryOptions[i].value === cellValue) {
+            result = this.knowledgeCategoryOptions[i].text
+          }
+        }
+        if (result === null) {
+          result = '暂无'
+        }
+        // if (result === 'tulingRobot') {
+        //   result = '图灵机器人'
+        // }
+        // if (result === '航班') {
+        //   result = '航班信息'
+        // }
+        return result
+      },
+      getTableHeight () {
+        this.$nextTick(() => {
+          var sectionHeight = document.getElementById('section').offsetHeight
+          this.tableHeight = sectionHeight - 52
+        })
+      }
+    },
+    mounted () {
+      this.getChatLogCount()
+      this.getAllRobotInfoList()
+      this.getKnowledgeCategoryList()
+      this.getTableHeight()
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

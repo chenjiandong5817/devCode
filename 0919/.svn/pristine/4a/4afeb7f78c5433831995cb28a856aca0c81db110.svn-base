@@ -1,0 +1,269 @@
+<template>
+<section class="resDetailClass">
+  <section v-for="(item, index) in form.resLists" :key="index">
+  <el-form ref="resDetailForm" :model="form.resLists[index]" :label-position="labelPosition" :rules="rules">
+    <el-row :gutter="18" v-for="(rowItem, rowIndex) in resFields" :key="rowIndex">
+      <el-col :span="6" v-for="ritem in rowItem" :key="ritem.name" v-if="!ritem.hidden">
+        <el-form-item :label="ritem.label" :prop="setProp(ritem.name, rowIndex)" :key="item.id" v-if="!ritem.hidden">
+          <el-input :type="ritem.type" v-model="form.resLists[index][ritem.name]" auto-complete="off" :disabled="ritem.disabled"
+          v-if="ritem.type === 'text' || ritem.type === 'textarea' || ritem.type === 'password'"></el-input>
+          <!-- number判断 -->
+          <el-input :type="ritem.type" value="number" v-model.number="form.resLists[index][ritem.name]" auto-complete="off" v-else-if="ritem.type === 'number'" :v-show="ritem.show"></el-input>
+          <!-- 时间判断 -->
+          <el-date-picker :type="item.type" v-model="form.resLists[index][ritem.name]" v-else-if="item.type === 'datetime'" >
+          </el-date-picker>
+          <date-time v-model="form.resLists[index][ritem.name]" :visitTime="true" :datePlaceholder="ritem.datePlaceholder" :timePlaceholder="ritem.timePlaceholder" :formatter="ritem.formatter" v-else-if="ritem.type === 'dateTimeGroup'" ></date-time>
+          <!--radio判断 -->
+          <el-radio-group v-model="form.resLists[index][ritem.name]" v-else-if="ritem.type === 'radio'">
+            <el-radio v-for="radioItem in ritem.choose" class="radio" :label="radioItem.value" :key="radioItem.value">{{radioItem.text}}</el-radio>
+          </el-radio-group>
+          <!-- select判断 -->
+          <el-select class="selectA" v-model="form.resLists[index][ritem.name]" :filterable="ritem.filterable === 'true'" :clearable="ritem.clearable === 'true'" :disabled="ritem.disabled" placeholder="请选择" v-else-if="ritem.type === 'select'">
+            <el-option
+              v-for="selectItem in ritem.choose"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <!--<el-row :gutter="18" v-for="ritem in form.resFields">
+      <el-col :span="6">
+        <el-form-item label="航站楼" prop="terminal">
+          <el-select v-model="form.res.terminal" placeholder="航站楼" style="width:100%;" filterable clearable>
+            <el-option
+              v-for="item in $cache.fetch('terminals')"
+              :key="item.terminalCode"
+              :label="item.terminalCode"
+              :value="item.terminalCode">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="6">
+        <el-form-item label="转盘编码" prop="terminal">
+          <el-select v-model="form.res.carouselType" placeholder="转盘编码" style="width:100%;" filterable clearable>
+            <el-option
+              v-for="item in $cache.fetch('terminals')"
+              :key="item.terminalCode"
+              :label="item.terminalCode"
+              :value="item.terminalCode">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="6">
+        <el-form-item label="开启时间" prop="scheduleOpen">
+          <br>
+          <date-time v-model="form.res.scheduleOpen" :visitTime="true" datePlaceholder="开启日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="6">
+        <el-form-item label="关闭时间" prop="scheduleClose">
+          <br>
+          <date-time v-model="form.res.scheduleClose" :visitTime="true" datePlaceholder="关闭日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <div class="buttonCls">
+        <span class="wrapper">
+          <el-button size="small" type="success" @click="openResInfo(index)">开启</el-button>
+          <el-button size="small" type="danger" @click="closeResInfo(index)">关闭</el-button>
+          <el-button size="small" type="info" @click="addResInfo(index)">新增</el-button>
+          <el-button size="small" type="warning" @click="delResInfo(index)">删除</el-button>
+        </span>
+      </div>
+    </el-row>
+    <hr class="hrClass"/>-->
+    <el-row>
+      <div class="buttonCls">
+        <span class="wrapper">
+          <el-button size="small" type="success" @click="openResInfo(index)">开启</el-button>
+          <el-button size="small" type="danger" @click="closeResInfo(index)">关闭</el-button>
+          <el-button size="small" type="info" @click="addResInfo(index)">新增</el-button>
+          <el-button size="small" type="warning" @click="delResInfo(index)">删除</el-button>
+        </span>
+      </div>
+    </el-row>
+    <hr class="hrClass"/>
+  </el-form>
+  </section>
+</section>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import API from '../../../api'
+import dateTime from '../modify/DateTime'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    labelPosition: {
+      type: String,
+      default: 'top'
+    },
+    to: {
+      type: Function,
+      default: function () {}
+    },
+    callback: {
+      type: Function,
+      default: function () {}
+    }
+  },
+  data () {
+    return {
+      editAble: true,
+      visible: false,
+      loading: false,
+      API: API,
+      form: {
+        res: {},
+        resLists: []
+      },
+      resFields: [],
+      curSelectRow: [],
+      rules: {}
+    }
+  },
+  components: {
+    dateTime: dateTime
+  },
+  methods: {
+    bindData (labkey) {
+      // 以后从API获取资源list
+      switch (labkey) {
+        case 'counterConfForm': {
+          this.form.resLists = []
+          break
+        }
+        case 'gateConfForm': {
+          this.form.resLists = [{id: '11', terminal: 'T3', carouselType: null, scheduleOpen: null, scheduleClose: null}]
+          break
+        }
+        case 'carConfForm': {
+          this.form.resLists = [{id: '22', terminal: 'T3', carouselType: null, scheduleOpen: null, scheduleClose: null}]
+          break
+        }
+        case 'standConfForm': {
+          this.form.resLists = [{id: null, terminal: 'T3', carouselType: null, scheduleOpen: null, scheduleClose: null},
+                  {id: null, terminal: 't4', carouselType: null, scheduleOpen: null, scheduleClose: null},
+                  {id: null, terminal: 'T46', carouselType: null, scheduleOpen: null, scheduleClose: null}]
+          break
+        }
+        default: break
+      }
+    },
+    setProp: function (name, index) {
+      return name + "'" + index + "'"
+    },
+    initField () {
+      let field = {}
+      for (let i = 0; i < this.resFields.length; i++) {
+        for (let j = 0; j < this.resFields[i].length; j++) {
+          field[this.resFields[i][j].name] = null
+        }
+      }
+      this.form.res = field
+    },
+    initRules: function () {
+      let result = {}
+      for (let i = 0; i < this.resFields.length; i++) {
+        for (let j = 0; j < this.resFields[i].length; j++) {
+          result[this.resFields[i][j].name + i] = this.resFields[i][j].rules
+        }
+      }
+      this.rules = result
+    },
+    show: function (labkey, fields) {
+      this.loading = false
+      this.resFields = fields
+      this.initField()
+      this.bindData(labkey)
+      this.initRules()
+      this.visible = true
+    },
+    handleClose: function () {
+      this.visible = false
+      this.editAble = true
+    },
+    handleSubmit: function () {
+      this.$refs['resDetailForm'].validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.loading = true
+            this.to(this.params).then((res) => {
+              this.loading = false
+              let msg = this.params.optName + res.msg
+              this.$notify(Util.notifyBody(res.ok, msg))
+              this.visible = false
+              this.callback()
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    },
+    addResInfo: function (index) {
+      this.form.resLists.push(this.form.res)
+    },
+    delResInfo: function (index) {
+      this.form.resLists.splice(index, 1)
+    },
+    openResInfo: function (index) {
+
+    },
+    closeResInfo: function (index) {
+
+    }
+  },
+  mounted () {
+    // this.bindData()
+  }
+}
+</script>
+
+<style lang="scss">
+.resDetailClass {
+  .el-form-item {
+    margin-bottom: 2px!important;
+  }
+  .el-row {
+    margin-top: 5px!important;
+  }
+  .hrClass {
+    padding: 0px;
+    margin-top: 15px!important;
+    margin-bottom: 15px!important;
+    color: #987cb9;
+    size: 1;
+  }
+  .buttonCls {
+    display: block;
+    float: right;
+    padding-top: 10px;
+  }
+  .selectA {
+    width: 100%;
+  }
+}
+
+.confirmClass [name=flightNo],.confirmClass [name=carrier] {
+  background: #FFA500!important;
+  color: black!important;
+}
+</style>

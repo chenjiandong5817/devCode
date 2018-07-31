@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- appender 部分是可用的日志输出方式定义，可以定义多个 -->
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-d{[yyyy-MM-dd HH:mm:ss]}-[%p]-[Thread: %t]-[%C.%M():%L]: %m%n"/>
+		</layout>
+	</appender>
+
+	<appender name="INFO" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/usr/local/yxzc/yxzc_log/h5server/info.log"/>
+		<param name="Append" value="true"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-d{[yyyy-MM-dd HH:mm:ss]}-[%p]-[Thread: %t]-[%C.%M():%L]: %m%n"/>
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO"/>
+			<param name="LevelMax" value="INFO"/>
+		</filter>
+	</appender>
+
+	<appender name="DEBUG" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/usr/local/yxzc/yxzc_log/h5server/debug.log"/>
+		<param name="Append" value="true"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-d{[yyyy-MM-dd HH:mm:ss]}-[%p]-[Thread: %t]-[%C.%M():%L]: %m%n"/>
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="DEBUG"/>
+			<param name="LevelMax" value="DEBUG"/>
+		</filter>
+	</appender>
+
+	<appender name="ERROR" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/usr/local/yxzc/yxzc_log/h5server/error.log"/>
+		<param name="Append" value="true"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-d{[yyyy-MM-dd HH:mm:ss]}-[%p]-[Thread: %t]-[%C.%M():%L]: %m%n"/>
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="ERROR"/>
+			<param name="LevelMax" value="ERROR"/>
+		</filter>
+	</appender>
+
+	<appender name="QX" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/usr/local/yxzc/yxzc_log/h5server/qx.log"/>
+		<param name="Append" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-d{[yyyy-MM-dd HH:mm:ss]}-[%p]-[Thread: %t]-[%C.%M():%L]: %m%n"/>
+		</layout>
+		<filter class="com.utils.log4j.QxLogFilter">
+			<param name="LevelMin" value="QX"/>
+			<param name="LevelMax" value="QX"/>
+		</filter>
+	</appender>
+
+
+	<logger name="org.apache.ibatis" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<logger name="java.sql" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<logger name="java.sql.Connection" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<logger name="java.sql.Statement" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<logger name="java.sql.PreparedStatement" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<logger name="org.mybatis.spring" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<!-- Spring -->
+	<logger name="org.springframework" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="INFO" />
+	</logger>
+
+	<!--  root部分定义了log4j的默认输出级别和方式 -->
+	<root>
+		<priority value="DEBUG"/>
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="QX"/>
+		<appender-ref ref="INFO"/>
+		<appender-ref ref="DEBUG"/>
+		<appender-ref ref="STDOUT"/>
+	</root>
+</log4j:configuration>

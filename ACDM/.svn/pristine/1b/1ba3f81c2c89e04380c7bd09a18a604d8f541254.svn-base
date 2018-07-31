@@ -1,0 +1,8 @@
+.my-footer {
+  height: $main-footer-height;
+  line-height: $main-footer-height;
+  text-align: center;
+  background-color: $footer-background-color;
+  color: $footer-text-color;
+  font-size: 12px;
+}

@@ -1,0 +1,312 @@
+{
+  "type": "Layout",
+  "description": "最外层配置",
+  "bodyStyle": {
+    "minWidth": "1920px",
+    "minHeight": "1080px",
+    "backgroundColor": "#212E5B"
+  },
+  "rows": [
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 12,
+          "bodyStyle": {
+            "minWidth": "960px",
+            "minHeight": "1080px",
+            "backgroundColor": "#212E5B"
+          },
+          "children": [
+            {
+              "type": "Grid",
+              "description": "列表模板类型，航班动态数组集合",
+              "getDataApi": "api-001",
+              "bodyStyle": {
+                "defaultRowStyle": {
+                  "rowStripe": [ "#284682", "#1E2D5A" ],
+                  "fontSize": "32px",
+                  "color": "#fff"
+                },
+                "defaultHeaderStyle": {
+                  "fontSize": "34px",
+                  "color": "#FAC35A",
+                  "backgroundColor": "#1E2D5A",
+                  "textAlign": "center",
+                  "borderBottom": "1px solid",
+                  "borderBottomColor": "#FAC35A",
+                  "lineHeight": "100px",
+                  "height": "100px"
+                }
+              },
+              "langs": [ "cn", "en", "jp" ],
+              "defaultLang": "cn",
+              "langTimer": 15000,
+              "columns": [
+                {
+                  "name": "logo",
+                  "label": {},
+                  "style": {
+                    "width": 120,
+                    "height": 80,
+                    "minWidth": 120,
+                    "padding": 0,
+                    "paddingTop": "none",
+                    "paddingRight": "none",
+                    "paddingLeft": "none",
+                    "paddingBottom": "none",
+                    "margin": 3,
+                    "marginTop": "none",
+                    "marginRight": "none",
+                    "marginLeft": "none",
+                    "marginBottom": "none",
+                    "textAlign": "center"
+                  },
+                  "headerStyle": {
+                    "backgroundColor": "#1E2D5A"
+                  },
+                  "displayType": "Logo",
+                  "radius": true,
+                  "logoInterval": 7000
+                },
+                {
+                  "name": "flight",
+                  "label": {
+                    "cn": "航班号",
+                    "en": "FLIGHT"
+                  },
+                  "style": {
+                    "width": 260,
+                    "height": 55,
+                    "minWidth": 156,
+                    "textAlign": "center",
+                    "fontSize": "42px",
+                    "color": "#fff"
+                  },
+                  "headerStyle": {
+                    "backgroundColor": "#1E2D5A",
+                    "textAlign": "center"
+                  },
+                  "displayType": "Marquee",
+                  "marqueeSpeed": 1
+                },
+                {
+                  "name": "passby_destination",
+                  "label": {
+                    "cn": "经停/目的地",
+                    "en": "DESTINATION"
+                  },
+                  "style": {
+                    "width": 290,
+                    "height": 55,
+                    "minWidth": 260,
+                    "textAlign": "center",
+                    "fontSize": "32px"
+                  },
+                  "displayType": "Marquee",
+                  "marqueeSpeed": 3
+                }
+              ]
+            }
+
+          ]
+        },
+        {
+          "type": "Column",
+          "span": 12,
+          "bodyStyle": {
+            "minWidth": "960px",
+            "minHeight": "1080px",
+            "backgroundColor": "#212E5B"
+          },
+          "getDataApi": "api-002",
+          "children": [
+            {
+              "type": "Row",
+              "align": "top",
+              "justify": "start",
+              "cols": [
+                {
+                  "type": "Column",
+                  "span": 24,
+                  "children": [
+                    {
+                      "type": "DoubleLayerText",
+                      "content": {
+                        "topStyle": {
+                          "fontSize": "160px",
+                          "color": "#FAC35A",
+                          "borderBottom": "5px solid",
+                          "paddingLeft": "80px"
+                        },
+                        "bottomStyle": {},
+                        "topContent": [
+                          {
+                            "type": "Text",
+                            "columnName": "flight"
+                          }
+                        ],
+                        "bottomContent": [
+                          {
+                            "type": "Row",
+                            "align": "middle",
+                            "justify": "start",
+                            "cols": [
+                              {
+                                "type": "Column",
+                                "span": 12,
+                                "children": [
+                                  {
+                                    "type": "DoubleLayerText",
+                                    "content": {
+                                      "topStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#fff",
+                                        "paddingLeft": "80px"
+                                      },
+                                      "bottomStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#fff",
+                                        "paddingLeft": "80px"
+                                      },
+                                      "topContent": [
+                                        {
+                                          "type": "Text",
+                                          "columnName": "bordingTimeLabelCN"
+                                        }
+                                      ],
+                                      "bottomContent": [
+                                        {
+                                          "type": "Text",
+                                          "columnName": "bordingTimeLabelEN"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "Column",
+                                "span": 12,
+                                "children": [
+                                  {
+                                    "type": "DoubleLayerText",
+                                    "content": {
+                                      "topStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#FAC35A"
+                                      },
+                                      "bottomStyle": {},
+                                      "topContent": [
+                                        {
+                                          "type": "Text",
+                                          "columnName": "bordingTime"
+                                        }
+                                      ],
+                                      "bottomContent": []
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Row",
+                            "align": "middle",
+                            "justify": "start",
+                            "cols": [
+                              {
+                                "type": "Column",
+                                "span": 12,
+                                "children": [
+                                  {
+                                    "type": "DoubleLayerText",
+                                    "content": {
+                                      "topStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#fff",
+                                        "paddingLeft": "80px"
+                                      },
+                                      "bottomStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#fff",
+                                        "paddingLeft": "80px"
+                                      },
+                                      "topContent": [
+                                        {
+                                          "type": "Text",
+                                          "columnName": "flightStatusLabelCN"
+                                        }
+                                      ],
+                                      "bottomContent": [
+                                        {
+                                          "type": "Text",
+                                          "columnName": "flightStatusLabelEN"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "Column",
+                                "span": 12,
+                                "children": [
+                                  {
+                                    "type": "DoubleLayerText",
+                                    "content": {
+                                      "topStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#FAC35A"
+                                      },
+                                      "bottomStyle": {
+                                        "fontSize": "42px",
+                                        "color": "#FAC35A"
+                                      },
+                                      "topContent": [
+                                        {
+                                          "type": "Text",
+                                          "transColor": {
+                                            "登机": "#ff0000",
+                                            "Boarding": "#ff0000",
+                                            "延误": "#FFFF00",
+                                            "delay": "#FFFF00"
+                                          },
+                                          "columnName": "flightStatusCN"
+                                        }
+                                      ],
+                                      "bottomContent": [
+                                        {
+                                          "type": "Text",
+                                          "transColor": {
+                                            "登机": "#ff0000",
+                                            "Boarding": "#ff0000",
+                                            "延误": "#FFFF00",
+                                            "delay": "#FFFF00"
+                                          },
+                                          "columnName": "flightStatusEN"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+
+    }
+  ]
+}

@@ -1,0 +1,652 @@
+{
+  "type": "Layout",
+  "typeLabel": "布局",
+  "description": "普通柜",
+  "bodyStyle": {
+    "backgroundColor": "#212E5B",
+    "minWidth": 1920,
+    "minHeight": 1080
+  },
+  "langs": [
+    "zh-cn",
+    "en-ww"
+  ],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "extraParam": {
+    "dynaScrollText": {
+      "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+      "singleData": true,
+      "columnName": "scrolltext"
+    },
+    "destination": "DESTINATION"
+  },
+  "dataSource": "8888BEEE885842119D93F1A00C879ECB",
+  "singleData": true,
+  "mainPager": false,
+  "mainSource": true,
+  "refreshInterval": 20000,
+  "children": [
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 13,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "color": "#FAC35A",
+                "borderBottomWidth": 5,
+                "borderBottomStyle": "solid",
+                "padding": "0 0 0 80px"
+              },
+              "bottomStyle": {
+                "color": "#FAC35A",
+                "padding": "0 0 0 80px"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "DoubleLayerText",
+                  "typeLabel": "双层文本",
+                  "align": "left",
+                  "translateX": 0,
+                  "translateY": 0,
+                  "topStyle": {},
+                  "bottomStyle": {},
+                  "slicePoint": 2,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "typeLabel": "文本",
+                      "tag": "span",
+                      "style": {
+                        "fontSize": 160
+                      },
+                      "langLock": "",
+                      "langExcept": [],
+                      "property": "key",
+                      "columnName": "carrier"
+                    },
+                    {
+                      "type": "Text",
+                      "typeLabel": "文本",
+                      "tag": "span",
+                      "style": {
+                        "fontSize": 160
+                      },
+                      "langLock": "",
+                      "langExcept": [],
+                      "columnName": "flight"
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "typeLabel": "滚动文本",
+                      "speed": 80,
+                      "hiddenBy": [
+                        {
+                          "shareflight": true
+                        }
+                      ],
+                      "seamless": false,
+                      "always": false,
+                      "vertical": false,
+                      "backZero": false,
+                      "style": {},
+                      "children": [
+                        {
+                          "type": "Text",
+                          "typeLabel": "文本",
+                          "tag": "div",
+                          "style": {
+                            "fontSize": 60
+                          },
+                          "langLock": "",
+                          "langExcept": [],
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Row",
+                  "typeLabel": "行",
+                  "align": "middle",
+                  "justify": "start",
+                  "bodyStyle": {},
+                  "children": [
+                    {
+                      "type": "Column",
+                      "typeLabel": "列",
+                      "span": 24,
+                      "bodyStyle": {},
+                      "children": [
+                        {
+                          "type": "DoubleLayerText",
+                          "typeLabel": "双层文本",
+                          "align": "left",
+                          "translateX": 0,
+                          "translateY": 0,
+                          "topStyle": {},
+                          "bottomStyle": {},
+                          "slicePoint": 1,
+                          "children": [
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 80
+                              },
+                              "langLock": "zh-cn",
+                              "langExcept": [],
+                              "columnName": "route"
+                            },
+                            {
+                              "type": "Text",
+                              "typeLabel": "文本",
+                              "tag": "div",
+                              "style": {
+                                "fontSize": 80
+                              },
+                              "langLock": "",
+                              "langExcept": [
+                                "zh-cn"
+                              ],
+                              "columnName": "route"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 11,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "textAlign": "center",
+                "padding": "20px 20px 0 0"
+              },
+              "bottomStyle": {
+                "color": "#FAC35A"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Image",
+                  "typeLabel": "图片",
+                  "style": {
+                    "width": 700,
+                    "height": 400
+                  },
+                  "imgType": "flight_logo",
+                  "imgSize": "700x400",
+                  "columnName": "carrier"
+                },
+                {
+                  "type": "DoubleLayerText",
+                  "typeLabel": "双层文本",
+                  "align": "right",
+                  "translateX": -90,
+                  "translateY": 0,
+                  "topStyle": {
+                    "padding": "20px 0 0 0"
+                  },
+                  "bottomStyle": {},
+                  "slicePoint": 1,
+                  "children": [
+                    {
+                      "type": "Text",
+                      "typeLabel": "文本",
+                      "tag": "div",
+                      "style": {
+                        "fontSize": 40
+                      },
+                      "langLock": "zh-cn",
+                      "langExcept": [],
+                      "columnName": "carrier"
+                    },
+                    {
+                      "type": "Text",
+                      "typeLabel": "文本",
+                      "tag": "div",
+                      "style": {
+                        "fontSize": 40
+                      },
+                      "langLock": "",
+                      "langExcept": [
+                        "zh-cn"
+                      ],
+                      "columnName": "carrier"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "middle",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 12,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "color": "#FAC35A",
+                "padding": "0 0 0 80px"
+              },
+              "bottomStyle": {
+                "color": "#FAC35A",
+                "padding": "0 0 0 80px"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "zh-cn",
+                  "langExcept": [],
+                  "columnName": "servicetype"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [
+                    "zh-cn"
+                  ],
+                  "columnName": "servicetype"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 6,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "color": "#FFFFFF"
+              },
+              "bottomStyle": {
+                "color": "#FFFFFF"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "value": "预计登机"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [
+                    "zh-cn"
+                  ],
+                  "value": {
+                    "en-ww": "Boarding Time",
+                    "ja-jp": "ボードに入る予定"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 6,
+          "bodyStyle": {
+            "textAlign": "left"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "typeLabel": "文本",
+              "tag": "div",
+              "style": {
+                "color": "#FAC35A",
+                "fontSize": 80
+              },
+              "langLock": "",
+              "langExcept": [],
+              "columnName": "boardingtime",
+              "date": {
+                "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                "formatTo": "HH:mm"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "middle",
+      "justify": "start",
+      "bodyStyle": {},
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 6,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "padding": "0 0 0 80px",
+                "color": "#FFFFFF"
+              },
+              "bottomStyle": {
+                "padding": "0 0 0 80px",
+                "color": "#FFFFFF"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "value": "办理时间"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [
+                    "zh-cn"
+                  ],
+                  "value": {
+                    "en-ww": "Check-In Time",
+                    "ja-jp": "時間"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 6,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Text",
+              "typeLabel": "文本",
+              "tag": "span",
+              "style": {
+                "color": "#FAC35A",
+                "fontSize": 60
+              },
+              "langLock": "",
+              "langExcept": [],
+              "columnName": "checkinopen",
+              "date": {
+                "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                "formatTo": "HH:mm"
+              }
+            },
+            {
+              "type": "Text",
+              "typeLabel": "文本",
+              "tag": "span",
+              "style": {
+                "color": "#FAC35A",
+                "fontSize": 60
+              },
+              "langLock": "",
+              "langExcept": [],
+              "prefix": "-",
+              "columnName": "checkinclose",
+              "date": {
+                "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                "formatTo": "HH:mm"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 3,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "typeLabel": "双层文本",
+              "align": "left",
+              "translateX": 0,
+              "translateY": 0,
+              "topStyle": {
+                "color": "#FFFFFF"
+              },
+              "bottomStyle": {
+                "color": "#FFFFFF"
+              },
+              "slicePoint": 1,
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "value": "登机口"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "div",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [
+                    "zh-cn"
+                  ],
+                  "value": {
+                    "en-ww": "Gate",
+                    "ja-jp": "ゲート"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 6,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Text",
+              "typeLabel": "文本",
+              "tag": "div",
+              "style": {
+                "color": "#FAC35A",
+                "fontSize": 80
+              },
+              "langLock": "",
+              "langExcept": [],
+              "columnName": "gate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {
+        "backgroundColor": "#212E5B",
+        "color": "#FAC35A",
+        "position": "absolute",
+        "width": 1920,
+        "height": 90,
+        "lineHeight": 90,
+        "bottom": 0,
+        "borderTopWidth": 2,
+        "borderTopStyle": "solid",
+        "borderTopColor": "#FAC35A"
+      },
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 22,
+          "bodyStyle": {},
+          "dataSource": "$current_device_info",
+          "singleData": true,
+          "mainPager": false,
+          "mainSource": false,
+          "refreshInterval": 0,
+          "pageInterval": 0,
+          "children": [
+            {
+              "type": "MarqueeText",
+              "typeLabel": "滚动文本",
+              "speed": 80,
+              "hiddenBy": [],
+              "seamless": false,
+              "always": false,
+              "vertical": false,
+              "backZero": false,
+              "style": {},
+              "children": [
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "span",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "columnName": "scrollText"
+                },
+                {
+                  "type": "Text",
+                  "typeLabel": "文本",
+                  "tag": "span",
+                  "style": {
+                    "fontSize": 50
+                  },
+                  "langLock": "",
+                  "langExcept": [],
+                  "columnName": "dynamicScrollText"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 2,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Clock",
+              "typeLabel": "时钟",
+              "style": {
+                "fontSize": 50
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

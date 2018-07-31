@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysSeqMapper">
+
+    <!--获取普通序列号-->
+    <select id="getSerialSeqNextVal" resultType="long">
+		SELECT serial_number_seq.nextval FROM DUAL
+	</select>
+
+    <!--获取订单序列-->
+    <select id="getOrderSeqNextVal" resultType="long">
+		SELECT order_serial_seq.nextval FROM DUAL
+	</select>
+
+</mapper>

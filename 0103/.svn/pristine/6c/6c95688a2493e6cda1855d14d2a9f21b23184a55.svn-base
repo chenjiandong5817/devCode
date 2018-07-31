@@ -1,0 +1,451 @@
+# 模板配置说明
+
+### Layout
+
+    {
+      "type": "Layout",
+      "description": "登机口候机引导",
+      "bodyStyle": {
+        "minWidth": 1920,
+        "minHeight": 1080,
+        "backgroundColor": "#212E5B"
+      },
+      "langs": [ "zh-cn", "en-ww", "ja-jp" ],
+      "defaultLang": "zh-cn",
+      "langTimer": 18000,
+      "extraParam": {
+        "dynaScrollText": {
+          "description": "动态滚动文本",
+          "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+          "mainSource": true,
+          "singleData": true,
+          "columnName": "scrolltext"
+        },
+        "virtualRowSize": 10,
+        "destination": "DESTINATION"
+      },
+      "rows": []
+    }
+
+* __Layout__: 映射HTML里面的`div`，是模板配置的最外层入口
+* __bodyStyle__: HTML的style样式，没有限制属性，所有属性都可以用
+* __langs__: 当前模板的多语言列表
+* __defaultLang__: 默认显示语言类型
+* __langTimer__: 切换语言的时间
+* __extraParam__: 额外参数
+  - __dynaScrollText__： 动态滚动文本
+    - __description__： 描述，无用途，仅用于描述信息
+    - __dataSource__: 数据源id
+    - __mainSource__: 是否为主要数据，是的会页面会根据空值判断是否显示模板
+    - __singleData__： 是否为单行数据
+    - __columnName__: 字段名
+  - __virtualRowSize__: 虚拟记录行，如果数据行数少于虚拟行数，会补全行数，主要用于条纹显示
+  - __destination__: 第三语言识别参数，值为数据源字段。只能用于单行数据的数据源，多行记录数据源可能有不可预计的问题。
+* __rows__: 模板内的`Row`元素集合
+
+> 所有节点都可以使用`dataSource`来匹配数据源，但只能适配到离自己最近的数据源
+
+    "dataSource": "17EF84121B8F41FC9C5D9C5E049E0956",
+    "mainSource": true,
+    "mainPager": true,
+    "singleData": false
+* __dataSource__: 数据源ID,用于识别该部分元素使用的数据来源，也可以使用`$current_device_info`表示当前设备信息，`$main_pager`表示当前设备的分页信息
+* __mainSource__: 是否为主要数据，`是`的会页面会根据空值判断是否显示模板
+* __singleData__: 单行数据标志位，表示当前数据源内的数据只取第一条, 若`mainPager`属性存在，则该属性失效
+* __mainPager__: 分页信息标志位，表示从当前数据源内获取`pager`为本设备显示的分页信息
+* __refreshInterval__: 数据定时刷新时间， 单位毫秒，默认为0不刷新，当`pageInterval`存在的时候，该属性失效
+* __pageInterval__: 切换分页时间， 单位毫秒，默认为0不切换
+
+### Row
+
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {}
+      "cols": []
+    }
+
+* __Row__: 映射ElementUI的`el-row`行标签，默认使用`flex`布局
+* __align__: 行内元素垂直排列方式，默认为`top`，可选`top/middle/bottom`
+* __justify__: 行内元素的水平排列方式，默认为`start`， 可选`start/end/center/space-around/space-between`
+* __bodyStyle__: HTML的style样式，没有限制属性，所有属性都可以用
+* __cols__: 行内的`Column`元素集合
+
+### Column
+
+    {
+      "type": "Column",
+      "span": 24,
+      "bodyStyle": {},
+      "dataSource": "$main_pager",
+      "singleData": true,
+      "mainPager": true,
+      "children": []
+    }
+
+* __Column__: 映射ElementUI的`el-col`列标签
+* __span__: 列占比，最大24，按比例在`Row`里面显示
+* __bodyStyle__: HTML的style样式，没有限制属性，所有属性都可以用
+* __children__： 元素内的内部元素集合，类型没有限定
+
+### Grid
+
+    {
+      "type": "Grid",
+      "dataSource": "17EF84121B8F41FC9C5D9C5E049E0956",
+      "mainPager": true,
+      "hiddenHeader": false,
+      "bodyStyle": {
+        "defaultRowStyle": {
+          "rowStripe": [ "#284682", "#1E2D5A" ],
+          "fontSize": 42,
+          "color": "#fff",
+          "height": 89,
+          "lineHeight": 89
+        },
+        "defaultHeaderStyle": {
+          "fontSize": 50,
+          "color": "#FAC35A",
+          "backgroundColor": "#1E2D5A",
+          "textAlign": "left",
+          "borderBottom": "1px solid",
+          "borderBottomColor": "#FAC35A",
+          "lineHeight": 100,
+          "height": 100
+        },
+        style: {}
+      }
+      "columns": []
+    }
+
+* __Grid__: 映射ElementUI的`el-table`列表标签
+* __hiddenHeader__: 隐藏表头，默认为`false`，当为`true`时，`defaultHeaderStyle`失效
+* __bodyStyle__: 表格样式，分为`defaultRowStyle`和`defaultHeaderStyle`
+  - __defaultRowStyle__: 表格行默认样式
+    - __rowStripe__: 自定义属性，斑马条纹，最多支持两种颜色变化
+    - __height__: 行高度
+    - __lingHeight__: 显示高度，一般与`hegiht`设置相等
+    - _其他HTML style属性随意_
+  - __defaultHeaderStyle__: 表格表头默认样式
+    - __height__: 行高度
+    - __lingHeight__: 显示高度，一般与`hegiht`设置相等
+    - _其他HTML style属性随意_
+  - __style__: 包裹table的div样式
+* __columns__: 表格字段属性，只能适配`Grid-column`类型
+
+### Grid-column
+
+    {
+      "name": "carrier",
+      "label": {
+        "zh-cn": "航班号",
+        "en-ww": "Flight",
+        "ja-jp": "フライトナンバー"
+      },
+      "style": {},
+      "headerStyle": {},
+      "children": []
+    }
+
+* __name__: 字段名称
+* __label__: 标题，可以进行多语言切换
+* __style__: 单元格样式
+* __headerStyle__: 标题栏样式
+* __children__: 字段内部显示元素, __必填__
+
+### Logo - 即将废除
+
+    {
+      "type": "Logo",
+      "columnName": "carrier",
+      "style": {
+        "height": 70,
+        "lineHeight": 70
+      },
+      "height": 70,
+      "radius": true,
+      "imgType": "flight_logo",
+      "imgSize": "220x220",
+      "dataType": "Array",
+      "multiSource": [
+        {
+          "name": "shareflight",
+          "separator": "",
+          "handle": {
+            "split": "/",
+            "regex": "/^[a-zA-Z]{2}/"
+          }
+        }
+      ]
+    }
+
+* __Logo__: 图片切换，适用于logo图标
+* __column__: 字段名
+* __style__: 样式
+* __height__: 高度， __必填__
+* __radius__: 是否圆形图标
+* __imgType__: 图片类型，用于拼接图片路径
+* __imgSize__: 图片尺寸，用于拼接图片路径
+* __dataType__: 与 `multiSource` 组合使用，用于判断返回值的类型为`Array`或者其他
+* __multiSource__: 多源字段集合
+  * __name__: 字段名称
+  * __separator__: 与主字段数据拼接的连接符，`dataType`为`Array`时无效
+  * __handle__： 字段数据的处理方式
+    * __split__: 分割数据符号，分隔完的数据作为多源数据与主字段拼接
+    * __regex__: 正则匹配，从多源数据中筛选满条件的数据
+
+### DoubleLayerText
+
+    {
+      "type": "DoubleLayerText",
+      "content": {
+        "align": "center",
+        "translateX": 0,
+        "translateY": 0,
+        "topStyle": {},
+        "bottomStyle": {},
+        "topContent": [],
+        "bottomContent": []
+    }
+
+* __DoubleLayerText__: 双层文本布局
+* __content__: 布局内容
+  - __align__: 映射`text-align`属性， 可选`left/center/right`
+  - __translateX__: 横向平移
+  - __translateY__: 纵向平移
+  - __topStyle__: 顶部样式
+  - __bottomStyle__: 底部样式
+  - __topContent__： 顶部内容，可以使用其他模板类型
+  - __bottomContent__： 底部内容，可以使用其他模板类型
+
+### MarqueeText
+
+    {
+      "type": "MarqueeText",
+      "speed": 80,
+      "hiddenBy": ["otherColumnName", {"otherColumn": false}]
+      "seamless": true,
+      "always": true,
+      "vertical": true,
+      "backZero": true,
+      "style": {},
+      "content": []
+    }
+
+* __MarqueeText__: 滚动文本
+* __speed__: 滚动速度
+* __seamless__: 无缝滚动，默认为false
+* __always__: 始终滚动, 滚动类型为`有缝滚动`，内容不够长也可以滚动， 默认为false
+* __vertical__: 纵向滚动，会触发div内元素自动换行, 默认为false
+* __backZero__: 一次滚动完成回到0px的位置，只在`有缝滚动`和`始终滚动`下有效, 默认为false
+* __hiddenBy__: 字段集合，根据字段内容判断是否隐藏组件,在目标字段为空的时候判断是否隐藏
+* __style__: 样式
+* __content__: 内容，可以使用其他模板类型
+
+### Image
+
+    {
+      "type": "Image",
+      "style": {
+        "width": 700,
+        "height": 400
+      },
+      "imgType": "flight_logo",
+      "imgSize": "700x400",
+      "columnName": "carrier"
+    }
+
+* __Image__： 图片模板
+* __style__: CSS样式，没有限制
+* __imgType__: 图片类型
+* __imgSize__： 图片尺寸
+* __columnName__: 字段名称，当包含`,`时，用逗号隔开多个字段，自动识别多字段拼接
+
+### Text
+
+    {
+      "type": "Text",
+      "tag": "span",
+      "columnName": "carrier",
+      "emptyReplace": ["schedulearrivetime"],
+      "transExist": "/",
+      "value": "",
+      "property": "key"
+      "date": {
+        "formatFrom": "yyyy-MM-dd HH:mm:ss",
+        "formatTo": "HH:mm"
+      },
+      "prefix": "/",
+      "suffix": "/",
+      "langLock": "zh-cn",
+      "langExcept": ["zh-cn"],
+      "transColor": {
+        "matchType": "begin",
+        "matchSet": {
+          "ARR": "#ff0000"
+        }
+      },
+      "twinkle": {
+        "matchType": "equals",
+        "matchSet": {
+          "ARR": true
+        }
+      },
+      "special": ["induceCounter"],
+      "replace": [
+        {
+          "key": "pageNumber",
+          "columnName": "pageNumber"
+        },
+        {
+          "key": "pageCount",
+          "value": "1"
+        }
+      ],
+      "mergeText": [
+        {
+          separator: "/",
+          matchArray: [null, "", "CKI", "CKC", "BDS"],
+          addsName: "irregularstatus"
+        }
+      ],
+    }
+
+* __Text__: 显示文本
+* __tag__: 映射的HTML标签，默认为`div`，
+* __style__: 样式，
+* __columnName__: 字段名称
+* __emptyReplace__: 替换字段集合，当主字段数据为空时替换
+* __transExist__: 有值的时候进行替换，类型不限制
+* __value__: 默认值，可以写成多语言转换对象；当该属性有值，就不会在去获取字段的值
+* __date__: 日期转换
+  - __formatForm__: 原格式
+  - __formatTo__: 目标格式
+* __property__: 子属性，如果数据为Object，可以用这个属性限定使用某个属性作为值
+* __prefix__: 前缀， 文本无值的时候不显示
+* __suffix__: 后缀，文本无值的时候不显示
+* __langLock__: 锁定语言；字符串格式，说明只能锁定一种语言
+* __langExcept__： 除去语言；集合格式，说明可以除去多种语言
+* __transColor__: 替换颜色
+    - __matchType__: 匹配类型，可选`begin/like/end/equals`
+    - __matchSet__: 对象类型，key为匹配关键字，value为返回值
+* __twinkle__: 文本闪烁
+    - __matchType__: 匹配类型，可选`begin/like/end/equals`
+    - __matchSet__: 对象类型，key为匹配关键字，value为返回值且只能`boolean`类型
+* __replace__: 文本替换规则集合, 匹配类型为`${key}`, 其中`key`为集合内对象的`key`属性值
+  - __key__: 匹配字符串
+  - __value__: 固定值
+  - __columnName__：数据源字段，从数据源内获取字段数据
+* __mergeText__: 合并字段集合
+  - __separator__: 分隔符，只有当主字段和合并字段都有值的时候才显示
+  - __matchArray__: 主字段的值 _完全匹配_ 到才增加文本
+  - __addsName__：合并的字段名称
+*__special__: 特殊函数集合，目前可选`induceCounter`
+
+### FlexImageView
+
+    {
+      "type": "FlexImageView",
+      "showType": "carousel",
+      "autoSize": true,
+      "translateY": 80,
+      "style": {
+        "height": 800
+      },
+      "imgStyle": {
+        "height": 550
+      },
+      "imgType": "test_logo",
+      "imgSize": "700x400",
+      "columnName": "carrier,countermode,servicetype"
+    }
+
+* __FlexImageView__: 滑动图片视图
+* __showType__: 视图类型，可选`flexImage/carousel`
+* __autoSize__: 自动最大化图片，模式下只在<=两张图片的时候生效
+* __translateX__: 横向平移布局， 单位px，不需要填写
+* __translateY__： 纵向平移布局， 单位px，不需要填写
+* __style__: 外层布局样式，其中`height`为 __必填__
+* __imgStyle__: 图片样式，其中`height`为 __必填__
+* __imgType__： 图片类型，获取图片url的参数之一
+* __imgSize__： 图片尺寸，获取图片url参数之一
+* __columnName__： 字段名，也是图片名称，获取图片url的参数之一，如果包含`,`，会自动从源数据内获取相关字段，通过`_`进行拼接组合成图片名称
+
+### Flop
+
+    {
+      "type": "Flop",
+      "style": {
+        "height": 70,
+        "lineHeight": 70
+      },
+      "interval": 8000,
+      "columnName": "carrier",
+      "multiSource": [
+        {
+          "name": "shareflight",
+          "separator": "",
+          "handle": {
+            "split": "/",
+            "regex": "/^[0-9a-zA-Z]{2}/"
+          }
+        }
+      ],
+      "item": {
+        "type": "Image",
+        "style": {
+          "height": 70,
+          "lineHeight": 70,
+          "borderRadius": "70px"
+        },
+        "imgType": "flight_logo",
+        "imgSize": "220x220",
+        "columnName": ""
+      }
+    }
+* __Flop__: 翻牌效果，
+* __interval__： 翻牌的时间间隔
+* __style__：样式
+* __columnName__： 字段名称，仅当使用multiSource的时候有效
+* __multiSource__: 多源字段集合
+  * __name__: 字段名称
+  * __separator__: 与主字段数据拼接的连接符
+  * __handle__： 字段数据的处理方式
+    * __split__: 分割数据符号，分隔完的数据作为多源数据与主字段拼接
+    * __regex__: 正则匹配，从多源数据中筛选满条件的数据
+* __item__: flopItem的展示形式，当使用multiSource的时候，`item`中的模板不需要配置columnName(但是需要`columnName`进行占位，因为需要判断哪里需要用到字段值)；否则，`item`为正常的模板配置，并遍历数据源中的数据
+
+
+### Clock
+
+    {
+      "type": "Clock"
+    }
+
+* __Clock__: 目前只能显示当前时间
+
+### FixedLeftMarquee
+
+    {
+      "type": "FixedLeftMarquee",
+      "speed": 80,
+      "style": {
+        "height": 89,
+        "lineHeight": 89,
+        "color": "#fff",
+        "fontSize": 42
+      },
+      "fixedColumnNames": ["carrier", "flight"],
+      "scrollColumnName": "shareflight",
+      "joiner": "/",
+      "joinerHideBy": "shareflight"
+    }
+
+* __FixedLeftMarquee__: marquee组合模板，左侧为固定文本
+* __speed__: 滚动速度
+* __style__: 样式
+* __fixedColumnNames__: 固定字段集合
+* __scrollColumnName__: 滚动字段
+* __joiner__: 连接符
+* __joinerHideBy__: 连接符根据该字段判断是否显示

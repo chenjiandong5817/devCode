@@ -1,0 +1,54 @@
+.header {
+  align-items: center;
+  background-color: $header-background-color;
+  border-bottom: 2px solid $sidebar-logo-background-color;
+  color: $header-text-color;
+  box-sizing: border-box;
+  display: flex;
+  font-size: 18px;
+  height: $main-header-height;
+  line-height: $main-header-height;
+  padding: 0 10px 0 0;
+  white-space: nowrap;
+  .user-options {
+    .el-dropdown-link {
+      cursor: pointer;
+      &:hover {
+        color: $color-primary;
+      }
+      &:active {
+        color: $color-active;
+      }
+      i {
+        transition: transform .2s cubic-bezier(.645,.045,.355,1);
+        &.is-active {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  .header-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: inherit;
+    font-weight: 400;
+    flex: 1;
+  }
+  .header-userImg{
+    margin: 0 3px 0 10px;
+    padding: 2px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    box-sizing: border-box;
+    border: 1px solid #eee;
+  }
+  .header-button {
+    display: flex;
+    align-items: center;
+    & > .header-item{
+      margin-right: 12px;
+    }
+  }
+}

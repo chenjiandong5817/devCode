@@ -1,0 +1,151 @@
+<template>
+  <header>
+    <!-- 头像 -->
+    <div class="userIcon" @click="openUserBar()">
+      <img :src="headImgUrl" v-if="headImgUrl">
+    </div>
+    <!-- 城市显示 -->
+    <div class="nowCity" @click="switch_show()">
+      <!-- <span>福州市</span> -->
+      <!-- 是否自动变更为所选城市 暂时关闭 -->
+      <span>{{currentCity.city}}</span>
+    </div>
+    <!-- 城市选择 -->
+    <transition enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
+    <div class="citySelectMask" v-show="show">
+      <ul>
+        <li @click="set_currentCity({city: '厦门市',areaUuid: 'f807671564b0409aa647b7b80af555b6'})">厦门市</li>
+        <li @click="set_currentCity({city: '福州市',areaUuid: 'cb33bbcc0e8c400f992c4d1acff274cb'})">福州市</li>
+        <!-- <li @click="switch_show()">福州市</li> -->
+      </ul>
+    </div>
+  </transition>
+  <!-- 遮罩层 -->
+    <comMask :show="show" :event="switch_show"></comMask>
+  </header>
+</template>
+<script>
+import { mapState, mapActions } from 'vuex'
+import api from '@/store/index/api'
+const comMask = () => import('@/components/Mask.vue')
+export default{
+  name: 'com-header',
+  data () {
+    return {
+      show: false,
+      headImgUrl: api.getLocalStorage('headImgUrl') ? api.getLocalStorage('headImgUrl') : ''
+    }
+  },
+  methods: {
+    ...mapActions({
+      'openUserBar': 'switch_UserBar'
+    }),
+    set_currentCity (val) {
+      // 切换城市后需重新初始化
+      this.$store.dispatch('get_currentCity', val.areaUuid).then((res) => {
+        if (res.success) {
+          this.$store.commit('SET_CURRENTCITY', val)
+      // 重制地址信息
+          this.$store.commit('RESET_ALL_LOCATION')
+          this.switch_show()
+          location.reload()
+          // this.$store.dispatch('init_data')
+        }
+      })
+    },
+    switch_show () {
+      this.show = !this.show
+    }
+  },
+  computed: {
+    ...mapState([
+      'location',
+      'currentCity'
+    ])
+  },
+  components: {
+    comMask
+  }
+}
+</script>
+<style lang="less">
+header {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+  text-align: center;
+  .userIcon {
+    position: absolute;
+    display: block;
+    left: 10px;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    background: url('../../assets/images/user.png') no-repeat center;
+    background-size: 100% 100%;
+    border-radius: 50%;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.05);
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+  }
+  .nowCity {
+    position: relative;
+    line-height: 30px;
+    font-size: 16px;
+    color: #4f5a67;
+    width: 100px;
+    margin: 0 auto;
+    span {
+      display: block;
+      width: 100%;
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      border-right: 1px solid #333;
+      border-bottom: 1px solid #333;
+      width: 4px;
+      height: 4px;
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+      top: 50%;
+      margin-top: -2px;
+      right: 15px;
+      /* content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      top: 50%;
+      right: 11.5px;
+      margin-top: -2.5px;
+      background: url('../../assets/images/arrow_down.png'); */
+    }
+  }
+  .citySelectMask {
+    z-index: 11;
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    left: 0;
+    line-height: 50px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    animation-duration: .3s;
+    ul {
+      border-radius: 3px;
+      background: #ffffff;
+      li {
+        &:not(:first-child) {
+          border-top: 0.5px solid #f3f3f3;
+        }
+      }
+    }
+  }
+}
+
+</style>
+

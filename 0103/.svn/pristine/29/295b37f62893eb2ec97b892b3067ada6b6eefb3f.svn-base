@@ -1,0 +1,488 @@
+{
+  "flexImageConfig": {
+    "data": {
+      "imgs": [
+        "./../../static/logo/700x400/3U.gif",
+        "./../../static/logo/700x400/MF.gif"
+      ],
+      "text": "Economy Class"
+    },
+    "bodyStyle": {
+      "minWidth": "1920px",
+      "minHeight": "1080px",
+      "backgroundColor": "#212E5B"
+    },
+    "imgConf": {
+      "columnName": "imgs",
+      "style": {
+        "height": "350px"
+      },
+      "oneTransLarge": false,
+      "interval": 2000,
+      "scale": 0.5
+    },
+    "textConf": {
+      "columnName": "text",
+      "style": {
+        "fontSize": "150px",
+        "color": "#FAC35A"
+      },
+      "scale": 0.3
+    }
+  },
+  "nonListConfig": {
+    "bodyStyle": {
+      "minWidth": "1920px",
+      "minHeight": "1080px",
+      "backgroundColor": "#212E5B"
+    },
+    "flightData": {
+      "flight": "9C8636",
+      "destinationCN": "大阪",
+      "destinationEN": "Osaka",
+      "logo": "./../../static/logo/700x400/9C.gif",
+      "airlinesCN": "春秋航空",
+      "airlinesEN": "APRING AIRLINES",
+      "engineRoomCN": "经济舱柜台",
+      "engineRoomEN": "Economy Class",
+      "bordingTimeLabelCN": "预计登机",
+      "bordingTimeLabelEN": "Bording Time",
+      "bordingTime": "11:50",
+      "checkInTimeLabelCN": "办理时间",
+      "checkInTimeLabelEN": "Check-In Time",
+      "checkInTime": "09:20 - 11:20",
+      "gateLabelCN": "登机口",
+      "gateLabelEN": "Gate",
+      "gate": "04",
+      "flightStatusLabelCN": "航班状态",
+      "flightStatusLabelEN": "Status",
+      "flightStatusCN": "登机",
+      "flightStatusEN": "Boarding"
+    },
+    "rows": [
+      {
+        "type": "Row",
+        "align": "top",
+        "justify": "start",
+        "cols": [
+          {
+            "type": "Column",
+            "span": 13,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": "160px",
+                    "color": "#FAC35A",
+                    "borderBottom": "5px solid",
+                    "paddingLeft": "80px"
+                  },
+                  "bottomStyle": {},
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "columnName": "flight"
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "Row",
+                      "align": "middle",
+                      "justify": "start",
+                      "cols": [
+                        {
+                          "type": "Column",
+                          "span": 12,
+                          "children": [
+                            {
+                              "type": "DoubleLayerText",
+                              "content": {
+                                "topStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#fff",
+                                  "paddingLeft": "80px"
+                                },
+                                "bottomStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#fff",
+                                  "paddingLeft": "80px"
+                                },
+                                "topContent": [
+                                  {
+                                    "type": "Text",
+                                    "columnName": "bordingTimeLabelCN"
+                                  }
+                                ],
+                                "bottomContent": [
+                                  {
+                                    "type": "Text",
+                                    "columnName": "bordingTimeLabelEN"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Column",
+                          "span": 12,
+                          "children": [
+                            {
+                              "type": "DoubleLayerText",
+                              "content": {
+                                "topStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#FAC35A"
+                                },
+                                "bottomStyle": {},
+                                "topContent": [
+                                  {
+                                    "type": "Text",
+                                    "columnName": "bordingTime"
+                                  }
+                                ],
+                                "bottomContent": []
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Row",
+                      "align": "middle",
+                      "justify": "start",
+                      "cols": [
+                        {
+                          "type": "Column",
+                          "span": 12,
+                          "children": [
+                            {
+                              "type": "DoubleLayerText",
+                              "content": {
+                                "topStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#fff",
+                                  "paddingLeft": "80px"
+                                },
+                                "bottomStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#fff",
+                                  "paddingLeft": "80px"
+                                },
+                                "topContent": [
+                                  {
+                                    "type": "Text",
+                                    "columnName": "flightStatusLabelCN"
+                                  }
+                                ],
+                                "bottomContent": [
+                                  {
+                                    "type": "Text",
+                                    "columnName": "flightStatusLabelEN"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Column",
+                          "span": 12,
+                          "children": [
+                            {
+                              "type": "DoubleLayerText",
+                              "content": {
+                                "topStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#FAC35A"
+                                },
+                                "bottomStyle": {
+                                  "fontSize": "42px",
+                                  "color": "#FAC35A"
+                                },
+                                "topContent": [
+                                  {
+                                    "type": "Text",
+                                    "transColor": {
+                                      "登机": "#ff0000",
+                                      "Boarding": "#ff0000",
+                                      "延误": "#FFFF00",
+                                      "delay": "#FFFF00"
+                                    },
+                                    "columnName": "flightStatusCN"
+                                  }
+                                ],
+                                "bottomContent": [
+                                  {
+                                    "type": "Text",
+                                    "transColor": {
+                                      "登机": "#ff0000",
+                                      "Boarding": "#ff0000",
+                                      "延误": "#FFFF00",
+                                      "delay": "#FFFF00"
+                                    },
+                                    "columnName": "flightStatusEN"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 11,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "paddingTop": "20px",
+                    "paddingRight": "20px",
+                    "textAlign": "center"
+                  },
+                  "bottomStyle": {},
+                  "topContent": [
+                    {
+                      "type": "Image",
+                      "style": {
+                        "width": "535px",
+                        "height": "320px"
+                      },
+                      "columnName": "logo"
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "DoubleLayerText",
+                      "content": {
+                        "align": "right",
+                        "translateX": "-250px",
+                        "topStyle": {
+                          "fontSize": "32px",
+                          "color": "#FAC35A",
+                          "paddingLeft": "80px"
+                        },
+                        "bottomStyle": {
+                          "fontSize": "32px",
+                          "color": "#FAC35A",
+                          "paddingLeft": "80px"
+                        },
+                        "topContent": [
+                          {
+                            "type": "Text",
+                            "columnName": "airlinesCN"
+                          }
+                        ],
+                        "bottomContent": [
+                          {
+                            "type": "Text",
+                            "columnName": "airlinesEN"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Row",
+        "align": "top",
+        "justify": "start",
+        "cols": [
+          {
+            "type": "Column",
+            "span": 12,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": "144px",
+                    "color": "#FAC35A",
+                    "paddingLeft": "80px"
+                  },
+                  "bottomStyle": {
+                    "fontSize": "96px",
+                    "color": "#FAC35A",
+                    "paddingLeft": "80px"
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "columnName": "destinationCN"
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "Text",
+                      "columnName": "destinationEN"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "gridConfig": {
+    "langs": [
+      "cn",
+      "en",
+      "jp"
+    ],
+    "defaultLang": "cn",
+    "langTimer": 15000,
+    "getDataApi": "",
+    "bodyStyle": {
+      "defaultRowStyle": {
+        "rowStripe": [
+          "#284682",
+          "#1E2D5A"
+        ],
+        "fontSize": "32px",
+        "color": "#fff"
+      },
+      "defaultHeaderStyle": {
+        "fontSize": "34px",
+        "color": "#FAC35A",
+        "backgroundColor": "#1E2D5A",
+        "textAlign": "center",
+        "borderBottom": "1px solid",
+        "borderBottomColor": "#FAC35A",
+        "lineHeight": "100px",
+        "height": "100px"
+      }
+    },
+    "columns": [
+      {
+        "name": "logo",
+        "label": {},
+        "style": {
+          "width": 120,
+          "height": 80,
+          "minWidth": 120,
+          "padding": 0,
+          "paddingTop": "none",
+          "paddingRight": "none",
+          "paddingLeft": "none",
+          "paddingBottom": "none",
+          "margin": 3,
+          "marginTop": "none",
+          "marginRight": "none",
+          "marginLeft": "none",
+          "marginBottom": "none",
+          "textAlign": "center"
+        },
+        "headerStyle": {
+          "backgroundColor": "#1E2D5A"
+        },
+        "displayType": "Logo",
+        "radius": true,
+        "logoInterval": 7000
+      },
+      {
+        "name": "flight",
+        "label": {
+          "cn": "航班号",
+          "en": "FLIGHT"
+        },
+        "style": {
+          "width": 260,
+          "height": 55,
+          "minWidth": 156,
+          "textAlign": "center",
+          "fontSize": "42px",
+          "color": "#fff"
+        },
+        "headerStyle": {
+          "backgroundColor": "#1E2D5A",
+          "textAlign": "left"
+        },
+        "displayType": "Marquee",
+        "marqueeSpeed": 1
+      },
+      {
+        "name": "passby_destination",
+        "label": {
+          "cn": "经停/目的地",
+          "en": "DESTINATION"
+        },
+        "style": {
+          "width": 290,
+          "height": 55,
+          "minWidth": 260,
+          "textAlign": "center",
+          "fontSize": "32px"
+        },
+        "displayType": "Marquee",
+        "marqueeSpeed": 3
+      },
+      {
+        "name": "actualcheckinclose",
+        "label": {
+          "cn": "办理时间",
+          "en": "TIME"
+        },
+        "style": {
+          "width": 310,
+          "height": 55,
+          "minWidth": 280,
+          "textAlign": "left",
+          "fontSize": "32px"
+        },
+        "displayType": "Marquee",
+        "marqueeSpeed": 3
+      },
+      {
+        "name": "checkincounter",
+        "label": {
+          "cn": "办理柜台",
+          "en": "COUNTER"
+        },
+        "style": {
+          "height": 55,
+          "minWidth": 245,
+          "textAlign": "left",
+          "fontSize": "32px"
+        },
+        "headerStyle": {
+          "textAlign": "left"
+        },
+        "formatterjs": "induceCounter",
+        "displayType": "Marquee",
+        "marqueeSpeed": 3
+      },
+      {
+        "name": "flightstatus",
+        "label": {
+          "cn": "航班状态",
+          "en": "STATUS"
+        },
+        "style": {
+          "width": 280,
+          "height": 55,
+          "minWidth": 192,
+          "textAlign": "left",
+          "fontSize": "32px"
+        },
+        "displayType": "Marquee",
+        "marqueeSpeed": 3
+      }
+    ]
+  }
+}

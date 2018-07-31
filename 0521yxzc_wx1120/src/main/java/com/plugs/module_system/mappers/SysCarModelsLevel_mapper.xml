@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysCarModelsLevelMapper">
+	<insert id="add" parameterType="sysCarModelsLevelDto">
+		insert into ap_sys_car_models_level
+			(
+				uuid,
+				levelType,
+				brandName,
+				status,
+				creator,
+				createTime,
+				updateTime
+			)
+		values
+			(
+				#{uuid},
+				#{levelType},
+				#{brandName},
+				#{status},
+				#{creator},
+				#{createTime},
+				#{updateTime}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="sysCarModelsLevelDto">
+		update ap_sys_car_models_level
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="levelType != null and '' != levelType"> levelType = #{levelType},</if>
+			<if test="brandName != null and '' != brandName"> brandName = #{brandName},</if>
+			<if test="status != null"> status = #{status},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="sysCarModelsLevelDto">
+		delete from
+			ap_sys_car_models_level
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="sysCarModelsLevelDto">
+		select
+			*
+		from
+			ap_sys_car_models_level
+		<where>
+			<if test="uuid != null"> and uuid = #{uuid} </if>
+			<if test="brandName != null"> and brandName = #{brandName} </if>
+			<if test="levelType != null"> and levelType = #{levelType} </if>
+		</where>
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_sys_car_models_level
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="levelType != null and '' != levelType"> and levelType = #{levelType} </if>
+			<if test="brandName != null and '' != brandName"> and brandName = #{brandName} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="sysCarModelsLevelDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+		ORDER BY levelType ASC
+	</select>
+
+    <select id="queryPage" resultType="sysCarModelsLevelDto">
+        select
+        *
+		from
+		ap_sys_car_models_level
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="levelType != null and '' != levelType"> and levelType = #{levelType} </if>
+			<if test="brandName != null and '' != brandName"> and brandName LIKE '%${brandName}%' </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+		</where>
+    </select>
+
+    <update id="update" >
+        update ap_sys_car_models_level
+        <set>
+            <if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+            <if test="levelType != null and '' != levelType"> levelType = #{levelType},</if>
+            <if test="brandName != null and '' != brandName"> brandName = #{brandName},</if>
+            <if test="status != null and '' != status"> status = #{status},</if>
+            <if test="creator != null and '' != creator"> creator = #{creator},</if>
+            <if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+            <if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+        </set>
+        <where>
+            <if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+            <if test="levelType != null and '' != levelType"> and levelType = #{levelType} </if>
+            <if test="brandName != null and '' != brandName"> and brandName = #{brandName} </if>
+            <if test="status != null and '' != status"> and status = #{status} </if>
+            <if test="creator != null and '' != creator"> and creator = #{creator} </if>
+            <if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+            <if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+        </where>
+    </update>
+
+    <delete id="delete" >
+        delete from
+		ap_sys_car_models_level
+        <where>
+            <if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+            <if test="levelType != null and '' != levelType"> and levelType = #{levelType} </if>
+            <if test="brandName != null and '' != brandName"> and brandName = #{brandName} </if>
+            <if test="status != null and '' != status"> and brandName = #{status} </if>
+            <if test="creator != null and '' != creator"> and creator = #{creator} </if>
+            <if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+            <if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+        </where>
+    </delete>
+
+    <select id="queryPageApi" resultType="map">
+        select
+			uuid,
+			levelType,
+			brandName,
+			status,
+			creator,
+			createTime,
+			updateTime
+        from
+			ap_sys_car_models_level
+        <where>
+            <if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+            <if test="levelType != null and '' != levelType"> and levelType = #{levelType} </if>
+            <if test="brandName != null and '' != brandName"> and brandName = #{brandName} </if>
+            <if test="status != null and '' != status"> and status = #{status} </if>
+            <if test="creator != null and '' != creator"> and creator = #{creator} </if>
+            <if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+            <if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+        </where>
+    </select>
+
+
+
+</mapper>

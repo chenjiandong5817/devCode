@@ -1,0 +1,125 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-12-08 08:56:06
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-12-08 17:42:28
+ */
+
+<template>
+  <div>
+    <el-dialog :visible.sync="dialogTableVisible">
+      <div style="text-align:center;font-size:1.5em;"><span style="background-color:#bdeab2;font-family:Tahoma;">{{typeShow}}</span></div>
+      </br>
+      <pre id="text" style="font-size:1.0em;white-space: pre-wrap;word-wrap: break-word;" class="sansserif2" contenteditable="true">{{editText}}</pre>
+      <!-- <div style="font-size:1.0em;" class="sansserif2" id="adminText" v-for="temp in showText" :key="temp" contenteditable="true" >
+        <div class="text">{{temp}}</div>
+      </div> -->
+      </br>
+      <el-button type="primary" style="float:right;margin-bottom:10px;" @click="reset">重置原始文本</el-button>
+      <el-button type="primary" style="float:right;margin-bottom:10px;margin-right:10px;" @click="submit">提交</el-button>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import Util from '../../common/js/util'
+import API from '../../api'
+export default {
+  data () {
+    return {
+      typeShow: '',
+      lastText: '', // 最终的sql
+      storeSourceId: '',
+      editText: '', // 可以编辑的文本
+      showText: [],
+      dialogTableVisible: false
+    }
+  },
+  methods: {
+    reset () {
+      this.show(this.storeSourceId, this.typeShow)
+    },
+    show (sourceId, label) {
+      this.typeShow = label
+      // console.log(label)
+      this.showText = []
+      this.storeSourceId = sourceId
+      this.dialogTableVisible = false
+      let para = Object.assign({id: sourceId})
+      API.getAfterModifyText().go(para).then((data) => {
+        if (data.ok) {
+          this.editText = data.attr.data.list[0].sql
+          // console.log(this.editText)
+          this.formatText()
+          this.dialogTableVisible = true
+        } else {
+          this.$notify(Util.notifyBody(false, data.msg))
+        }
+      })
+    },
+    HTMLDecode (text) { // 反转义
+      var temp = document.createElement('div')
+      temp.innerHTML = text
+      var output = temp.innerText || temp.textContent
+      temp = null
+      return output
+    },
+    submit () {
+      // console.log(this.editText)
+      let finalStr = document.getElementById('text').innerHTML
+      console.log(finalStr)
+      this.lastText = ''
+      let divList = document.querySelectorAll('div.text')
+      for (let i = 0; i < divList.length; i++) {
+        this.lastText += this.HTMLDecode(divList[i].innerHTML) + '\n'
+      }
+      console.log(this.lastText)
+      this.$confirm('确认提交吗？', '提示', {}).then(() => {
+        let putObj = {id: this.storeSourceId, sql: finalStr}
+        let para = Object.assign({newValue: putObj})
+        API.editSourceData().go(para).then((data) => {
+          if (data.ok) {
+            this.$notify(Util.notifyBody(true, '修改成功'))
+            this.dialogTableVisible = false
+          } else {
+            this.$notify(Util.notifyBody(false, data.msg))
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        })
+      })
+    },
+    formatText () {  // 格式化获取回来的字符串,让字符串排版更好看
+      this.showText = []
+      let tempStr = ''
+      for (let i = 0; i < this.editText.length; i++) {
+        if (this.editText[i] === '\n') {
+          this.showText.push(tempStr)
+          // console.log(this.showText.length)
+          tempStr = ''
+        } else if (this.editText[i] === ' ') {
+          tempStr += ' '
+        } else {
+          tempStr += this.editText[i]
+        }
+      }
+      this.showText.push(tempStr)
+    }
+  }
+}
+</script>
+
+<style scoped>
+.sansserif2
+{
+  width:auto;
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size:7px;
+  color:#501b63;
+  line-height:25px;
+  letter-spacing:1px
+}
+</style>

@@ -1,0 +1,102 @@
+          // 以下为组合模板
+        case 'DefaultMarqueeText':
+          rs = this.defaultMarqueeTextRender(h, conf, ajaxData)
+          break
+        case 'FixedLeftMarquee':
+          rs = this.fixedLeftMarqueeRender(h, conf, ajaxData)
+          break
+
+---------------------------------------------------------------------------------    
+    
+    
+    // 固定左部滚动文本
+    fixedLeftMarqueeRender (h, conf, ajaxData = {}) {
+      // 固定部分配置
+      let fixedPart = conf.fixedColumnNames.map(item => {
+        return {
+          type: 'Text',
+          tag: 'span',
+          style: Tools.completeStyleSuffix(conf.style),
+          columnName: item
+        }
+      })
+      // 连接符配置
+      let joiner = {
+        type: 'Text',
+        tag: 'span',
+        style: Tools.completeStyleSuffix(conf.style)
+      }
+      if (conf.joinerHideBy) {
+        joiner.transExist = conf.joiner
+        joiner.columnName = conf.joinerHideBy
+      } else {
+        joiner.value = conf.joiner
+      }
+      // 滚动文本配置
+      let scrollPart = {
+        type: 'MarqueeText',
+        speed: conf.speed,
+        style: {
+          display: 'inline-block',
+          width: 280
+        },
+        content: [
+          {
+            type: 'Text',
+            style: Tools.completeStyleSuffix(conf.style),
+            columnName: conf.scrollColumnName
+          }
+        ]
+      }
+      let genConf = [
+        {
+          type: 'MarqueeText',
+          speed: conf.speed,
+          style: {
+            display: 'inline-block'
+          },
+          content: fixedPart.concat(joiner)
+        },
+        scrollPart
+      ]
+      return genConf.map(item => {
+        return this.confRender(h, item, ajaxData)
+      })
+    },
+    // 默认滚动文本，即marquee模板里面只有一个text子模板
+    defaultMarqueeTextRender (h, conf, ajaxData = {}) {
+      // marquee配置
+      let genConf = {
+        type: 'MarqueeText',
+        speed: conf.speed,
+        seamless: conf.seamless,
+        always: conf.always,
+        vertical: conf.vertical,
+        backZero: conf.backZero,
+        style: conf.style,
+        content: []
+      }
+      if (conf.hiddenBy) genConf.hiddenBy = conf.hiddenBy
+      // 文本配置
+      let textConf = {
+        type: 'Text',
+        tag: conf.tag
+      }
+      if (conf.textStyle) textConf.style = conf.textStyle
+      if (conf.columnName) textConf.columnName = conf.columnName
+      if (conf.emptyReplace) textConf.emptyReplace = conf.emptyReplace
+      if (conf.transExist) textConf.transExist = conf.transExist
+      if (conf.value) textConf.value = conf.value
+      if (conf.property) textConf.property = conf.property
+      if (conf.date) textConf.date = conf.date
+      if (conf.prefix) textConf.prefix = conf.prefix
+      if (conf.suffix) textConf.suffix = conf.suffix
+      if (conf.langLock) textConf.langLock = conf.langLock
+      if (conf.langExcept) textConf.langExcept = conf.langExcept
+      if (conf.transColor) textConf.transColor = conf.transColor
+      if (conf.twinkle) textConf.twinkle = conf.twinkle
+      if (conf.special) textConf.special = conf.special
+      if (conf.replace) textConf.replace = conf.replace
+      genConf.content.push(textConf)
+      return this.confRender(h, genConf, ajaxData)
+    }

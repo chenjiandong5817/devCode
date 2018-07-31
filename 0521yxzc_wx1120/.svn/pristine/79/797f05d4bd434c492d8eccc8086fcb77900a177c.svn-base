@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_driver.mappers.DriverMapper">
+    <!--添加记录-->
+    <insert id="add" parameterType="driverDto">
+		insert into ap_driver
+			(
+				uuid,
+				userName,
+				idCard,
+				password,
+				face,
+				sex,
+				mobile,
+				carUuid,
+				teamUuid,
+				companyUuid,
+				isWork,
+				status,
+				abortTime,
+				abortRemark,
+				isFirstLogin,
+				tokenId,
+				balance,
+				lastLogin,
+				pushId,
+				deviceType,
+				deviceToken,
+				deviceVersion,
+				appVersion,
+				createTime,
+				creator,
+				updateTime,
+				currentLng,
+				currentLat,
+				currentAngle,
+				currentAddress,
+				driverType,
+				englishService,
+				isValid,
+				isShowGuidePage,
+				priorityPush
+			)
+		values
+			(
+				#{uuid},
+				#{userName},
+				#{idCard},
+				#{password},
+				#{face},
+				#{sex},
+				#{mobile},
+				#{carUuid},
+				#{teamUuid},
+				#{companyUuid},
+				#{isWork},
+				#{status},
+				#{abortTime},
+				#{abortRemark},
+				#{isFirstLogin},
+				#{tokenId},
+				#{balance},
+				#{lastLogin},
+				#{pushId},
+				#{deviceType},
+				#{deviceToken},
+				#{deviceVersion},
+				#{appVersion},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{currentLng},
+				#{currentLat},
+				#{currentAngle},
+				#{currentAddress},
+				#{driverType},
+				#{englishService},
+				#{isValid},
+				#{isShowGuidePage},
+				#{priorityPush}
+			)
+	</insert>
+
+    <!--修改记录-->
+    <update id="edit" parameterType="driverDto">
+        update ap_driver
+        <set>
+            <if test="userName != null and '' != userName">userName = #{userName},</if>
+            <if test="idCard != null and '' != idCard">idCard = #{idCard},</if>
+            <if test="password != null and '' != password">password = #{password},</if>
+            <if test="face != null and '' != face">face = #{face},</if>
+            <if test="sex != null and '' != sex">sex = #{sex},</if>
+            <if test="mobile != null and '' != mobile">mobile = #{mobile},</if>
+            <if test="carUuid != null and '' != carUuid">carUuid = #{carUuid},</if>
+            <if test="teamUuid != null and '' != teamUuid">teamUuid = #{teamUuid},</if>
+            <if test="companyUuid != null and '' != companyUuid">companyUuid = #{companyUuid},</if>
+            <if test="isWork != null and '' != isWork">isWork = #{isWork},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="abortTime != null and '' != abortTime">abortTime = #{abortTime},</if>
+            <if test="abortRemark != null and '' != abortRemark">abortRemark = #{abortRemark},</if>
+            <if test="isFirstLogin != null and '' != isFirstLogin">isFirstLogin = #{isFirstLogin},</if>
+            <if test="tokenId != null and '' != tokenId">tokenId = #{tokenId},</if>
+            <if test="balance != null and '' != balance">balance = #{balance},</if>
+            <if test="insBalance != null and '' != insBalance">balance = balance + #{insBalance},</if>
+            <if test="decBalance != null and ''!=decBalance"> balance = balance - #{decBalance},</if>
+            <if test="lastLogin != null and '' != lastLogin">lastLogin = #{lastLogin},</if>
+            <if test="pushId != null and '' != pushId">pushId = #{pushId},</if>
+            <if test="deviceType != null and '' != deviceType">deviceType = #{deviceType},</if>
+            <if test="deviceToken != null and '' != deviceToken">deviceToken = #{deviceToken},</if>
+            <if test="deviceVersion != null and '' != deviceVersion">deviceVersion = #{deviceVersion},</if>
+            <if test="appVersion != null and '' != appVersion">appVersion = #{appVersion},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="currentLng != null and '' != currentLng">currentLng = #{currentLng},</if>
+            <if test="currentLat != null and '' != currentLat">currentLat = #{currentLat},</if>
+            <if test="currentAngle != null and '' != currentAngle">currentAngle = #{currentAngle},</if>
+            <if test="currentAddress != null and '' != currentAddress">currentAddress = #{currentAddress},</if>
+            <if test="driverType != null and '' != driverType">driverType = #{driverType},</if>
+            <if test="englishService != null and '' != englishService">englishService = #{englishService},</if>
+            <if test="priorityPush != null and '' != priorityPush">priorityPush = #{priorityPush},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <!--删除记录-->
+    <delete id="del" parameterType="driverDto">
+		delete from
+			ap_driver
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <!--根据主键查询详情-->
+    <select id="selInfo" resultType="driverDto">
+		select
+			*
+		from
+			ap_driver
+		where
+			uuid = #{uuid}
+	</select>
+
+    <!--通用SQL-->
+    <sql id="sqlForList">
+        from
+        ap_driver
+        <where>
+            status !=4
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="noEqUuid != null and '' != noEqUuid">and uuid = #{noEqUuid}</if>
+            <if test="userName != null and '' != userName">and userName = #{userName}</if>
+            <if test="idCard != null and '' != idCard">and idCard = #{idCard}</if>
+            <if test="password != null and '' != password">and password = #{password}</if>
+            <if test="face != null and '' != face">and face = #{face}</if>
+            <if test="sex != null and '' != sex">and sex = #{sex}</if>
+            <if test="mobile != null and '' != mobile">and mobile = #{mobile}</if>
+            <if test="carUuid != null and '' != carUuid">and carUuid = #{carUuid}</if>
+            <if test="teamUuid != null and '' != teamUuid">and teamUuid = #{teamUuid}</if>
+            <if test="companyUuid != null and '' != companyUuid">and companyUuid = #{companyUuid}</if>
+            <if test="isWork != null and '' != isWork">and isWork = #{isWork}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="abortTime != null and '' != abortTime">and abortTime = #{abortTime}</if>
+            <if test="abortRemark != null and '' != abortRemark">and abortRemark = #{abortRemark}</if>
+            <if test="isFirstLogin != null and '' != isFirstLogin">and isFirstLogin = #{isFirstLogin}</if>
+            <if test="tokenId != null and '' != tokenId">and tokenId = #{tokenId}</if>
+            <if test="balance != null and '' != balance">and balance = #{balance}</if>
+            <if test="lastLogin != null and '' != lastLogin">and lastLogin = #{lastLogin}</if>
+            <if test="pushId != null and '' != pushId">and pushId = #{pushId}</if>
+            <if test="deviceType != null and '' != deviceType">and deviceType = #{deviceType}</if>
+            <if test="deviceToken != null and '' != deviceToken">and deviceToken = #{deviceToken}</if>
+            <if test="deviceVersion != null and '' != deviceVersion">and deviceVersion = #{deviceVersion}</if>
+            <if test="appVersion != null and '' != appVersion">and appVersion = #{appVersion}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="currentLng != null and '' != currentLng">and currentLng = #{currentLng}</if>
+            <if test="currentLat != null and '' != currentLat">and currentLat = #{currentLat}</if>
+            <if test="currentAngle != null and '' != currentAngle">and currentAngle = #{currentAngle}</if>
+            <if test="driverType != null and '' != driverType">and driverType = #{driverType}</if>
+            <if test="englishService != null and '' != englishService">and englishService = #{englishService}</if>
+            <if test="isValid != null and ''!=isValid">and isValid = #{isValid}</if>
+            <if test="isShowGuidePage != null and ''!=isShowGuidePage">and isShowGuidePage = #{isShowGuidePage}</if>
+        </where>
+    </sql>
+
+    <!--统计-->
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--查询列表-->
+    <select id="list" resultType="driverDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--查询符合条件非优先推送的司机UUID列表-->
+    <select id="suiteConditionUuidList" resultType="string">
+        SELECT t.uuid from
+        (select
+                ad.uuid,GetDistance(#{lat}, #{lng}, currentlat, currentlng) distance
+            from
+                ap_driver ad
+            inner join ap_sys_car ac on ad.caruuid = ac.uuid
+            where
+                (ad.isWork = 2 or (ad.isWork != 2 and ad.acceptAppointSwitch = 1))
+                <!--and (ad.priorityPush != 1 or ad.priorityPush is null)-->
+                <if test="levelType!=null and ''!=levelType">and ac.levelType = #{levelType}</if>
+                <if test="carLevelUp!=null and ''!=carLevelUp">and ac.levelType &gt;= #{carLevelUp}</if>
+            ) t
+              where t.uuid not in(
+                select ad.uuid
+                from ap_driver ad
+                left join ap_order ao on ad.uuid = ao.actualDriverUuid
+                where
+                    (abs(ROUND(TO_NUMBER(sysdate - ad.locationUploadTime) * 24 * 60 * 60)) &gt; #{offLineLimitTime}) or
+                    (ao.mainStatus=3) or
+                    (ao.mainstatus = 2 and ao.orderType = 5) or
+                    (ao.mainstatus = 2 and ao.orderType!= 5 and
+                    abs(ROUND(TO_NUMBER(ao.deparTime - to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss')) * 24 * 60 * 60)) &lt;
+                    (case when TO_NUMBER(ao.deparTime-to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss'))&lt;0 then #{limitTimeBefore}
+                    else #{limitTimeAfter} end)
+                  )
+              GROUP BY ad.uuid
+          )
+          <if test="distance != null and '' != distance">and distance &lt;= #{distance}</if>
+    </select>
+
+    <!--查询优先推送的司机UUID列表-->
+    <select id="priorityPushUuidList" resultType="string">
+        SELECT t.uuid from
+        (select
+            ad.uuid,GetDistance(#{lat}, #{lng}, currentlat, currentlng) distance
+         from
+            ap_driver ad
+         inner join ap_sys_car ac on ad.caruuid = ac.uuid
+         where
+            (ad.isWork = 2 or (ad.isWork != 2 and ad.acceptAppointSwitch = 1))
+            and ad.priorityPush = 1
+            and ac.levelType = #{levelType})t
+            where t.uuid not in(
+               select ad.uuid
+               from ap_driver ad
+               left join ap_order ao on ad.uuid = ao.actualDriverUuid
+               where
+                  (abs(ROUND(TO_NUMBER(sysdate - ad.locationUploadTime) * 24 * 60 * 60)) &gt; #{offLineLimitTime}) or
+                  (ao.mainStatus=3) or
+                  (ao.mainstatus = 2 and ao.orderType = 5) or
+                  (ao.mainstatus = 2 and ao.orderType!= 5
+                  and abs(ROUND(TO_NUMBER(ao.deparTime - to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss')) * 24 * 60 * 60)) &lt;
+                    (case when TO_NUMBER(ao.deparTime-to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss'))&lt;0 then #{limitTimeBefore} else #{limitTimeAfter} end)
+                  )
+            GROUP BY ad.uuid
+          )
+        <if test="distance != null and '' != distance">and distance &lt;= #{distance}</if>
+    </select>
+
+    <!--分页查询列表-->
+    <select id="queryPage" resultType="driverDto">
+
+        SELECT
+        a.*,
+        b.carNo,
+        c.onTripId
+        FROM
+        ap_driver a
+        left join  ap_sys_car b on a.carUuid = b.uuid
+        left join (select distinct o.actualdriveruuid as ontripid from ap_order o where o.mainstatus = '3')c  on a.uuid= c.ontripid
+        <where>
+            a.status !=4
+            <if test="userName != null and '' != userName">and a.userName LIKE '%'||#{userName}||'%'</if>
+            <if test="mobile != null and '' != mobile">and a.mobile like '%'||#{mobile}||'%'</if>
+            <if test="isWork != null and '' != isWork">and a.isWork = #{isWork}</if>
+            <if test="status != null and '' != status">and a.status = #{status}</if>
+            <if test="driverType != null and '' != driverType">and a.driverType = #{driverType}</if>
+            <if test="carNo != null and '' != carNo">and b.carNo LIKE '%'||#{carNo}||'%'</if>
+        </where>
+        ORDER BY a.createTime DESC
+    </select>
+
+
+    <!--查询司机，包括车型等信息-->
+    <select id="findDriver" resultType="driverDto">
+        SELECT a.*,
+        b.carNo,
+        b.color carColor,
+        c.brandName,
+        c.levelType,
+        (SELECT count (1) FROM ap_order c where c.driveruuid = a.uuid and c.mainStatus = 5) orderCount
+        <if test="uuid != null and '' != uuid">
+            ,
+        (select COALESCE(AVG (evaluateScore),0) from ap_order_evaluate aoe where aoe.driveruuid = #{uuid}) avgScore
+        </if>
+        FROM ap_driver a
+        left join ap_sys_car b on a.carUuid = b.uuid
+        LEFT join ap_sys_car_models_level c on b.modelsleveluuid = c.uuid
+        <where>
+            <if test="uuid != null and '' != uuid">and a.uuid = #{uuid}</if>
+            <if test="mobile != null and '' != mobile">and a.mobile = #{mobile}</if>
+            <if test="tokenId != null and '' != tokenId">and a.tokenId = #{tokenId}</if>
+        </where>
+    </select>
+
+
+
+    <!--指定时间内无订单服务的司机UUID-->
+    <select id="notServiceDriverUuidByTimeAndDistance" resultType="string">
+        select * from(SELECT uuid
+        from
+        (select ad0.uuid, GetDistance(#{lat}, #{lng}, currentlat, currentlng) distance
+        from ap_driver ad0
+        inner join ap_sys_car ac on ad0.caruuid = ac.uuid
+        where 1=1
+        <if test="levelType != null and '' != levelType">and ac.levelType=#{levelType}</if>
+        <if test="carLevelUp!=null and ''!=carLevelUp">and ac.levelType &gt;= #{carLevelUp}</if>
+        and ad0.isWork = 2
+        and ad0.uuid not in (
+        select ad.uuid
+        from ap_driver ad
+        left join ap_order ao on ad.uuid = ao.actualDriverUuid
+        where
+        (abs(ROUND(TO_NUMBER(sysdate - ad.locationUploadTime) * 24 * 60 * 60)) &gt; #{offLineLimitTime}) or
+        (ao.mainStatus=3) or
+        (ao.mainstatus = 2 and ao.orderType = 5) or
+        (ao.mainstatus = 2 and ao.orderType!= 5
+        and (abs(ROUND(TO_NUMBER(ao.deparTime - to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss')) * 24 * 60 * 60)) &lt;
+        (case when TO_NUMBER(ao.deparTime-to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss'))&lt;0 then #{limitTimeBefore} else #{limitTimeAfter} end)
+        ))
+        <if test="driverUuid != null and '' != driverUuid">and ad.uuid != #{driverUuid}</if>
+        )
+        <if test="driverUuid != null and '' != driverUuid">and ad0.uuid != #{driverUuid}</if>
+        )
+        WHERE 1 = 1
+        <if test="distance != null and '' != distance">and distance &lt;= #{distance}</if>
+        order by distance asc)
+        WHERE rownum &lt;2
+    </select>
+
+
+    <!--指定时间内无订单服务的司机UUID 按距离排序 -->
+    <select id="notServiceDriverUuidByTimeAndDistanceLog" resultType="notServiceDriverInfo">
+        select ad0.uuid suitDriverUuid,
+        ad0.username driverName,
+        GetDistance(#{lat}, #{lng}, currentlat, currentlng) distance,
+        ad0.currentLng currentLng,
+        ad0.currentLat currentLat,
+        ac.carno carNo,
+        ac.levelType levelType
+        from ap_driver ad0
+        inner join ap_sys_car ac on ad0.caruuid = ac.uuid
+        where 1=1
+        <if test="levelType != null and '' != levelType">and ac.levelType=#{levelType}</if>
+        <if test="carLevelUp!=null and ''!=carLevelUp">and ac.levelType &gt;= #{carLevelUp}</if>
+        and ad0.isWork = 2
+        and ad0.uuid not in (
+        select ad.uuid
+        from ap_driver ad
+        left join ap_order ao on ad.uuid = ao.actualDriverUuid
+        where
+        (abs(ROUND(TO_NUMBER(sysdate - ad.locationUploadTime) * 24 * 60 * 60)) &gt; #{offLineLimitTime}) or
+        (ao.mainStatus=3) or
+        (ao.mainstatus = 2 and ao.orderType = 5) or
+        (ao.mainstatus = 2 and ao.orderType!= 5
+        and (abs(ROUND(TO_NUMBER(ao.deparTime - to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss')) * 24 * 60 * 60)) &lt;
+        (case when TO_NUMBER(ao.deparTime-to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss'))&lt;0 then #{limitTimeBefore} else #{limitTimeAfter} end)
+        )
+        )
+        <if test="driverUuid != null and '' != driverUuid">and ad.uuid != #{driverUuid}</if>
+        )
+        <if test="driverUuid != null and '' != driverUuid">and ad0.uuid != #{driverUuid}</if>
+        <if test="distance != null and '' != distance">and GetDistance(#{lat}, #{lng}, currentlat, currentlng) &lt;= #{distance}</if>
+        order by distance asc
+    </select>
+
+</mapper>

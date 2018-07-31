@@ -1,0 +1,233 @@
+/*
+ * @Author: ylj
+ * @Date: 2017-11-15 11:00:17
+ * @Last Modified by: ylj
+ * @Last Modified time: 2017-11-16 16:51:02
+ */
+<template>
+<div class="importExcelCss">
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="false" @close="handleClose" :modal="false" size="tiny">
+    <el-form :model="form.seasonInfo" ref="impExcelPlanSea" :rules="rules">
+      <el-row :gutter="6">
+        <el-col :span="14">
+          <el-form-item label="运营机场" prop="airportCode">
+            <city-name
+              style="width: 100%"
+              v-model="form.seasonInfo.airportCode"
+              ref="city"
+              v-on:getAirportName = "setAirportCode">
+            </city-name>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="10">
+          <el-form-item label="计划类型" prop="planSource">
+            <el-select v-model="form.seasonInfo.planSource" placeholder="计划类型" style="width: 100%" :filterable="true" clearable >
+              <el-option
+                v-for="item in baseList.planSources"
+                :key="item.sourceCode"
+                :lable="item.description"
+                :value="item.sourceCode">
+                <span style="float: left">{{ item.sourceCode }}</span>
+                <span style="float: right">{{ item.description }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="6">
+        <el-col :span="24">
+          <el-form-item label="航季名称" prop="seasonId">
+            <el-select v-model="form.seasonInfo.seasonId" style="width: 100%" placeholder="航季名称" filterable clearable>
+              <el-option
+                v-for="item in baseList.seasonList"
+                :key="item.id"
+                :label="item.seasonName"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="1">
+        <el-col :span="7">
+          <el-form-item label="文件上传" prop="fileList">
+            <el-upload
+              class="upload-demo"
+              ref="excleImport"
+              action="/raiis/src/views/fids/excelfile"
+              :data="importPara"
+              :file-list="form.seasonInfo.fileList"
+              :auto-upload="false"
+              :multiple="true"
+              :accept="fileType"
+              :on-change="importChange"
+              :before-upload="beforeImport"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              style="width: 100%">
+            <el-row :gutter="10">
+              <el-col :span="10">
+                <el-button size="small" type="primary">选择文件</el-button>
+              </el-col>
+            </el-row>
+            </el-upload>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="" prop="files">
+            <span style="font-size: 10px">请选择上传文件</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="handleClose">取消</el-button>
+      <el-button @click.native="resetForm('impExcelPlanSea')" >重置</el-button>
+      <el-button type="primary" @click.native="handAddOrUptSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+</div>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import Butil from '../../../common/js/base-util'
+import API from '../../../api'
+import dateTime from '../../../components/DateTime'
+import CityName from '../../../components/CityName'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () {}
+    },
+    callback: {
+      type: Function,
+      default: function () {}
+    }
+  },
+  data () {
+    return {
+      visible: false,
+      loading: false,
+      API: API,
+      form: {
+        seasonInfo: { airportCode: null, planSource: null, seasonId: null, fileList: [] }
+      },
+      subAirportLs: [],
+      baseList: { planSources: this.$cache.fetch('planSource'), seasonList: this.$cache.fetch('seasonName') },
+      rules: {
+        airportCode: [ { required: true, message: '请选择运营机场', trigger: 'blur' } ],
+        planSource: [ { required: true, message: '请选择计划类型', trigger: 'blur' } ],
+        seasonId: [ { required: true, message: '请选择航季名称', trigger: 'blur' } ],
+        fileList: [ { required: true, message: '请选择航季名称', trigger: 'blur' } ]
+      },
+      importPara: {},
+      fileType: '.xls,.xlsx'
+    }
+  },
+  components: {
+    dateTime: dateTime,
+    CityName: CityName
+  },
+  watch: {
+    '$store.state.cached' (curval, oldval) {
+      this.baseList = { planSources: this.$cache.fetch('planSource'), seasonList: this.$cache.fetch('seasonName') }
+    }
+  },
+  methods: {
+    bindData () {
+
+    },
+    show (seasonInfo, airportCode) {
+      this.visible = true
+      this.showAirportInfo(this.subAirportLs, airportCode)
+      this.loading = false
+      this.form.seasonInfo = Util.deepCopy(seasonInfo)
+      console.log(this.baseList.planSources)
+    },
+    initData (airportCode) {
+
+    },
+    handleClose: function () {
+      this.visible = false
+      this.$refs['impExcelPlanSea'].resetFields()
+      this.form.seasonInfo = {}
+    },
+    handAddOrUptSubmit: function () {
+      console.log('--handAddOrUptSubmit--')
+      let para = {}
+      this.$refs['impExcelPlanSea'].validate((valid) => {
+        if (valid) {
+          this.$confirm('', '', {}).then(() => {
+            this.loading = true
+            this.to(para).then((res) => {
+              this.loading = false
+              this.$notify(Util.notifyBody(res.ok, res.mes))
+              this.visible = false
+              this.callback()
+            })
+          }).catch(() => {
+            this.message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+    },
+    setAirportCode (airportCode) {
+      this.form.seasonInfo.airportCode = airportCode
+    },
+    showAirportInfo (subAirportLs, airportCode) {
+      this.$nextTick(() => {
+        if (airportCode !== '' || airportCode !== undefined) {
+          this.$refs['city'].airportCode = airportCode
+        }
+        this.$refs['city'].setCitys(subAirportLs)
+      })
+    },
+    importChange () {
+      console.log('--importChange--')
+      console.log(this.form.seasonInfo.fileList)
+    },
+    beforeImport () {
+      console.log('--beforeImport--')
+    },
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview (file) {
+      console.log(file)
+    }
+  },
+  mounted () {
+    this.subAirportLs = Butil.getSubscribeAirports()
+    this.bindData()
+  }
+}
+
+</script>
+<style lang="scss">
+.importExcelCss {
+  .el-dialog__body {
+    padding-top: 10px;
+  }
+
+  .el-form-item {
+    margin-bottom: 10px;
+  }
+}
+</style>
+

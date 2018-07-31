@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysIdentifyMapper">
+	<insert id="add" parameterType="sysIdentifyDto" keyProperty="id" useGeneratedKeys="true">
+		insert into ap_sys_identify
+			(
+				uuid,
+				mobile,
+				identifyCode,
+				codeType,
+				status,
+				sendType,
+				createTime
+			)
+		values
+			(
+				#{uuid},
+				#{mobile},
+				#{identifyCode},
+				#{codeType},
+				#{status},
+				#{sendType},
+				#{createTime}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="sysIdentifyDto">
+		update ap_sys_identify
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="mobile != null and '' != mobile"> mobile = #{mobile},</if>
+			<if test="identifyCode != null and '' != identifyCode"> identifyCode = #{identifyCode},</if>
+			<if test="codeType != null and '' != codeType"> codeType = #{codeType},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="sysIdentifyDto">
+		delete from
+			ap_sys_identify
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="sysIdentifyDto">
+		select
+			*
+		from
+			ap_sys_identify
+		where
+			uuid = #{uuid}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_sys_identify
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="mobile != null and '' != mobile"> and mobile = #{mobile} </if>
+			<if test="identifyCode != null and '' != identifyCode"> and identifyCode = #{identifyCode} </if>
+			<if test="codeType != null and '' != codeType"> and codeType = #{codeType} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="sysIdentifyDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="sysIdentifyDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+	<update id="update" >
+		update ap_sys_identify
+		<set>
+			<if test="status != null and '' != status"> status = #{status},</if>
+		</set>
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="mobile != null and '' != mobile"> and mobile = #{mobile} </if>
+			<if test="identifyCode != null and '' != identifyCode"> and identifyCode = #{identifyCode} </if>
+			<if test="codeType != null and '' != codeType"> and codeType = #{codeType} </if>
+			<if test="oldStatus != null and '' != oldStatus"> and status = #{oldStatus} </if>
+		</where>
+	</update>
+</mapper>

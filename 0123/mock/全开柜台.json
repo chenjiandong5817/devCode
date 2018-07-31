@@ -1,0 +1,88 @@
+{
+  "type": "Layout",
+  "description": "全开柜台",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "langs": [ "en-ww", "ja-jp" ],
+  "defaultLang": "en-ww",
+  "langTimer": 10000,
+  "rows": [
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 24,
+          "dataSource": "8888BEEE885842119D93F1A00C879ECB",
+          "mainSource": true,
+          "children": [
+            {
+              "type": "FlexImageView",
+              "showType": "flexImage",
+              "autoSize": true,
+              "translateY": 0,
+              "style": {
+                "height": 800,
+                "padding": "20px 0"
+              },
+              "imgStyle": {
+                "height": 350
+              },
+              "imgType": "flight_logo",
+              "imgSize": "700x400",
+              "columnName": "carrier,countermode"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "align": "middle",
+      "justify": "center",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 24,
+          "dataSource": "8888BEEE885842119D93F1A00C879ECB",
+          "singleData": true,
+          "children": [
+            {
+              "type": "DoubleLayerText",
+              "content": {
+                "align": "center",
+                "topStyle": {
+                  "fontSize": 80,
+                  "color": "#FAC35A"
+                },
+                "bottomStyle": {
+                  "fontSize": 80,
+                  "color": "#FAC35A"
+                },
+                "topContent": [
+                  {
+                    "type": "Text",
+                    "langLock": "zh-cn",
+                    "columnName": "servicetype"
+                  }
+                ],
+                "bottomContent": [
+                  {
+                    "type": "Text",
+                    "langExcept": ["zh-cn"],
+                    "columnName": "servicetype"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}                    

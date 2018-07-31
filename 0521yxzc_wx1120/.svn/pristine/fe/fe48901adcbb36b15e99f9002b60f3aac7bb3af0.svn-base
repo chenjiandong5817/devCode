@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysConfigMapper">
+	<insert id="add" parameterType="sysConfigDto">
+		insert into ap_sys_config
+			(
+				uuid,
+				module,
+				name,
+				key,
+				value,
+				status,
+				creator,
+				createTime
+			)
+		values
+			(
+				#{uuid},
+				#{module},
+				#{name},
+				#{key},
+				#{value},
+				#{status},
+				#{creator},
+				#{createTime}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="sysConfigDto">
+		update ap_sys_config
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="module != null and '' != module"> module = #{module},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="key != null and '' != key"> key = #{key},</if>
+			<if test="value != null and '' != value"> value = #{value},</if>
+			<if test="status != null"> status = #{status},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="sysConfigDto">
+		delete from
+			ap_sys_config
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="sysConfigDto">
+		select
+			*
+		from
+			ap_sys_config
+		<include refid="sqlForList"/>
+	</select>
+	
+	<sql id="sqlForList">
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="module != null and '' != module"> and module = #{module} </if>
+			<if test="name != null and '' != name"> and name LIKE '%${name}%' </if>
+			<if test="key != null and '' != key"> and key = #{key} </if>
+			<if test="value != null and '' != value"> and value = #{value} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*)
+		from
+		ap_sys_config
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="sysConfigDto">
+		select 
+			 *
+		from
+		ap_sys_config
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="sysConfigDto">
+        select
+        *
+		from
+		ap_sys_config
+        <include refid="sqlForList"/>
+    </select>
+</mapper>

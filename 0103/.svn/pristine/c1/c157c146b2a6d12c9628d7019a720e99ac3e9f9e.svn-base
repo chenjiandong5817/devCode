@@ -1,0 +1,44 @@
+{
+  "type": "Layout",
+  "description": "专柜",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "dataSource": "8888BEEE885842119D93F1A00C879ECB",
+  "mainSource": true,
+  "singleData": true,
+  "uncheckData": true,
+  "langs": [
+    "en-ww",
+    "ja-jp"
+  ],
+  "defaultLang": "en-ww",
+  "langTimer": 10000,
+  "rows": [
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 13,
+          "children": [
+            {
+              "type": "Image",
+              "style": {
+                "width": 1920,
+                "height": 1080
+              },
+              "imgType": "flight_logo",
+              "imgSize": "700x400",
+              "columnName": "carrier"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}        

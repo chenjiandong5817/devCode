@@ -1,0 +1,21 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-09-27 16:05:15
+ * @Last Modified by:   chenyang
+ * @Last Modified time: 2017-09-27 16:05:15
+ */
+import {axios, base} from './../raiis-axios'
+
+let defaultType = 'deviceGroups'
+
+export const getDeviceGroups = () => {
+  let url = `${base}/devicegroups`
+  return {
+    name: 'getDeviceGroups',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取设备Group信息',
+    go: params => { return axios.get(url, { params: params }).then(res => res.data) }
+  }
+}

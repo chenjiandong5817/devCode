@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_driver.mappers.DriverElectronicFenceMapper">
+    <!--添加记录-->
+    <insert id="add" parameterType="driverElectronicFenceDto">
+		insert into ap_driver_electronic_fence
+			(
+				uuid,
+				fenceName,
+				fenceLng,
+				fenceLat,
+				areaUuid,
+				radius,
+				fenceType,
+				points,
+				fenceGid,
+				createTime,
+				creator,
+				updateTime
+			)
+		values
+			(
+				#{uuid},
+				#{fenceName},
+				#{fenceLng},
+				#{fenceLat},
+				#{areaUuid},
+				#{radius},
+				#{fenceType},
+				#{points},
+				#{fenceGid},
+				#{createTime},
+				#{creator},
+				#{updateTime}
+			)
+	</insert>
+
+    <!--修改记录-->
+    <update id="edit" parameterType="driverElectronicFenceDto">
+        update ap_driver_electronic_fence
+        <set>
+            <if test="fenceName != null and '' != fenceName">fenceName = #{fenceName},</if>
+            <if test="fenceLng != null and '' != fenceLng">fenceLng = #{fenceLng},</if>
+            <if test="fenceLat != null and '' != fenceLat">fenceLat = #{fenceLat},</if>
+            <if test="areaUuid != null and '' != areaUuid">areaUuid = #{areaUuid},</if>
+            <if test="radius != null and '' != radius">radius = #{radius},</if>
+            <if test="fenceType != null and '' != fenceType">fenceType = #{fenceType},</if>
+            <if test="points != null and '' != points">points = #{points},</if>
+            <if test="fenceGid != null and '' != fenceGid">fenceGid = #{fenceGid},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime}</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <!--删除记录-->
+    <delete id="del" parameterType="driverElectronicFenceDto">
+		delete from
+			ap_driver_electronic_fence
+		where
+			uuid = #{uuid}
+	</delete>
+
+
+    <!--统计-->
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--查询列表-->
+    <select id="list" resultType="driverElectronicFenceDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--通用SQL-->
+    <sql id="sqlForList">
+        from
+        ap_driver_electronic_fence
+        <where>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid}</if>
+            <if test="fenceName != null and '' != fenceName">and fenceName = #{fenceName}</if>
+            <if test="fenceLng != null and '' != fenceLng">and fenceLng = #{fenceLng}</if>
+            <if test="fenceLat != null and '' != fenceLat">and fenceLat = #{fenceLat}</if>
+            <if test="areaUuid != null and '' != areaUuid">and areaUuid = #{areaUuid}</if>
+            <if test="radius != null and '' != radius">and radius = #{radius}</if>
+            <if test="fenceType != null and '' != fenceType">and fenceType = #{fenceType}</if>
+            <if test="points != null and '' != points">and points = #{points}</if>
+            <if test="fenceGid != null and '' != fenceGid">and fenceGid = #{fenceGid}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+        </where>
+    </sql>
+
+    <!--分页查询列表-->
+
+
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_enterprise.mappers.EntAccountRoleMapper">
+    <insert id="add" parameterType="entAccountRoleDto">
+		insert into ap_ent_account_role
+			(
+				uuid,
+				entAccountUuid,
+				userUuid,
+				name,
+				roleType,
+				useCarPermission,
+				carTypePermission,
+				monthlyLimit,
+				limitMoney,
+				createTime,
+				creator,
+				updateTime,
+				updator
+			)
+		values
+			(
+				#{uuid},
+				#{entAccountUuid},
+				#{userUuid},
+				#{name},
+				#{roleType},
+				#{useCarPermission},
+				#{carTypePermission},
+				#{monthlyLimit},
+				#{limitMoney},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{updator}
+			)	
+	</insert>
+
+    <update id="edit" parameterType="entAccountRoleDto">
+        update ap_ent_account_role
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="entAccountUuid != null and '' != entAccountUuid">entAccountUuid = #{entAccountUuid},</if>
+            <if test="userUuid != null and '' != userUuid">userUuid = #{userUuid},</if>
+            <if test="name != null and '' != name">name = #{name},</if>
+            <if test="roleType != null and '' != roleType">roleType = #{roleType},</if>
+            <if test="useCarPermission != null and '' != useCarPermission">useCarPermission = #{useCarPermission},</if>
+            <if test="carTypePermission != null and '' != carTypePermission">carTypePermission = #{carTypePermission},
+            </if>
+            <if test="monthlyLimit != null and '' != monthlyLimit">monthlyLimit = #{monthlyLimit},</if>
+            <if test="limitMoney != null and '' != limitMoney">limitMoney = #{limitMoney},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="updator != null and '' != updator">updator = #{updator},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="entAccountRoleDto">
+		delete from
+			ap_ent_account_role
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <select id="selInfo" resultType="entAccountRoleDto">
+        select
+        *
+        from
+        ap_ent_account_role
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="entAccountUuid != null and '' != entAccountUuid">and entAccountUuid = #{entAccountUuid}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="roleType != null and '' != roleType">and roleType = #{roleType}</if>
+        </where>
+    </select>
+
+    <sql id="sqlForList">
+        from
+        ap_ent_account_role
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="entAccountUuid != null and '' != entAccountUuid">and entAccountUuid = #{entAccountUuid}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="name != null and '' != name">and name = #{name}</if>
+            <if test="roleType != null and '' != roleType">and roleType = #{roleType}</if>
+            <if test="useCarPermission != null and '' != useCarPermission">and useCarPermission = #{useCarPermission}
+            </if>
+            <if test="carTypePermission != null and '' != carTypePermission">and carTypePermission =
+                #{carTypePermission}
+            </if>
+            <if test="monthlyLimit != null and '' != monthlyLimit">and monthlyLimit = #{monthlyLimit}</if>
+            <if test="limitMoney != null and '' != limitMoney">and limitMoney = #{limitMoney}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="updator != null and '' != updator">and updator = #{updator}</if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="entAccountRoleDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="entAccountRoleDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--是否企业负责人-->
+    <select id="isEntResponsiblePerson" parameterType="string" resultType="string">
+        select t1.uuid
+        from ap_user_passenger t1, ap_ent_account_role t2
+        where t1.uuid=#{userPassengerUuid}
+        and t1.uuid = t2.useruuid
+        and t1.entaccountuuid = t2.entaccountuuid
+        and t2.roletype &gt; 0
+        and t2.roleType &lt; 3
+    </select>
+
+</mapper>

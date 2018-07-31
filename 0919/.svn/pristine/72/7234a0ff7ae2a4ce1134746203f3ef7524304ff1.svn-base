@@ -1,0 +1,118 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <el-button type="default" @click="Tools.addDataSource(conf)" plain v-if="!Tools.haveDataSource(conf)">添加数据源</el-button>
+      <el-button type="danger" @click="Tools.removeDataSource(conf)" plain v-else>删除数据源</el-button>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">列占比(span)</span>
+      <el-input type="number" :value="conf.span" @input="val => Tools.inputStr2Number(conf, 'span', val)"></el-input>
+    </el-form-item>
+    <data-source-form-item v-model="conf"></data-source-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="11">
+              <span class="editor-label">宽度(width)</span>
+              <el-input type="number" :value="conf.bodyStyle.width" @input="val => Tools.inputStr2Number(conf.bodyStyle, 'width', val)"></el-input>
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <span class="editor-label">高度(height)</span>
+              <el-input type="number" :value="conf.bodyStyle.height" @input="val => Tools.inputStr2Number(conf.bodyStyle, 'height', val)"></el-input>
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-col :span="11">
+              <selector v-model="conf.bodyStyle.textAlign" :options="Tools.alignOptions()" filterable label="对齐方式(textAlign)" placeholder="选择对齐方向"></selector>
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <color-picker v-model="conf.bodyStyle.backgroundColor" label="背景色(backgroundColor)" :inputScale="17" :pickerScale="7"></color-picker>
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-col :span="11">
+              <span class="editor-label">
+               圆角大小(radius)
+                <el-switch v-model="switchOptions.borderRadius.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.borderRadius.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <el-input type="number" :min="0" :value="switchOptions.borderRadius.value" @input="val => Tools.inputStr2Number(switchOptions.borderRadius, 'value', val)"></el-input>
+              </div>
+            </el-col>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import DataSourceFormItem from './form-items/DataSource'
+  import ColorPicker from './form-items/ColorPicker'
+  import Selector from './form-items/Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      DataSourceFormItem, ColorPicker, Selector
+    },
+    data () {
+      return {
+        conf: {},
+        Tools,
+        switchOptions: {
+          borderRadius: {
+            switch: false,
+            value: 0
+          }
+        }
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          let bodyStyleParams = ['width', 'height']
+          bodyStyleParams.forEach(item => {
+            if (val.bodyStyle[item] === '' || val.bodyStyle[item] === 0) {
+              delete val.bodyStyle[item]
+            }
+          })
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      'switchOptions.borderRadius': {
+        handler (val) {
+          Tools.operateSwitch(val.switch, this.conf.bodyStyle, 'borderRadius', val.value)
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Column',
+          typeLabel: '列',
+          span: 24,
+          bodyStyle: {},
+          children: []
+        }
+      } else {
+        this.conf = this.value
+        this.initSwitch()
+      }
+    },
+    methods: {
+      initSwitch () {
+        // borderRadius
+        if (this.conf.bodyStyle && this.conf.bodyStyle.borderRadius > -1) {
+          this.$set(this.switchOptions.borderRadius, 'value', this.conf.bodyStyle.borderRadius)
+          this.$set(this.switchOptions.borderRadius, 'switch', true)
+        }
+      }
+    }
+  }
+</script>

@@ -1,0 +1,383 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-09-21 17:14:14
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-10-18 10:43:19
+ */
+
+ <template>
+  <el-dialog :title="title" v-model="visible" :before-close="handleClose" size="small" :close-on-click-modal="true">
+    <!--<el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" class="demo-ruleForm" >-->
+    <el-form ref="ImageAddOrUpdate" :model="fileds">
+      <div class="box" v-if="isShowBox">
+        <div><el-button type="primary" class="selectA button" @click="showItem('flight_logo')">航空公司LOGO(用于列表和值机柜台)</el-button></div>
+        <div><el-button type="danger" class="selectA button" @click="showItem('static')">静态图片</el-button></div>
+        <div><el-button type="success" class="selectA button" @click="showItem('destination')">目的地图片</el-button></div>
+        <div><el-button type="warning" class="selectA button" @click="showItem('NonCheckin')">非值机柜台业务</el-button></div>
+      </div>
+    </el-form>
+    <check-in
+      title="非值机柜台图片"
+      ref='noncheckin'
+      :FlightServiceMode = "nonCheckin"
+      :FlightType = "flightLogoTypeList"
+      @getFlightLogoName = 'getCheckinFileName'
+    >
+    </check-in>
+    <static-name
+      title="静态图片"
+      ref='staticImage'
+      @staticImage = 'getCheckinFileName'>
+    </static-name>
+    <flight-logo
+      title="航班图片"
+      ref='getFlightLogoImage'
+      :FlightAirline = 'FlightLogo'
+      :FlightServiceMode = "FlightLogoServiceMode"
+      :FlightType = "flightLogoTypeList"
+      @getFlightLogoName = 'getCheckinFileName'>
+    </flight-logo>
+    <destination
+      title="目的地图片"
+      :ForDestination = 'DestinationData'
+      ref='getDestinationLogo'
+      @getDestination = 'getCheckinFileName'>
+    </destination>
+    <!--删除窗口-->
+    <common-delete
+        :to="API.removeImage().go"
+        :labelWidth="100"
+        ref="delConfirm">
+    </common-delete>
+    <div slot="footer" class="dialog-footer" v-if="submitShowDiv">
+      <el-button @click.native="sendBack" icon="caret-left">返回上一级</el-button>
+      <el-button @click.native="visible = false">取消</el-button>
+      <el-button @click="resetForm('ImageAddOrUpdate')">重置</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+ <script>
+import Util from '../../../common/js/util'
+import GlobalConfig from '../../../common/config/global'
+import CheckIn from '../../device/ImageAddForm/CheckIn'
+import StaticName from '../../device/ImageAddForm/StaticName'
+import FlightLogo from '../../device/ImageAddForm/FlightLogo'
+import Destination from '../../device/ImageAddForm/Destination'
+import axiosHelper from './../../../common/js/axios-helper'
+import commonDelete from './../../../components/CommDelete'
+import API from './../../../api'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () { }
+    },
+    callback: {
+      type: Function,
+      default: function () { }
+    },
+    Func: {
+      type: String
+    },
+    DestinationData: {
+      type: Array
+    },
+    FlightLogo: {
+      type: Array
+    },
+    FlightLogoServiceMode: {
+      type: Array
+    },
+    flightLogoTypeList: {   // 原始的服务List，主要是判断群组字段
+      type: Array
+    },
+    nonCheckin: {
+      type: Array
+    }
+  },
+  data () {
+    return {
+      submitShowDiv: false,
+      filters: {
+          imagename: '',
+          imagetype: '',
+          imagesize: '',
+          filetype: ''
+      },
+      isShowBox: true,
+      lastSelect: '', // 最后一次选择类型
+      fileInfo: {},
+      imageList: [],
+      editPara: {},
+      fileList2: [],
+      upLoadAction: '',
+      // 用于保存请求的头部信息
+      headersUpload: null,
+      visible: false,
+      loading: false,
+      isFirst: true,
+      oldValue: {},
+      API: API,
+      isShow: false,
+      updateStatus: false,  // 更新是否成功
+      fileds: {id: '', createBy: '', createTime: '', description: '', filetype: '', imagename: '', imagesize: '', imagetype: '', updateBy: '', updateTime: ''},
+      imagetype: [ { text: GlobalConfig.imageTypeText[0], value: GlobalConfig.imageType[0] }, { text: GlobalConfig.imageTypeText[1], value: GlobalConfig.imageType[1] }, { text: GlobalConfig.imageTypeText[2], value: GlobalConfig.imageType[2] }, { text: GlobalConfig.imageTypeText[3], value: GlobalConfig.imageType[3] } ],
+      filetype: [ { text: GlobalConfig.fileTypeText[0], value: GlobalConfig.fileType[0] }, { text: GlobalConfig.fileTypeText[1], value: GlobalConfig.fileType[1] }, { text: GlobalConfig.fileTypeText[2], value: GlobalConfig.fileType[2] }, { text: GlobalConfig.fileTypeText[3], value: GlobalConfig.fileType[3] } ]
+    }
+  },
+  components: {
+      checkIn: CheckIn,
+      staticName: StaticName,
+      flightLogo: FlightLogo,
+      destination: Destination,
+      commonDelete: commonDelete
+  },
+  methods: {
+    sendBack () {   // 发送返回上一级指令
+      this.isShowBox = true
+      this.hiddenAll()
+    },
+    beforeUpload (file) {
+      // console.log(file)
+      let fd = new FormData()
+      if (this.Func === 'addFunc') {
+        fd.append('newValue', JSON.stringify(this.fileds))
+        fd.append('file', file)
+        // console.log(this.fileds)
+        console.log(file)
+        API.submitPostFile(fd).then(res => {
+          console.log(res)
+          if (res.data.ok === true) {
+            this.$notify({
+              title: '成功',
+              message: '上传成功',
+              type: 'success'
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: '上传失败',
+              type: 'success'
+            })
+          }
+        })
+      } else {
+        fd.append('newValue', JSON.stringify(this.fileds))
+        fd.append('oldValue', JSON.stringify(this.oldValue))
+        fd.append('file', file)
+        console.log(this.fileds)
+        console.log(this.oldValue)
+        console.log(file)
+        API.submitPutFile(fd).then(res => {
+          console.log(res)
+          if (res.data.ok === true) {
+            this.$notify({
+              title: '成功',
+              message: '修改成功',
+              type: 'success'
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: '修改失败',
+              type: 'success'
+            })
+          }
+        })
+      }
+      return false
+    },
+    uploadProgress (event, file, fileList) {
+      // console.log(file)
+      // console.log(fileList)
+    },
+    handleRemove (file, fileList) {
+      // console.log(file, fileList)
+    },
+    handlePreview (file) {
+      // console.log(file)
+    },
+    getCheckinFileName (fileName) {
+      // this.selectItemDetail.imagename = fileName
+      this.fileds.imagename = fileName
+      // console.log(fileName)
+    },
+    showItem (clickItem) {
+      // console.log(this.AirportData)
+      this.selectItemDetail = clickItem
+      if (clickItem !== '') {
+        this.isShowBox = false
+        if (clickItem === 'flight_logo') {
+          this.hiddenAll()
+          this.submitShowDiv = true
+          // console.log(clickItem)
+          this.$refs['getFlightLogoImage'].show()
+        } else if (clickItem === 'static') {
+          this.hiddenAll()
+          this.submitShowDiv = true
+          this.$refs['staticImage'].show()
+        } else if (clickItem === 'destination') {
+          this.hiddenAll()
+          this.submitShowDiv = true
+          this.$refs['getDestinationLogo'].show()
+        } else if (clickItem === 'NonCheckin') {
+          this.hiddenAll()
+          this.submitShowDiv = true
+          this.$refs['noncheckin'].show()
+        }
+      }
+        // console.log(this.selectItemDetail.imagetype)
+    },
+    imageTypeClickEvent () {
+      // this.$emit('imageTypeClick', this.fileds.imageType)
+      // console.log(this.fileds.imagetype)
+      let temp = Util.deepCopy(this.oldValue.imagetype)
+      if (temp !== this.fileds.imagetype) {
+        this.showItem(this.fileds.imagetype)
+        temp = ''
+      }
+    },
+    show: function (row) {
+      this.isShowBox = true
+      if (row != null) {
+        // this.getImages()
+        this.fileds = row
+        // console.log(this.fileds.imagetype)
+        this.oldValue = Object.assign({}, row)
+      } else {
+        this.oldValue = {}
+      }
+      this.visible = true
+      // console.log(this.isFirst)
+      if (this.fileds.imagetype === '' && this.isFirst === false) {
+        this.hiddenAll()
+      }
+      this.isFirst = false
+    },
+    uploadSuccess () {
+      this.$notify({
+        title: '成功',
+        message: '上传成功',
+        type: 'success'
+      })
+    },
+    uploadError () {
+      this.$notify({
+        title: '失败',
+        message: '上传失败',
+        type: 'error'
+      })
+    },
+    hiddenAll () {
+      this.$refs['getDestinationLogo'].clearDataForm() // 清除表单数据
+      this.$refs['getDestinationLogo'].handleClose()
+      this.$refs['staticImage'].handleClose()
+      this.$refs['staticImage'].clearAllImage()
+      this.$refs['getFlightLogoImage'].handleClose()
+      this.$refs['getFlightLogoImage'].clearFormData()
+      this.$refs['noncheckin'].handleClose()
+      this.$refs['noncheckin'].clearFormData()
+      this.submitShowDiv = false
+    },
+    handleClose: function (params) {
+      this.visible = false
+      this.fileds = {id: '', createBy: '', createTime: '', description: '', filetype: '', imagename: '', imagesize: '', imagetype: '', updateBy: '', updateTime: ''}
+      this.$refs['ImageAddOrUpdate'].resetFields()
+      // this.hiddenAll()
+    },
+    handleSubmit: function (params) {
+      if (this.Func === 'addFunc') {
+        console.log('新增')
+        this.$refs['ImageAddOrUpdate'].validate((valid) => {
+        if (valid) {
+          this.headersUpload = axiosHelper.generatAuthHeader()
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.loading = true
+            this.loading = false
+            this.visible = false
+            this.$refs.uploadPackage.submit()
+            this.fileds = {id: '', createBy: '', createTime: '', description: '', filetype: '', imagename: '', imagesize: '', imagetype: '', updateBy: '', updateTime: ''}
+            this.hiddenAll()
+            this.callback()
+            // 可以先用get获取数据库里面的图片，然后File替换，用相应api上传postImage
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    } else if (this.Func === 'editFunc') {
+      this.$refs['ImageAddOrUpdate'].validate((valid) => {
+        if (valid) {
+          this.headersUpload = axiosHelper.generatAuthHeader()
+          // console.log(this.headersUpload)
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.loading = true
+            // this.editPara = { newValue: this.fileds, oldValue: this.oldValue }
+            this.loading = false
+            this.visible = false
+            this.$refs.uploadPackage.submit()
+            this.fileds = {id: '', createBy: '', createTime: '', description: '', filetype: '', imagename: '', imagesize: '', imagetype: '', updateBy: '', updateTime: ''}
+            this.hiddenAll()
+            this.callback()
+            // this.$refs['delConfirm'].del(this.oldValue)
+            // 如果更新成功就删除旧数据，否则不动旧数据
+            // 可以先用get获取数据库里面的图片，然后File替换，用相应api上传postImage
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    }
+    },
+    resetForm (formName) {
+      // console.log(formName)
+      // this.$refs[formName].resetFields()
+      this.showItem(this.selectItemDetail)
+      this.$refs['staticImage'].clearAllImage()
+      this.$refs['getFlightLogoImage'].clearFormData()
+      this.$refs['getDestinationLogo'].clearDataForm() // 清除表单数据
+      // this.fileds = {imageType: '', imageSize: '', fileType: '', imageName: '', description: ''}
+      // this.fileds = {id: '', createBy: '', createTime: '', description: '', filetype: '', imagename: '', imagesize: '', imagetype: '', updateBy: '', updateTime: ''}
+    }
+  }
+}
+</script>
+
+<style scoped>
+.selectA {
+  width: 100%;
+  height: 100%;
+}
+.box {
+    border: 2px solid #999;
+    width: 96%;
+    height: 200px;
+    padding: 5px;
+}
+.box div {
+    position: relative;
+    width: 21%;
+    height: 170px;
+    margin: 15px;
+    float: left;
+}
+.button
+{
+    white-space:normal;
+    word-break:break-all;
+    word-wrap:break-word;
+}
+</style>

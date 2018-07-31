@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_driver.mappers.DriverQueueMapper">
+    <!--添加记录-->
+    <insert id="add" parameterType="driverQueueDto">
+		insert into ap_driver_queue
+			(
+				uuid,
+				fenceUuid,
+				airportName,
+				airportType,
+				carType,
+				carTypeName,
+				driverUuid,
+				driverName,
+				plateNumber,
+				isQueue,
+				isTakeOrder,
+				queueNum,
+				createTime,
+				creator,
+				updateTime,
+				checkLineUpTime
+			)
+		values
+			(
+			    #{uuid},
+				#{fenceUuid},
+				#{airportName},
+				#{airportType},
+				#{carType},
+				#{carTypeName},
+				#{driverUuid},
+				#{driverName},
+				#{plateNumber},
+				#{isQueue},
+				#{isTakeOrder},
+				#{queueNum},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{checkLineUpTime}
+			)
+	</insert>
+
+    <!--修改记录-->
+    <update id="edit" parameterType="driverQueueDto">
+        update ap_driver_queue
+        <set>
+            <if test="fenceUuid != null and '' != fenceUuid">fenceUuid = #{fenceUuid},</if>
+            <if test="airportName != null and '' != airportName">airportName = #{airportName},</if>
+            <if test="carType != null and '' != carType">carType = #{carType},</if>
+            <if test="carTypeName != null and '' != carTypeName">carTypeName = #{carTypeName},</if>
+            <if test="driverUuid != null and '' != driverUuid">driverUuid = #{driverUuid},</if>
+            <if test="driverName != null and '' != driverName">driverName = #{driverName},</if>
+            <if test="plateNumber != null and '' != plateNumber">plateNumber = #{plateNumber},</if>
+            <if test="isQueue != null and '' != isQueue">isQueue = #{isQueue},</if>
+            <if test="isTakeOrder != null">isTakeOrder = #{isTakeOrder},</if>
+            <if test="queueNum != null and '' != queueNum">queueNum = #{queueNum},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="checkLineUpTime != null and '' != checkLineUpTime">checkLineUpTime = #{checkLineUpTime},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <!--删除记录-->
+    <delete id="del" parameterType="driverQueueDto">
+        delete from
+        ap_driver_queue
+        where
+        uuid = #{uuid}
+    </delete>
+
+    <!--根据主键查询详情-->
+    <select id="selInfo" resultType="driverQueueDto">
+        select
+        *
+        from
+        ap_driver_queue
+        where
+        uuid = #{uuid}
+    </select>
+
+    <!--统计-->
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--查询列表-->
+    <select id="list" resultType="driverQueueDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--通用SQL-->
+    <sql id="sqlForList">
+        from
+        ap_driver_queue
+        <where>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid}</if>
+            <if test="fenceUuid != null and '' != fenceUuid">and fenceUuid = #{fenceUuid}</if>
+            <if test="airportName != null and '' != airportName"> and airportName = #{airportName}</if>
+            <if test="carType != null and '' != carType"> and carType = #{carType}</if>
+            <if test="carTypeName != null and '' != carTypeName"> and carTypeName = #{carTypeName}</if>
+            <if test="driverUuid != null and '' != driverUuid"> and driverUuid = #{driverUuid}</if>
+            <if test="driverName != null and '' != driverName"> and driverName = #{driverName}</if>
+            <if test="plateNumber != null and '' != plateNumber"> and plateNumber = #{plateNumber}</if>
+            <if test="isQueue != null"> and isQueue = #{isQueue}</if>
+            <if test="isTakeOrder != null"> and isTakeOrder = #{isTakeOrder}</if>
+            <if test="queueNum != null and '' != queueNum"> and queueNum = #{queueNum}</if>
+            <if test="createTime != null and '' != createTime"> and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator"> and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime}</if>
+            <if test="checkLineUpTime != null and '' != checkLineUpTime"> and checkLineUpTime = #{checkLineUpTime}</if>
+        </where>
+        <if test="sortField != null and '' != sortOrder">ORDER BY ${sortField} ${sortOrder}</if>
+    </sql>
+
+    <!--分页查询列表-->
+    <!--根据 Gid与车型 获取队列中司机信息-->
+    <select id="getDriverFromQuequeByGid" resultType="driverQueueDto">
+        select a.*
+        from ap_driver_queue a
+        left join ap_driver_electronic_fence f on f.uuid = a.fenceuuid
+        where f.fencegid = #{fenceGid}
+        and cartype &gt;= #{levelType}
+        and isTakeOrder = 1
+        and isqueue = 1
+        and a.driveruuid not in(
+        select ad.uuid
+        from ap_driver ad
+        left join ap_order ao on ad.uuid = ao.actualDriverUuid
+        where
+        (abs(ROUND(TO_NUMBER(sysdate - ad.locationUploadTime) * 24 * 60 * 60)) &gt; #{offLineLimitTime}) or
+        (ao.mainStatus=3) or
+        (ao.mainstatus = 2 and ao.orderType = 5) or
+        (ao.mainstatus = 2 and ao.orderType!= 5 and
+        abs(ROUND(TO_NUMBER(ao.deparTime - to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss')) * 24 * 60 * 60)) &lt;
+        (case when TO_NUMBER(ao.deparTime-to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss'))&lt;0 then #{limitTimeBefore}
+        else #{limitTimeAfter} end)
+        ))
+        order by a.createtime asc
+    </select>
+
+
+
+
+</mapper>

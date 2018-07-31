@@ -1,0 +1,310 @@
+/*
+ * @Author: mikey.zhaopeng
+ * @Date: 2017-09-14 11:02:04
+ * @Last Modified by: ylj
+ * @Last Modified time: 2017-09-18 21:14:51
+ */
+<template>
+<div class="resClass">
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="false" @close="handleClose" :modal="false" @open="getBaseList">
+    <el-form :model="form.segment" ref="resConfig">
+      <el-row :gutter="18">
+        <el-col :span="6">
+          <el-form-item label="执行日期">
+            <br>
+            <date-time v-model="form.segment.opDate" :visitTime="false" datePlaceholder="执行日期" formatter="yyyy-MM-dd" dateStyle="width:100%" :allDisable="true"></date-time>
+            <!--<el-date-picker v-model="form.segment.opDate" placeholder="执行日期" style="width:100%;" format="yyyy-MM-dd" :picker-options="pickerOptions" :disabled="editAble"></el-date-picker>-->
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="公司">
+            <el-input name="carrier" placeholder="公司" :value="form.segment.carrier" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="航班号">
+            <el-input v-model="form.segment.flightNo" name="flightNo" style="width:100%;" placeholder="航班号" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="区域">
+            <el-input name="flightNature" placeholder="区域" :value="$cache.findByName('flightnatures', 'flightNatureCode', form.segment.flightNature, 'description')" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="18">
+        <el-col :span="6">
+          <el-form-item label="机号">
+            <el-input name="registration" placeholder="机号" :value="form.segment.registration" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="机型">
+            <el-input name="aircraftType" placeholder="机型" :value="form.segment.aircraftType" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="任务">
+            <el-input name="flightTask" placeholder="任务" :value="$cache.findByName('flighttasks', 'flightTaskCode', form.segment.flightTask, 'abbr2w') + '(' + form.segment.flightTask + ')'" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="进出">
+            <el-input name="direction" placeholder="进出" :value="$cache.findByName('flightdirections', 'directionCode', form.segment.direction, 'description')" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="航站楼">
+            <el-input name="terminal" placeholder="航站楼" :value="$cache.findByName('terminals', 'terminalCode', form.segment.terminal, 'terminalCode')" style="width: 100%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <hr class="hrClass"/>
+      <el-row :gutter="20">
+        <el-col :span="24" class="content-wrapper">
+          <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+            <el-tab-pane label="柜台" name="counterConf">柜台资源分配</el-tab-pane>
+            <el-tab-pane label="登机口" name="gateConf">
+              <template>
+                <res-config-detail ref="gateConfForm"></res-config-detail>
+              </template>
+            </el-tab-pane>
+            <el-tab-pane label="转盘" name="carConf">
+              <template>
+                <res-config-detail ref="carConfForm"></res-config-detail>
+              </template>
+            </el-tab-pane>
+            <el-tab-pane label="机位" name="standConf">
+              <template>
+                <res-config-detail ref="standConfForm"></res-config-detail>
+              </template>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="handleClose">取消</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+</div>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import API from '../../../api'
+import AddStopOver from '../dynamicFlightForm/AddStopOver'
+import DynamicFlight from '../DynamicFlight'
+import Tabs from '../../../components/Tabs.vue'
+import resConfigDetail from './resConfigDetail'
+import dateTime from '../modify/DateTime'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () {}
+    },
+    callback: {
+      type: Function,
+      default: function () {}
+    }
+  },
+  data () {
+    return {
+      activeName: 'counterConf',
+      editAble: true,
+      visible: false,
+      loading: false,
+      tableLoading: false,
+      API: API,
+      form: {
+        segment: {
+          id: null,
+          flightId: null,
+          linkedFlightId: null,
+          combineFlightId: null,
+          direction: null,
+          opDate: '',
+          terminal: null,
+          generalAgent: null,
+          carrier: null,
+          flightNo: null,
+          registration: null,
+          aircraftType: null,
+          flightStatus: null,
+          flightTask: null
+        },
+        stopOverList: [],
+        irrReason: null
+      },
+      currentSopOver: null,
+      registrations: [],
+      allRegistrationList: [],
+      curSelectRow: [],
+      counterList: [],
+      standList: [],
+      carList: [],
+      gateList: []
+    }
+  },
+  components: {
+    addStopOver: AddStopOver,
+    DynamicFlight: DynamicFlight,
+    resConfigDetail: resConfigDetail,
+    Tabs: Tabs,
+    dateTime: dateTime
+  },
+  methods: {
+    bindData () {
+    },
+    show: function (row) {
+      if (row !== undefined) {
+        this.curSelectRow = Util.deepCopy(row)
+        this.form.segment = Object.assign({}, this.form.segment, row)
+      }
+      this.visible = true
+    },
+    handleClose: function () {
+      this.visible = false
+      this.editAble = true
+    },
+    handleSubmit: function () {
+      this.$confirm('确认提交吗？', '提示', {}).then(() => {
+        this.loading = true
+        this.to(this.params).then((res) => {
+          this.loading = false
+          let msg = this.params.optName + res.msg
+          this.$notify(Util.notifyBody(res.ok, msg))
+          this.visible = false
+          this.callback()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        })
+      })
+    },
+    handleClick: function (tab, event) {
+      let gateFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'terminal', value: null, label: '航站楼', selVal: 'terminalCode', selText: 'terminalCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.$cache.fetch('terminals'), rules: [ { required: true, message: '请选择航站楼' } ] },
+        { name: 'isRemote', value: null, label: '远机位', selVal: 'value', selText: 'text', type: 'select', filterable: 'true', clearable: 'true', choose: [ { text: '否', value: '0' }, { text: '是', value: '1' } ], rules: [ { required: true, message: '请选择是否远机位' } ] },
+        { name: 'gateCode', value: null, label: '登机口', selVal: 'gateCode', selText: 'displayCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.gateList, rules: [ { required: true, message: '请选择登机口编码' } ] },
+        { name: 'scheduleOpen', value: null, label: '开始时间', visitTime: 'true', type: 'dateTimeGroup', datePlaceholder: '开始日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }],
+        [{ name: 'scheduleClose', value: null, label: '结束时间', visitTime: 'true', type: 'dateTimeGroup', datePlaceholder: '结束日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+      let carFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'terminal', value: null, label: '航站楼', selVal: 'terminalCode', selText: 'terminalCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.$cache.fetch('terminals'), rules: [ { required: true, message: '请选择航站楼' } ] },
+        { name: 'carouselCode', value: null, label: '转盘编码', selVal: 'carouselCode', selText: 'carouselCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.carList, rules: [ { required: true, message: '请选择转盘编码' } ] },
+        { name: 'scheduleOpen', value: null, label: '开启时间', visitTime: 'true', type: 'dateTimeGroup', datePlaceholder: '开启日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null },
+        { name: 'scheduleClose', value: null, label: '关闭时间', visitTime: 'true', type: 'dateTimeGroup', datePlaceholder: '关闭日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+      let standFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'apron', value: null, label: '机坪区域', selVal: 'terminalCode', selText: 'terminalCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.$cache.fetch('terminals'), rules: [ { required: true, message: '请选择机坪区域' } ] },
+        { name: 'nature', value: null, label: '区域属性', selVal: 'terminalCode', selText: 'terminalCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.$cache.fetch('terminals'), rules: [ { required: true, message: '请选择区域属性' } ] },
+        { name: 'standCode', value: null, label: '机位编码', selVal: 'standCode', selText: 'standCode', type: 'select', filterable: 'true', clearable: 'true', choose: this.standList, rules: [ { required: true, message: '请选择机位编码' } ] },
+        { name: 'action', value: null, label: '占用类型', selVal: 'value', selText: 'text', type: 'select', filterable: 'true', clearable: 'true', choose: [ { text: '初始', value: '0' }, { text: '移动', value: '1' }, { text: '顶推', value: '2' }, { text: '作废', value: '-1' } ], rules: [ { required: true, message: '请选择占用类型' } ] }],
+        [{ name: 'estoccupiedBegin', value: null, label: '开始时间', visitTime: 'true', type: 'dateTimeGroup', datePlaceholder: '开始日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null },
+        { name: 'estoccupiedEnd', value: null, label: '结束时间', visitTime: 'true', type: 'dateTimeGroup', datePlaceholder: '结束日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+
+      let formid = this.activeName + 'Form'
+      switch (this.activeName) {
+        case 'counterConf': {
+          // this.$refs[formid].show('carConfForm', carFields)
+          break
+        }
+        case 'gateConf': {
+          this.$refs[formid].show(formid, gateFields)
+          break
+        }
+        case 'carConf': {
+          this.$refs[formid].show(formid, carFields)
+          break
+        }
+        case 'standConf': {
+          this.$refs[formid].show(formid, standFields)
+          break
+        }
+        default: break
+      }
+    },
+    getBaseList: function () {
+      // let filters = {airportCode: this.form.segment.carrier, carouselType: this.form.segment.direction}
+      let filters = {}
+      // let queryParam = { pageSize: this.pageSize, pageNumber: this.pageNumber }
+      let para = Object.assign({}, filters)
+      API.getCheckincountersListPage().go(para).then((data) => {
+        if (data.ok) {
+          this.counterList = data.attr.data.list
+        } else {
+          this.carList = []
+        }
+      })
+      API.getBaggagecarouselsListPage().go(para).then((data) => {
+        if (data.ok) {
+          this.carList = data.attr.data.list
+        } else {
+          this.carList = []
+        }
+      })
+      API.getStandListPage().go(para).then((data) => {
+        if (data.ok) {
+          this.standList = data.attr.data.list
+        } else {
+          this.carList = []
+        }
+      })
+      API.getGateListPage().go(para).then((data) => {
+        if (data.ok) {
+          this.gateList = data.attr.data.list
+        } else {
+          this.carList = []
+        }
+      })
+    }
+  },
+  mounted () {
+    // this.bindData()
+    var storage = this.$store.getters.getUserStorage
+    this.sysUserName = storage.user.profile.nickname || storage.user.name
+    this.allRegistrationList = this.$cache.fetch('registrations')
+  }
+}
+</script>
+
+<style lang="scss">
+.resClass {
+  .el-dialog__body {
+    padding: 8px 20px!important;
+  }
+  .el-form-item {
+    margin-bottom: 2px!important;
+  }
+  .hrClass {
+    padding: 0px!important;
+    margin-top: 10px!important;
+    color: #987cb9;
+    size: 1;
+  }
+}
+</style>

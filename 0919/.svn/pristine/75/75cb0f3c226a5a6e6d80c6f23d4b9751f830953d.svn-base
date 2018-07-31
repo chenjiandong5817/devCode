@@ -1,0 +1,117 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-09-21 17:14:14
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-09-29 10:41:49
+ */
+
+ <template>
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="true" :modal="false" :before-close="handleClose" size="small" :modal-append-to-body="false">
+    <!--<el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" class="demo-ruleForm" >-->
+    <el-form ref="getDestinationLogo" :model="checkinFiled">
+      <el-col :gutter="20">
+        <el-row :span="6">
+          <el-form-item label="目的地">
+            <el-select v-model="checkinFiled.destination" placeholder="选择目的地">
+              <el-option v-for="item in bindDestination" :key="item.value" :label="item.text" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-row>
+      </el-col>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="visible = false">取消</el-button>
+      <el-button @click="resetForm('getDestinationLogo')">重置</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import API from '../../../api'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () { }
+    },
+    callback: {
+      type: Function,
+      default: function () { }
+    }
+  },
+  data () {
+    return {
+      visible: false,
+      loading: false,
+      oldValue: {},
+      airport: [],
+      bindDestination: [],
+      checkinFiled: { destination: '' }
+      // deviceStatusList: [ { text: '删除', value: -1 }, { text: '在线', value: 0 }, { text: '离线', value: 1 }, { text: '异常', value: 2 } ],
+      // 动态插入
+    }
+  },
+  methods: {
+    getAir () {
+      let para = Object.assign({}, {pageSize: 0})  // 分页问题
+      this.listLoading = true
+      API.getAirportListPage().go(para).then((data) => {
+        if (data.ok) {
+          // console.log('进来了')
+          this.airport = data.attr.data.list
+          this.bindDestination = []
+          for (let i = 0; i < this.airport.length; i++) {
+            let label = {text: this.airport[i].cnabbr2w + ' ' + this.airport[i].iatacode, value: this.airport[i].iatacode}
+            this.bindDestination.push(label)
+          }
+        } else {
+          this.$notify(Util.notifyBody(false, data.msg))
+        }
+        this.listLoading = false
+      })
+    },
+    show: function () {
+      this.getAir()
+        // this.setData()
+      this.visible = true
+    },
+    handleClose: function (params) {
+      this.visible = false
+      this.$refs['getDestinationLogo'].resetFields()
+      this.checkinFiled.destination = ''
+    },
+    handleSubmit: function (params) {
+      this.$refs['getDestinationLogo'].validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            let name = this.checkinFiled.destination
+            this.loading = true
+            this.visible = false
+            this.$emit('getDestination', name)
+            this.$refs['getDestinationLogo'].resetFields()
+            this.loading = false
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    },
+    resetForm (formName) {
+      // console.log(formName)
+      this.$refs[formName].resetFields()
+      this.checkinFiled.destination = ''
+    }
+  }
+}
+</script>

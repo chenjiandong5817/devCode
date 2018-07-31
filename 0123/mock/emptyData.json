@@ -1,0 +1,48 @@
+{
+  "type": "Layout",
+  "typeLabel": "布局",
+  "description": "空数据模板页面",
+  "bodyStyle": {
+    "backgroundColor": "#212E5B",
+    "minWidth": 1920,
+    "minHeight": 1080
+  },
+  "langs": [],
+  "defaultLang": "",
+  "langTimer": 18000,
+  "extraParam": {},
+  "children": [
+    {
+      "type": "Row",
+      "typeLabel": "行",
+      "align": "middle",
+      "justify": "start",
+      "bodyStyle": {
+        "color": "#FBCB1E",
+        "height": 580,
+        "lineHeight": 580
+      },
+      "children": [
+        {
+          "type": "Column",
+          "typeLabel": "列",
+          "span": 24,
+          "bodyStyle": {
+            "textAlign": "center"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "typeLabel": "文本",
+              "tag": "div",
+              "style": {},
+              "langLock": "",
+              "langExcept": [],
+              "value": "当前无数据"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

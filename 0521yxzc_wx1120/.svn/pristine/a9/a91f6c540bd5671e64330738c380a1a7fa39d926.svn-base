@@ -1,0 +1,525 @@
+.divBox {
+    width: 95%;
+    height: auto;
+    margin: auto;
+    margin-top: 10px;
+
+    border: solid 1px #e4e7ea;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 4px 4px 6px 0 rgba(0, 0, 0, .05);
+}
+.divBox>p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.divBox .p {
+    height: 35px;
+    line-height: 35px;
+
+    margin-bottom: 0;
+
+    color: #9ea7b1;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.divBox .dname {
+    font-size: 18px;
+
+    color: #4f5a67;
+}
+
+.driver-info {
+    height: 125px;
+}
+
+.driver-info div {
+    margin: 0;
+    padding: 0;
+}
+
+.driver-info .imgBox {
+    line-height: 80px;
+    text-align: center;
+    height: 80px;
+}
+
+.driver-info .imgBox .face {
+    width: 100%;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.driver-info .pingfen {
+    margin: 0 3px;
+
+    color: #fff;
+    border-radius: 4px;
+    background-color: #f99359;
+}
+
+.driver-info .pingfen img {
+    margin-bottom: 5px;
+}
+
+.driver-info .tip {
+    font-size: 16px;
+    line-height: 50px;
+
+    text-align: center;
+
+    color: #6b7886;
+    border-top: 1px solid #f0f2f4;
+    background-color: #fff;
+}
+
+.phone-img {
+    width: 25px;
+    height: 25px;
+}
+
+.router-info p.info {
+    font-size: 16px;
+    line-height: 25px;
+
+    margin-bottom: 0;
+    padding: 10px;
+
+    color: #6b7886;
+
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.router-info .img {
+    margin-right: 12px;
+    margin-left: 15px;
+    width: 10px;
+}
+
+.costBox {
+    font-size: 14px;
+    line-height: 50px;
+
+    height: 50px;
+}
+
+.cancelBox {
+    font-size: 16px;
+
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+
+    display: inline-block;
+
+    width: 80px;
+    margin: auto;
+    margin-left: -40px;
+
+    text-align: center;
+
+    color: #4f5a67;
+}
+
+.cancelBox .text {
+    margin-top: 5px;
+    margin-bottom: 0;
+    color: #00b5e6;
+    font-size: 14px;
+}
+
+.cancelBox img {
+    width: 45px;
+    height: 45px;
+}
+
+.driver-route-info {
+    height: 50px;
+    line-height: 50px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 0px;
+}
+
+/****************等待应答******************/
+.waiting-reply {
+    width: 150px;
+    height: 150px;
+    margin: 50px auto;
+    position: relative;
+
+}
+
+.waiting-reply .img {
+    width: 100%;
+}
+
+.waiting-reply p {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.waiting-reply p:first-child {
+    font-size: 35px;
+    color: #3e88f5;
+    font-weight: 400;
+}
+
+.waiting-reply .text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -45px;
+    margin-top: -47px;
+}
+
+/***************取消行程*******************/
+.cancelCar .imgBox {
+    width: 100px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.cancelCar .imgBox .img {
+    width: 100%;
+}
+
+.cancelCar .tellme {
+    text-align: center;
+    color: #4f5a67;
+    font-size: 18px;
+}
+
+.cancelCar .tellme1 {
+    text-align: center;
+    color: #9ea7b1;
+    font-size: 15px;
+    margin-bottom: 35px;
+    padding: 0 5px;
+}
+
+.cancelCar .reason-list {
+    background-color: #fff;
+}
+
+.cancelCar .reason-list .li {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 10px;
+    border-bottom: 1px solid #e4e7ea;
+    font-size: 16px;
+}
+
+.cancelCar .reason-list .img {
+    width: 25px;
+    height: 25px;
+    margin-top: 13px;
+}
+
+.cancelCar .btn-d {
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+
+}
+
+.cancelCar .btn-no-cancel {
+    border: solid 1px #4f5a67;
+    color: #6b7886;
+    margin-top: 50px;
+}
+
+.cancelCar .btn-submit-disable {
+    background-color: #d0d5d9;
+    color: #fff;
+}
+
+.cancelCar .btn-submit-able {
+    background-color: #4f5a67;
+    color: #fff;
+}
+
+/**************待支付*****************/
+.paymoney {
+    /*border-top: 1px solid #f0f2f4;*/
+}
+
+.paymoney .youhui {
+    padding: 10px;
+}
+
+.btn-pay {
+    display: block;
+    line-height: 50px;
+    text-align: center;
+    width: 95%;
+    background-color: #00b5e6;
+    margin: 20px auto;
+    border-radius: 4px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.btn-rated {
+    display: block;
+    margin-bottom: 30px;
+}
+
+.btn-rated .img {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    margin-left: 0px;
+}
+
+.btn-rated .img:last-child {
+    margin-right: 0;
+}
+
+.paymoney .tip {
+    color: #4f5a67;
+}
+
+.cancel-rule {
+    width: 120px;
+    margin: 20px auto;
+    display: block;
+}
+
+.router-info .cancel-rule .img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.cancel-rule .text {
+    color: #4f5a67;
+    font-size: 16px;
+}
+
+.paymoney .imgcBox {
+    width: 80px;
+    margin: auto;
+    margin-top: 30px;
+
+}
+
+.imgcBox .imgc {
+    width: 100%;
+
+}
+
+.rate-header, .pay-header {
+    line-height: 55px;
+    border-bottom: 1px solid #e4e7ea;
+
+}
+
+.cancelPaybtn {
+    color: #9ea7b1;
+    text-decoration: none;
+    font-size: 14px;
+    margin-left: 15px;
+}
+
+/*************页面适配**************/
+
+@media screen and (min-width: 320px) {
+    /*当屏幕尺寸小于320px时，应用下面的CSS样式*/
+    .driver-info .pingfen {
+        margin: 0 3px;
+    }
+}
+
+@media screen and (min-width: 375px) {
+    /*当屏幕尺寸小于375px时，应用下面的CSS样式*/
+    .driver-info .pingfen {
+        margin: 0 5px;
+    }
+}
+
+@media screen and (min-width: 414px) {
+    /*当屏幕尺寸小于414px时，应用下面的CSS样式*/
+    .driver-info .pingfen {
+        margin: 0 8px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    /*当屏幕尺寸小于768px时，应用下面的CSS样式*/
+    .driver-info .pingfen {
+        margin: 0 10px;
+    }
+}
+/********************新增预支付 2017-12-13 ****************************/
+.driverMsg {
+    position: relative;
+    display: block;
+    padding: 10px;
+}
+.driverMsg:after {
+    content: '';
+    position: relative;
+    display: block;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    clear: both;
+}
+.driverMsg .driverImg {
+    position: relative;
+    float: left;
+    margin: 0 5px;
+}
+.driverMsg .driverImg img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.driverMsg .driverDetail {
+    position: relative;
+    float: left;
+}
+.driverMsg .driverDetail span {
+    font-size: 12px;
+    color: #a9abb0;
+    margin: 0 5px;
+}
+.driverMsg .driverDetail span.driver_name {
+    font-size: 14px;
+    color: #4b4d51;
+}
+.driverMsg .driverDetail span.driver_rate {
+    background-color: #ffa544;
+    position: relative;
+    line-height: 12px;
+    padding-left: 16px;
+    padding-right: 5px;
+    border-radius: 2px;
+    font-size: 10px;
+    color: #fff;
+}
+.driverMsg .driverDetail span.driver_rate:before {
+    content: '★';
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    color: #fff;
+}
+.driverMsg .driverDetail span.driver_order {
+    font-size: 11px;
+}
+.driverMsg .driverTel {
+    position: relative;
+    float: right;
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+.driverMsg .driverTel a {
+    display: block;
+}
+.driverMsg .driverTel a img {
+    width: 32px;
+    height: 32px;
+}
+.driverMsg .driverTel:after {
+    content: '';
+    position: relative;
+    display: block;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    clear: both;
+}
+.driverMsg + .addContent {
+    border-top: 1px solid #f0f2f4;
+}
+.addContent {
+    padding: 15px 10px;
+    text-align: center;
+}
+.addContent .width80 {
+    margin: 0 auto;
+    width: 80%;
+}
+.addContent p {
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 2;
+}
+.addContent .fc_00afe6 {
+    color: #00afe6;
+}
+.addContent .wateTime {
+    font-size: 22px;
+    color: #00afe6;
+}
+.addContent .title {
+    font-size: 24px;
+    color: #4b4d51;
+}
+.addContent .spanMsg {
+    font-size: 12px;
+    text-align: center;
+    color: #a9abb0;
+}
+.addContent .spanMsg.font-16 {
+    font-size: 16px;
+    line-height: 1.5;
+}
+.mar-t20 {
+    margin-top: 20px!important;
+}
+.mar-t30 {
+    margin-top: 30px!important;
+}
+.mar-t40 {
+    margin-top: 40px!important;
+}
+.mar-t50 {
+    margin-top: 50px!important;
+}
+.styleBtn {
+    position: relative;
+    display: block;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    background-color: #00b5e6;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.styleBtn:active,
+.styleBtn:visited,
+.styleBtn:focus,
+.styleBtn:hover {
+    text-decoration: none;
+    background-color: #068cb0;
+}
+.styleBtn.normal {
+    border: 1px solid #4f5a67;
+    color: #4f5a67;
+    background-color: #f3f3f3;
+}
+.payErrImg {
+    width: 100px;
+    height: 100px;
+}

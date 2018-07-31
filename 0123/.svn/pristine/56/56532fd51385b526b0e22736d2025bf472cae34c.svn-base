@@ -1,0 +1,215 @@
+{
+  "type": "Layout",
+  "description": "登机口变更",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "dataSource": "visualChangeGate",
+  "refreshInterval": 20000,
+  "langs": [ "en-ww", "ja-jp" ],
+  "defaultLang": "en-ww",
+  "langTimer": 8000,
+  "rows": [
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "center",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 22,
+          "bodyStyle": {
+            "paddingTop": 30
+          },
+          "children": [
+            {
+              "type": "Row",
+              "align": "top",
+              "justify": "end",
+              "cols": [
+                {
+                  "type": "Column",
+                  "span": 13,
+                  "bodyStyle": {
+                    "width": 450,
+                    "height": 89,
+                    "fontSize": 60,
+                    "fontWeight": "lighter",
+                    "textAlign": "center",
+                    "background": "#FAC35A"
+                  },
+                  "children": [
+                    {
+                      "type": "Text",
+                      "style": {
+                        "width": 60,
+                        "height": 60,
+                        "fontSize": 40,
+                        "fontWeight": 500,
+                        "color": "#FAC35A",
+                        "display": "inline-block",
+                        "borderRadius": "40px",
+                        "background": "#1E2D5A",
+                        "margin": "0 5px",
+                        "transform": "translateY(-6px)"
+                      },
+                      "value": "!"
+                    },
+                    {
+                      "type": "Text",
+                      "tag": "span",
+                      "value": "登机口变更"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Row",
+              "align": "top",
+              "justify": "center",
+              "cols": [
+                {
+                  "type": "Column",
+                  "span": 24,
+                  "bodyStyle": {
+                    "fontSize": 70,
+                    "textAlign": "center",
+                    "background": "#FAC35A",
+                    "padding": 30,
+                    "paddingBottom": 60
+                  },
+                  "children": [
+                    {
+                      "type": "Column",
+                      "span": 24,
+                      "bodyStyle": {
+                        "background": "#1E2D5A",
+                        "paddingLeft": 30,
+                        "paddingRight": 30
+                      },
+                      "children": [
+                        {
+                          "type": "Grid",
+                          "description": "登机口变更列表",
+                          "hiddenHeader": true,
+                          "bodyStyle": {
+                            "defaultRowStyle": {
+                              "rowStripe": [ "#1E2D5A"],
+                              "fontSize": 79,
+                              "color": "#FAC35A",
+                              "height": 140,
+                              "lineHeight":140,
+                              "borderBottom": "5px solid",
+                              "borderBottomColor": "#FAC35A"
+                            },
+                            "style": {
+                              "transform": "translateY(5px)"
+                            }
+                          },
+                          "columns": [
+                            {
+                              "name": "carrier",
+                              "style": {
+                                "width": 450,
+                                "color": "#FAC35A",
+                                "fontWeight": "bold"
+                              },
+                              "children": [
+                                {
+                                  "type": "MarqueeText",
+                                  "speed": 80,
+                                  "content": [
+                                    {
+                                      "type": "Text",
+                                      "tag": "span",
+                                      "style": {
+                                        "height": 89,
+                                        "lineHeight": 89
+                                      },
+                                      "columnName": "carrier"
+                                    },
+                                    {
+                                      "type": "Text",
+                                      "tag": "span",
+                                      "style": {
+                                        "height": 89,
+                                        "lineHeight": 89
+                                      },
+                                      "columnName": "flight"
+                                    }
+
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "name": "route",
+                              "style": {
+                                "minWidth": 460,
+                                "color": "#FAC35A",
+                                "textAlign": "left"
+                              },
+                              "children": [
+                                {
+                                  "type": "MarqueeText",
+                                  "speed": 80,
+                                  "content": [
+                                    {
+                                      "type": "Text",
+                                      "tag": "span",
+                                      "style": {
+                                        "height": 140,
+                                        "lineHeight": 140
+                                      },
+                                      "columnName": "route"
+                                    }
+
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "name": "gate",
+                              "style": {
+                                "width": 280,
+                                "textAlign": "left"
+                              },
+                              "children": [
+                                {
+                                  "type": "MarqueeText",
+                                  "speed": 80,
+                                  "style": {
+                                    "width": 280,
+                                    "fontSize": 110
+                                  },
+                                  "content": [
+                                    {
+                                      "type": "Text",
+                                      "style": {
+                                        "height": 89,
+                                        "lineHeight": 89,
+                                        "color": "#fff"
+                                      },
+                                      "columnName": "gate"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

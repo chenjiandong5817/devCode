@@ -1,0 +1,316 @@
+<template>
+  <section>
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters">
+        <el-form-item>
+          <el-input v-model="filters.registration" placeholder="机号" ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="filters.aircraftType" placeholder="机型IATA代码" ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="filters.airlines" placeholder="航空公司IATA代码" ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" v-on:click="getAircraftregistrationsList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleAdd">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+    <el-table v-bind:data="aircraftregistrations" highlight-current-row v-loading="listLoading" @selection-change="selsChange" :height="tableHeight" style="width: 100%;">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60">
+        <template scope="scope">
+          {{pageSize * (pageNumber - 1) + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="registration" label="机号" width="115" sortable>
+      </el-table-column>
+      <el-table-column prop="aircraftType" label="机型IATA代码" width="125">
+      </el-table-column>
+      <el-table-column prop="airlines" label="航空公司IATA代码" width="160">
+      </el-table-column>
+      <el-table-column prop="availableSeats" label="可供座位" width="105">
+      </el-table-column>
+      <el-table-column prop="maximumSeats" label="最大座位" width="105">
+      </el-table-column>
+      <el-table-column prop="availablePayload" label="可供业载" width="105">
+      </el-table-column>
+      <el-table-column prop="maximumPayload" label="最大业载" width="105">
+      </el-table-column>
+      <el-table-column prop="isLoadedPlate" label="是否装板" width="105" :formatter="baseUtil.formatterIsNo">
+      </el-table-column>
+      <el-table-column prop="isOxygenChamber" label="是否有有氧舱" width="120" :formatter="baseUtil.formatterIsNo">
+      </el-table-column>
+      <el-table-column prop="maintenanceSeat" label="机务座位" width="105">
+      </el-table-column>
+      <el-table-column prop="crewSeat" label="机组座位" width="105">
+      </el-table-column>
+      <el-table-column prop="safetyOfficerSeat" label="安全员座位" width="115">
+      </el-table-column>
+      <el-table-column prop="seatLayout" label="座位布局" width="105">
+      </el-table-column>
+      <el-table-column prop="doorSize" label="舱门尺寸" width="105">
+      </el-table-column>
+      <el-table-column prop="emergencyExit" label="紧急出口" width="105">
+      </el-table-column>
+      <el-table-column prop="ctn" label="离港CTN" width="102">
+      </el-table-column>
+      <el-table-column prop="mtow" label="最大起飞重量" width="120">
+      </el-table-column>
+      <el-table-column prop="airlinesBranch" label="分公司代码" width="115">
+      </el-table-column>
+      <el-table-column prop="parkTime" label="标准停场时间" width="120">
+      </el-table-column>
+      <el-table-column prop="aircraftTypeDetail" label="细分机型" width="105">
+      </el-table-column>
+      <el-table-column prop="remark" label="备注" width="130" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="lastUpdated" label="最后更新时间" width="180">
+      </el-table-column>
+      <el-table-column label="操作" width="180" fixed="right" >
+        <template scope="scope">
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"><span><i class="el-icon-edit"></i> 编辑 </span></el-button>
+          <el-button size="small" @click="handleDel(scope.$index, scope.row)"><span><i class="el-icon-delete"></i> 删除 </span></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination :to="getAircraftregistrationsList" ref="page"></pagination>
+    <common-add-or-update
+        type="add"
+        :to="API.addAircraftregistrations().go"
+        :callback="getAircraftregistrationsList"
+        :labelWidth="140"
+        ref="addForm"></common-add-or-update>
+    <common-add-or-update
+        title="编辑"
+        type="update"
+        :to="API.editAircraftregistrations().go"
+        :callback="getAircraftregistrationsList"
+        :labelWidth="140"
+        ref="editForm"></common-add-or-update>
+    <common-delete
+        :to="API.removeAircraftregistrations().go"
+        :callback="getAircraftregistrationsList"
+        :labelWidth="100"
+        ref="delConfirm"></common-delete>
+  </section>
+</template>
+
+<script>
+  import Util from '../../common/js/util'
+  import baseUtil from '../../common/js/base-util'
+  import chooseDialog from './../../components/CommChooseGrid'
+  // import commonAddOrUpdate from './../../components/CommAddOrUpdate'
+  // 新的共用模板
+  import commonAddOrUpdate from './baseForm/CommAddOrUpdate'
+  import commonDelete from './../../components/CommDelete'
+  import API from '../../api'
+  import Pagination from '../../components/Pagination'
+
+  export default {
+    data () {
+      return {
+        filters: {
+          registration: '',
+          aircraftType: '',
+          airlines: ''
+        },
+        aircraftregistrations: [],
+        tableHeight: 495,
+        listLoading: false,
+        sels: [],
+        airports: [],
+        amountValidate: null,
+        // fields: [
+        //   { name: 'id', value: '', hidden: true },
+        //   { name: 'registration', value: '', label: '机号', type: 'text', rules: [ { max: 10, min: 1, message: '机号只能为少于十位的字符串' } ], placeholder: '' },
+        //   { name: 'aircraftType', value: '', label: '机型IATA代码', type: 'text', rules: [ { max: 10, min: 1, message: '机型IATA代码只能为少于十位的字符串' } ], placeholder: '' },
+        //   { name: 'airlines', value: '', label: '航空公司IATA代码', type: 'text', rules: [ { max: 2, min: 1, message: '航空公司IATA代码只能为少于两位的字符串' } ], placeholder: '' },
+        //   { name: 'availableSeats', value: 0, label: '可供座位', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'maximumSeats', value: 0, label: '最大座位', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'availablePayload', value: 0, label: '可供业载', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'maximumPayload', value: 0, label: '最大业载', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'isLoadedPlate', value: '', label: '是否装板', type: 'select', choose: [ { text: '是', value: '1' }, { text: '否', value: '0' } ], rules: null, placeholder: '' },
+        //   { name: 'isOxygenChamber', value: '', label: '是否有有氧舱', type: 'select', choose: [ { text: '是', value: '1' }, { text: '否', value: '0' } ], rules: null, placeholder: '' },
+        //   { name: 'maintenanceSeat', value: '', label: '机务座位', type: 'text', rules: [ { max: 50, min: 1, message: '机务座位只能为少于五十位的字符串' } ], placeholder: '' },
+        //   { name: 'crewSeat', value: '', label: '机组座位', type: 'text', rules: [ { max: 50, min: 1, message: '机组座位只能为少于五十位的字符串' } ], placeholder: '' },
+        //   { name: 'safetyOfficerSeat', value: '', label: '安全员座位', type: 'text', rules: [ { max: 50, min: 1, message: '安全员座位只能为少于五十位的字符串' } ], placeholder: '' },
+        //   { name: 'seatLayout', value: '', label: '座位布局', type: 'text', rules: [ { max: 50, min: 1, message: '作为布局只能为少于五十位的字符串' } ], placeholder: '' },
+        //   { name: 'doorSize', value: 0, label: '舱门尺寸', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'emergencyExit', value: '', label: '紧急出口', type: 'text', rules: [ { max: 50, min: 1, message: '紧急出口只能为少于五十位的字符串' } ], placeholder: '' },
+        //   { name: 'ctn', value: '', label: '离港CTN', type: 'text', rules: [ { max: 10, min: 1, message: '离港CTN只能为少于十位的字符串' } ], placeholder: '' },
+        //   { name: 'mtow', value: 0, label: '最大起飞重量', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'airlinesBranch', value: '', label: '分公司代码', type: 'text', rules: [ { max: 5, min: 1, message: '分公司代码只能为少于五位的字符串' } ], placeholder: '' },
+        //   { name: 'parkTime', value: 0, label: '标准停场时间(分钟)', type: 'number', rules: null, placeholder: '' },
+        //   { name: 'aircraftTypeDetail', value: '', label: '细分机型', type: 'text', rules: [ { max: 20, min: 1, message: '编码只能为少于二十位的字符串' } ], placeholder: '' },
+        //   { name: 'remark', value: '', label: '备注', type: 'textarea', rules: [ { max: 100, min: 1, message: '备注只能为少于一百位的字符串' } ], placeholder: '' }
+        // ],
+        fields: [
+          {
+            id: '0',
+            item: [
+              { name: 'id', value: '', hidden: true }
+            ]
+          },
+          {
+            id: '1',
+            item: [
+             { name: 'registration', value: '', label: '机号', type: 'text', rules: [ { max: 10, min: 1, message: '机号只能为少于十位的字符串' } ], placeholder: '', span: 8 },
+             { name: 'aircraftType', value: '', label: '机型IATA代码', type: 'text', rules: [ { max: 10, min: 1, message: '机型IATA代码只能为少于十位的字符串' } ], placeholder: '', span: 8 },
+             { name: 'airlines', value: '', label: '航空公司IATA代码', type: 'text', rules: [ { max: 2, min: 1, message: '航空公司IATA代码只能为少于两位的字符串' } ], placeholder: '', span: 8 }
+            ]
+          },
+          {
+            id: '2',
+            item: [
+             { name: 'availableSeats', value: 0, label: '可供座位', type: 'number', rules: null, placeholder: '', span: 6 },
+             { name: 'maximumSeats', value: 0, label: '最大座位', type: 'number', rules: null, placeholder: '', span: 6 },
+             { name: 'availablePayload', value: 0, label: '可供业载', type: 'number', rules: null, placeholder: '', span: 6 },
+             { name: 'maximumPayload', value: 0, label: '最大业载', type: 'number', rules: null, placeholder: '', span: 6 }
+            ]
+          },
+          {
+            id: '3',
+            item: [
+             { name: 'isLoadedPlate', value: '', label: '是否装板', type: 'select', choose: [ { text: '是', value: '1' }, { text: '否', value: '0' } ], rules: null, placeholder: '', span: 12 },
+             { name: 'isOxygenChamber', value: '', label: '是否有有氧舱', type: 'select', choose: [ { text: '是', value: '1' }, { text: '否', value: '0' } ], rules: null, placeholder: '', span: 12 }
+            ]
+          },
+          {
+            id: '4',
+            item: [
+              { name: 'maintenanceSeat', value: '', label: '机务座位', type: 'text', rules: [ { max: 50, min: 1, message: '机务座位只能为少于五十位的字符串' } ], placeholder: '', span: 12 },
+              { name: 'crewSeat', value: '', label: '机组座位', type: 'text', rules: [ { max: 50, min: 1, message: '机组座位只能为少于五十位的字符串' } ], placeholder: '', span: 12 }
+            ]
+          },
+          {
+            id: '5',
+            item: [
+               { name: 'safetyOfficerSeat', value: '', label: '安全员座位', type: 'text', rules: [ { max: 50, min: 1, message: '安全员座位只能为少于五十位的字符串' } ], placeholder: '', span: 12 },
+               { name: 'seatLayout', value: '', label: '座位布局', type: 'text', rules: [ { max: 50, min: 1, message: '作为布局只能为少于五十位的字符串' } ], placeholder: '', span: 12 }
+            ]
+          },
+          {
+            id: '6',
+            item: [
+              { name: 'doorSize', value: 0, label: '舱门尺寸', type: 'number', rules: null, placeholder: '', span: 12 },
+              { name: 'emergencyExit', value: '', label: '紧急出口', type: 'text', rules: [ { max: 50, min: 1, message: '紧急出口只能为少于五十位的字符串' } ], placeholder: '', span: 12 }
+            ]
+          },
+          {
+            id: '7',
+              item: [
+              { name: 'ctn', value: '', label: '离港CTN', type: 'text', rules: [ { max: 10, min: 1, message: '离港CTN只能为少于十位的字符串' } ], placeholder: '', span: 12 },
+              { name: 'mtow', value: 0, label: '最大起飞重量', type: 'number', rules: null, placeholder: '', span: 12 }
+            ]
+          },
+          {
+            id: '8',
+            item: [
+              { name: 'airlinesBranch', value: '', label: '分公司代码', type: 'text', rules: [ { max: 5, min: 1, message: '分公司代码只能为少于五位的字符串' } ], placeholder: '', span: 12 },
+              { name: 'parkTime', value: 0, label: '标准停场时间(分钟)', type: 'number', rules: null, placeholder: '', span: 12 }
+            ]
+          },
+          {
+            id: '9',
+            item: [
+             { name: 'aircraftTypeDetail', value: '', label: '细分机型', type: 'text', rules: [ { max: 20, min: 1, message: '编码只能为少于二十位的字符串' } ], placeholder: '', span: 12 },
+             { name: 'remark', value: '', label: '备注', type: 'textarea', rules: [ { max: 100, min: 1, message: '备注只能为少于一百位的字符串' } ], placeholder: '', span: 12 }
+            ]
+          }
+        ],
+        API: API,
+        baseUtil: baseUtil
+      }
+    },
+    computed: {
+      pageNumber () {
+        return this.$refs['page'].get('pageNumber')
+      },
+      pageSize () {
+        return this.$refs['page'].get('pageSize')
+      }
+    },
+    components: {
+      chooseDialog: chooseDialog,
+      commonAddOrUpdate: commonAddOrUpdate,
+      commonDelete: commonDelete,
+      pagination: Pagination
+    },
+    methods: {
+      getAircraftregistrationsList () {
+        let para = Object.assign({}, this.filters, this.$refs['page'].queryParam())
+        this.listLoading = true
+        API.getAircraftregistrationsListPage().go(para).then((data) => {
+          if (data.ok) {
+            this.$refs['page'].set('total', data.attr.data.pager.recordCount)
+            this.aircraftregistrations = data.attr.data.list
+            this.filters.registration = ''
+            this.filters.aircraftType = ''
+            this.filters.airlines = ''
+          } else {
+            this.$notify(Util.notifyBody(false, data.msg))
+          }
+          this.listLoading = false
+        })
+      },
+      selsChange: function (sels) {
+        this.sels = sels
+      },
+      handleCommand: function (command, self) {
+        var node = self.$vnode.data.attrs
+        /* eslint-disable */
+        eval('this.' + command).call(this, node.index, node.row)
+        /* eslint-enable */
+      },
+      handleDel: function (index, row) {
+        this.$refs['delConfirm'].del(row.id)
+      },
+      handleAdd: function () {
+        console.log('this.fields', this.fields)
+        this.fields[4].rules = this.agentCodeValidate
+        this.fields[5].rules = this.agentCodeValidate
+        this.fields[6].rules = this.agentCodeValidate
+        this.fields[7].rules = this.agentCodeValidate
+        let addFields = Util.deepCopy(this.fields)
+        this.$refs['addForm'].show(addFields)
+      },
+      handleEdit: function (index, row) {
+        // console.log('this.fields', this.fields)
+        // this.fields[4].rules = this.agentCodeValidate
+        // this.fields[5].rules = this.agentCodeValidate
+        // this.fields[6].rules = this.agentCodeValidate
+        // this.fields[7].rules = this.agentCodeValidate
+        let editFields = Util.deepCopy(this.fields)
+        for (let i = 0; i < editFields.length; i++) {
+          for (let j = 0; j < editFields[i].item.length; j++) {
+            editFields[i].item[j].value = row[editFields[i].item[j].name]
+          }
+        }
+        console.log('editFields', editFields)
+        this.$refs['editForm'].show(editFields)
+      },
+      getValidate: function () {
+        this.agentCodeValidate = (rule, value, callback) => {
+          if (value < 0) {
+            return callback(new Error('请保证输入的值大于0'))
+          }
+          callback()
+       }
+      }
+    },
+    mounted () {
+      this.getAircraftregistrationsList()
+      this.getValidate()
+    }
+  }
+
+</script>
+
+<style scoped>
+
+</style>

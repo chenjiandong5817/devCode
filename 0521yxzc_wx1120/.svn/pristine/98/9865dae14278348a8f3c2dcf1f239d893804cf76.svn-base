@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_user.mappers.UserPaperInvoiceMapper">
+    <insert id="add" parameterType="userPaperInvoiceDto">
+        insert into ap_user_paper_invoice
+        (
+        uuid,
+        userUuid,
+        type,
+        headerType,
+        header,
+        taxNumber,
+        money,
+        content,
+        remark,
+        regAddress,
+        regMobile,
+        bankAccount,
+        recipient,
+        mobile,
+        area,
+        detailAddress,
+        freightType,
+        freightMoney,
+        freightTime,
+        courierCompany,
+        courierNote,
+        singleNumber,
+        userMobile,
+        status,
+        orderUuids,
+        admNote,
+        closeNote,
+        closeTime,
+        invalidNote,
+        invalidTime,
+        invoiceSource,
+        invoiceTime,
+        invoiceCode,
+        createTime,
+        creator,
+        updateTime,
+        updator
+        )
+        values
+        (
+        #{uuid},
+        #{userUuid},
+        #{type},
+        #{headerType},
+        #{header},
+        #{taxNumber},
+        #{money},
+        #{content},
+        #{remark},
+        #{regAddress},
+        #{regMobile},
+        #{bankAccount},
+        #{recipient},
+        #{mobile},
+        #{area},
+        #{detailAddress},
+        #{freightType},
+        #{freightMoney},
+        #{freightTime},
+        #{courierCompany},
+        #{courierNote},
+        #{singleNumber},
+        #{userMobile},
+        #{status},
+        #{orderUuids},
+        #{admNote},
+        #{closeNote},
+        #{closeTime},
+        #{invalidNote},
+        #{invalidTime},
+        #{invoiceSource},
+        #{invoiceTime},
+        #{invoiceCode},
+        #{createTime},
+        #{creator},
+        #{updateTime},
+        #{updator}
+        )
+    </insert>
+
+    <update id="edit" parameterType="userPaperInvoiceDto">
+        update ap_user_paper_invoice
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="userUuid != null and '' != userUuid">userUuid = #{userUuid},</if>
+            <if test="type != null and '' != type">type = #{type},</if>
+            <if test="headerType != null and '' != headerType">headerType = #{headerType},</if>
+            <if test="header != null and '' != header">header = #{header},</if>
+            <if test="taxNumber != null and '' != taxNumber">taxNumber = #{taxNumber},</if>
+            <if test="money != null and '' != money">money = #{money},</if>
+            <if test="content != null and '' != content">content = #{content},</if>
+            <if test="remark != null and '' != remark">remark = #{remark},</if>
+            <if test="regAddress != null and '' != regAddress">regAddress = #{regAddress},</if>
+            <if test="regMobile != null and '' != regMobile">regMobile = #{regMobile},</if>
+            <if test="bankAccount != null and '' != bankAccount">bankAccount = #{bankAccount},</if>
+            <if test="recipient != null and '' != recipient">recipient = #{recipient},</if>
+            <if test="mobile != null and '' != mobile">mobile = #{mobile},</if>
+            <if test="area != null and '' != area">area = #{area},</if>
+            <if test="detailAddress != null and '' != detailAddress">detailAddress = #{detailAddress},</if>
+            <if test="freightType != null and '' != freightType">freightType = #{freightType},</if>
+            <if test="freightMoney != null and '' != freightMoney">freightMoney = #{freightMoney},</if>
+            <if test="freightTime != null and '' != freightTime">freightTime = #{freightTime},</if>
+            <if test="courierCompany != null and '' != courierCompany">courierCompany = #{courierCompany},</if>
+            <if test="courierNote != null and '' != courierNote">courierNote = #{courierNote},</if>
+            <if test="singleNumber != null and '' != singleNumber">singleNumber = #{singleNumber},</if>
+            <if test="userMobile != null and '' != userMobile">userMobile = #{userMobile},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="orderUuids != null and '' != orderUuids">orderUuids = #{orderUuids},</if>
+            <if test="admNote != null and '' != admNote">admNote = #{admNote},</if>
+            <if test="closeNote != null and '' != closeNote">closeNote = #{closeNote},</if>
+            <if test="closeTime != null and '' != closeTime">closeTime = #{closeTime},</if>
+            <if test="invalidNote != null and '' != invalidNote">invalidNote = #{invalidNote},</if>
+            <if test="invalidTime != null and '' != invalidTime">invalidTime = #{invalidTime},</if>
+            <if test="invoiceSource != null and '' != invoiceSource">invoiceSource = #{invoiceSource},</if>
+            <if test="invoiceTime != null and '' != invoiceTime">invoiceTime = #{invoiceTime},</if>
+            <if test="invoiceCode != null and '' != invoiceCode">invoiceCode = #{invoiceCode},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="updator != null and '' != updator">updator = #{updator},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="userPaperInvoiceDto">
+        delete from
+        ap_user_paper_invoice
+        where
+        uuid = #{uuid}
+    </delete>
+
+    <select id="selInfo" resultType="userPaperInvoiceDto">
+        select
+        *
+        from
+        ap_user_paper_invoice
+        where
+        uuid = #{uuid}
+    </select>
+
+    <sql id="sqlForList">
+        from
+        ap_user_paper_invoice
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="type != null and '' != type">and type = #{type}</if>
+            <if test="headerType != null and '' != headerType">and headerType = #{headerType}</if>
+            <if test="header != null and '' != header">and header = #{header}</if>
+            <if test="taxNumber != null and '' != taxNumber">and taxNumber = #{taxNumber}</if>
+            <if test="money != null and '' != money">and money = #{money}</if>
+            <if test="content != null and '' != content">and content = #{content}</if>
+            <if test="remark != null and '' != remark">and remark = #{remark}</if>
+            <if test="regAddress != null and '' != regAddress">and regAddress = #{regAddress}</if>
+            <if test="regMobile != null and '' != regMobile">and regMobile = #{regMobile}</if>
+            <if test="bankAccount != null and '' != bankAccount">and bankAccount = #{bankAccount}</if>
+            <if test="recipient != null and '' != recipient">and recipient = #{recipient}</if>
+            <if test="mobile != null and '' != mobile">and mobile = #{mobile}</if>
+            <if test="area != null and '' != area">and area = #{area}</if>
+            <if test="detailAddress != null and '' != detailAddress">and detailAddress = #{detailAddress}</if>
+            <if test="freightType != null and '' != freightType">and freightType = #{freightType}</if>
+            <if test="freightMoney != null and '' != freightMoney">and freightMoney = #{freightMoney}</if>
+            <if test="freightTime != null and '' != freightTime">and freightTime = #{freightTime}</if>
+            <if test="courierCompany != null and '' != courierCompany">and courierCompany = #{courierCompany}</if>
+            <if test="courierNote != null and '' != courierNote">and courierNote = #{courierNote}</if>
+            <if test="singleNumber != null and '' != singleNumber">and singleNumber = #{singleNumber}</if>
+            <if test="userMobile != null and '' != userMobile">and userMobile = #{userMobile}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="orderUuids != null and '' != orderUuids">and orderUuids = #{orderUuids}</if>
+            <if test="admNote != null and '' != admNote">and admNote = #{admNote}</if>
+            <if test="closeNote != null and '' != closeNote">and closeNote = #{closeNote}</if>
+            <if test="closeTime != null and '' != closeTime">and closeTime = #{closeTime}</if>
+            <if test="invalidNote != null and '' != invalidNote">and invalidNote = #{invalidNote}</if>
+            <if test="invalidTime != null and '' != invalidTime">and invalidTime = #{invalidTime}</if>
+            <if test="invoiceSource != null and '' != invoiceSource">and invoiceSource = #{invoiceSource}</if>
+            <if test="invoiceTime != null and '' != invoiceTime">and invoiceTime = #{invoiceTime}</if>
+            <if test="invoiceCode != null and '' != invoiceCode">and invoiceCode = #{invoiceCode}</if>
+            <if test="statusArray != null">and status in
+                <foreach collection="statusArray" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="updator != null and '' != updator">and updator = #{updator}</if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="userPaperInvoiceDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="userPaperInvoiceDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="pageList" resultType="userPaperInvoiceDto">
+        select i.*,
+        p.mobile as userMobile
+        from ap_user_paper_invoice i
+        left join ap_user_passenger p on i.userUuid = p.uuid
+        <where>
+            <if test="status != null and status == 1">and i.status = #{status}</if>
+            <if test="status != null and status == 2">and i.status in(0,-1)</if>
+            <if test="type != null and '' != type">and i.type = #{type}</if>
+            <if test="header != null and '' != header">and i.header LIKE '%${header}%'</if>
+            <if test="uuid != null and '' != uuid">and i.uuid = #{uuid}</if>
+        </where>
+    </select>
+
+    <select id="sum" resultType="java.lang.Double">
+        SELECT COALESCE (SUM (${sumField}),0)
+        <include refid="sqlForList"/>
+    </select>
+</mapper>

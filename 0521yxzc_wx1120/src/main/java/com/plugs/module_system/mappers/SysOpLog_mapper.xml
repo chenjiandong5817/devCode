@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysOpLogMapper">
+	<insert id="add" parameterType="sysOpLogDto">
+		insert into ap_sys_op_log
+			(
+				uuid,
+				module,
+				operateObject,
+				operateContent,
+				operatorUuid,
+				operateTime
+			)
+		values
+			(
+				#{uuid},
+				#{module},
+				#{operateObject},
+				#{operateContent},
+				#{operatorUuid},
+				#{operateTime}
+			)
+	</insert>
+
+	<update id="edit" parameterType="sysOpLogDto">
+		update ap_sys_op_log
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="module != null and '' != module"> module = #{module},</if>
+			<if test="operateObject != null and '' != operateObject"> operateObject = #{operateObject},</if>
+			<if test="operateContent != null and '' != operateContent"> operateContent = #{operateContent},</if>
+			<if test="operatorUuid != null and '' != operatorUuid"> operatorUuid = #{operatorUuid},</if>
+			<if test="operateTime != null and '' != operateTime"> operateTime = #{operateTime},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+
+	<delete id="del" parameterType="sysOpLogDto">
+		delete from
+			ap_sys_op_log
+		where
+			uuid = #{uuid}
+	</delete>
+
+	<select id="selInfo" resultType="sysOpLogDto">
+		select
+			*
+		from
+			ap_sys_op_log
+		where
+			uuid = #{uuid}
+	</select>
+
+	<sql id="sqlForList">
+		from
+			ap_sys_op_log
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="module != null and '' != module"> and module = #{module} </if>
+			<if test="operateObject != null and '' != operateObject"> and operateObject = #{operateObject} </if>
+			<if test="operateContent != null and '' != operateContent"> and operateContent = #{operateContent} </if>
+			<if test="operatorUuid != null and '' != operatorUuid"> and operatorUuid = #{operatorUuid} </if>
+			<if test="operateTime != null and '' != operateTime"> and operateTime = #{operateTime} </if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select
+			count(*)
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="list" resultType="sysOpLogDto">
+		select
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="sysOpLogDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+	<!-- 分页列表-->
+	<select id="findList" resultType="sysOpLogDto">
+		SELECT
+			o.uuid as uuid,
+			o.module as module,
+			o.operateObject as operateObject,
+			o.operateContent as operateContent,
+			o.operatorUuid as operatorUuid,
+			o.operateTime as operateTime,
+			u.userName as operatorName
+		FROM
+			AP_SYS_OP_LOG o
+		LEFT JOIN
+			AP_SYS_USER u
+		ON
+			o.OPERATORUUID = u.uuid
+		<where>
+			<if test="startTime != null and '' != startTime">and o.operateTime &gt;= to_date(#{startTime},'yyyy-mm-dd,hh24:mi:ss') </if>
+			<if test="endTime != null and '' != endTime">and o.operateTime &lt;= to_date(#{endTime},'yyyy-mm-dd,hh24:mi:ss')</if>
+		</where>
+	</select>
+</mapper>

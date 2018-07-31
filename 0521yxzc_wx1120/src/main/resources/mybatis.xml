@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <setting name="callSettersOnNulls" value="true"/>
+    </settings>
+    <typeAliases>
+
+        <!--common-->
+        <typeAlias type="com.plugs.module_common.dtos.CommonPayLogDto" alias="commonPayLogDto"/>
+
+
+        <!--用户相关-->
+        <typeAlias type="com.plugs.module_user.dtos.UserPassengerDto" alias="userPassengerDto"/>
+        <typeAlias type="com.plugs.module_user.dtos.UserAccountDetailDto" alias="userAccountDetailDto"/>
+        <typeAlias type="com.plugs.module_user.dtos.UserCouponDto" alias="userCouponDto"/>
+        <typeAlias type="com.plugs.module_user.dtos.UserElectronInvoiceDto" alias="userElectronInvoiceDto"/>
+        <typeAlias type="com.plugs.module_user.dtos.UserPaperInvoiceDto" alias="userPaperInvoiceDto"/>
+        <typeAlias type="com.plugs.module_user.dtos.UserHistoryInvoiceDto" alias="userHistoryInvoiceDto"/>
+        <!--个人账户优惠券查询映射实体-->
+        <typeAlias type="com.plugs.module_user.pojo.UserCoupon" alias="userCoupon"/>
+
+
+        <!--enterprise-->
+        <typeAlias type="com.plugs.module_enterprise.dtos.EntAccountDto" alias="entAccountDto"/>
+        <typeAlias type="com.plugs.module_enterprise.dtos.EntAccountRoleDto" alias="entAccountRoleDto"/>
+        <typeAlias type="com.plugs.module_enterprise.dtos.EntAccountDepartmentDto" alias="entAccountDepartmentDto"/>
+        <typeAlias type="com.plugs.module_enterprise.dtos.EntAccountDetailDto" alias="entAccountDetailDto"/>
+
+
+        <!--system-->
+        <typeAlias type="com.plugs.module_system.dtos.SysUserDto" alias="sysUserDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysIdentifyDto" alias="sysIdentifyDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysCouponDto" alias="sysCouponDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysCityDto" alias="sysCityDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysProblemDto" alias="sysProblemDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysTagDto" alias="sysTagDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysCarBillingWayDto" alias="sysCarBillingWayDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysCarModelsLevelDto" alias="sysCarModelsLevelDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysConfigDto" alias="sysConfigDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysResourceDto" alias="sysResourceDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysOpLogDto" alias="sysOpLogDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysAreaDto" alias="sysAreaDto"/>
+        <typeAlias type="com.plugs.module_system.dtos.SysAreaConfigDto" alias="sysAreaConfigDto"/>
+
+
+        <!--order-->
+        <typeAlias type="com.plugs.module_order.dtos.OrderDto" alias="orderDto"/>
+        <typeAlias type="com.plugs.module_order.dtos.OrderEvaluateDto" alias="orderEvaluateDto"/>
+        <typeAlias type="com.plugs.module_order.dtos.OrderCostDetailDto" alias="orderCostDetailDto"/>
+        <typeAlias type="com.plugs.module_order.dtos.OrderLocationDto" alias="orderLocationDto"/>
+        <typeAlias type="com.plugs.module_order.dtos.OrderConfigDto" alias="orderConfigDto"/>
+        <typeAlias type="com.plugs.module_order.dtos.OrderExpandDto" alias="orderExpandDto"/>
+        <typeAlias type="com.plugs.module_order.dtos.OrderPrepaidDto" alias="orderPrepaidDto"/>
+
+
+        <!--driver-->
+        <typeAlias type="com.plugs.module_driver.dtos.DriverDto" alias="driverDto"/>
+        <!-- 司机扩展表 -->
+        <typeAlias type="com.plugs.module_driver.dtos.DriverAccountDetailDto" alias="driverAccountDetailDto"/>
+        <typeAlias type="com.plugs.module_driver.dtos.DriverRushOrderDto" alias="driverRushOrderDto"/>
+        <!--为了查询飘单使用,映射司机UUID,距离，经纬度-->
+        <typeAlias type="com.plugs.module_order.pojo.NotServiceDriverInfo" alias="notServiceDriverInfo"/>
+        <!-- 电子围栏 -->
+        <typeAlias type="com.plugs.module_driver.dtos.DriverElectronicFenceDto" alias="driverElectronicFenceDto"/>
+        <typeAlias type="com.plugs.module_driver.dtos.DriverQueueDto" alias="driverQueueDto"/>
+
+
+    </typeAliases>
+
+    <plugins>
+        <!-- mybati实现分页 -->
+        <plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+            <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.OracleDialect"/>
+        </plugin>
+    </plugins>
+</configuration>

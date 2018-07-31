@@ -1,0 +1,23 @@
+{
+  "flight": "9C8636",
+  "destinationCN": "大阪",
+  "destinationEN": "Osaka",
+  "logo": "./../../static/logo/700x400/9C.gif",
+  "airlinesCN": "春秋航空",
+  "airlinesEN": "APRING AIRLINES",
+  "engineRoomCN": "经济舱柜台",
+  "engineRoomEN": "Economy Class",
+  "bordingTimeLabelCN": "预计登机",
+  "bordingTimeLabelEN": "Bording Time",
+  "bordingTime": "11:50",
+  "checkInTimeLabelCN": "办理时间",
+  "checkInTimeLabelEN": "Check-In Time",
+  "checkInTime": "09:20 - 11:20",
+  "gateLabelCN": "登机口",
+  "gateLabelEN": "Gate",
+  "gate": "04",
+  "flightStatusLabelCN": "航班状态",
+  "flightStatusLabelEN": "Status",
+  "flightStatusCN": "登机",
+  "flightStatusEN": "Boarding"
+}

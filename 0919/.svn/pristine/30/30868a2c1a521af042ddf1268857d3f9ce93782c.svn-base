@@ -1,0 +1,353 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section>
+    <!--工具条-->
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters">
+        <el-form-item>
+          <el-select v-model="filters.airportCode" placeholder="请选择机场">
+            <el-option
+              v-for="item in airportsChoose"
+              :key="item.value"
+              :label="item.text"
+              :value="item.value">
+              <span style="float: left">{{ item.text }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.code }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="filters.agentCode" placeholder="代理人代码" ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" v-on:click="getGeneralagentsList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleAdd">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+
+    <!--列表-->
+    <el-table v-bind:data="generalagents" highlight-current-row v-loading="listLoading" @selection-change="selsChange" :height="tableHeight" style="width: 100%;">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60">
+        <template scope="scope">
+          {{pageSize * (pageNumber - 1) + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="agentCode" label="代理人编码" width="150" sortable>
+      </el-table-column>
+      <el-table-column prop="airportCode" label="运营机场" width="200" :formatter="formatterAirport">
+      </el-table-column>
+      <el-table-column prop="clientAirline" label="代理航空公司" width="400" :formatter="formatterAirline" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="description" label="描述" width="200" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="lastUpdated" label="最后更新时间" min-width="180">
+      </el-table-column>
+      <el-table-column label="操作" width="180" fixed="right" >
+        <template scope="scope">
+          <!-- <el-dropdown @command="handleCommand">
+            <el-button size="small" >更多操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="handleEdit" :index="scope.$index" :row="scope.row"><span><i class="el-icon-edit"></i> 编辑 </span></el-dropdown-item>
+              <el-dropdown-item command="handleDel" :index="scope.$index" :row="scope.row"><span><i class="el-icon-delete"></i> 删除 </span></el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown> -->
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"><span><i class="el-icon-edit"></i> 编辑 </span></el-button>
+          <el-button size="small" @click="handleDel(scope.$index, scope.row)"><span><i class="el-icon-delete"></i> 删除 </span></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!--分页-->
+    <pagination :to="getGeneralagentsList" ref="page"></pagination>
+
+    <!--新增界面-->
+    <common-add-or-update
+        type="add"
+        :to="API.addGeneralagents().go"
+        :callback="getGeneralagentsList"
+        :labelWidth="100"
+        ref="addForm"></common-add-or-update>
+    <!--编辑界面-->
+    <common-add-or-update
+        title="编辑"
+        type="update"
+        :to="API.editGeneralagents().go"
+        :callback="getGeneralagentsList"
+        :labelWidth="100"
+        ref="editForm"></common-add-or-update>
+    <!--删除窗口-->
+    <common-delete
+        :to="API.removeGeneralagents().go"
+        :callback="getGeneralagentsList"
+        :labelWidth="100"
+        ref="delConfirm"></common-delete>
+  </section>
+</template>
+
+<script>
+  import Util from '../../common/js/util'
+  import baseUtil from '../../common/js/base-util'
+  import chooseDialog from './../../components/CommChooseGrid'
+  import commonAddOrUpdate from './../../components/CommAddOrUpdate'
+  import commonDelete from './../../components/CommDelete'
+  import API from '../../api'
+  import Pagination from '../../components/Pagination'
+
+  export default {
+    data () {
+      return {
+        filters: {
+          agentCode: '',
+          airportCode: '',
+          description: ''
+        },
+        generalagents: [],
+        tableHeight: 495,
+        listLoading: false,
+        sels: [],
+        airportLinesChoose: [],
+        airportsChoose: [],
+        agentCodeValidate: null,
+        usedCharecter: [],
+        addUpdateTag: null,
+        row: null,
+        // 新增编辑需要的字段
+        fields: [
+          { name: 'id', value: '', hidden: true },
+          { name: 'airportCode', value: '', label: '运营机场', type: 'selectExplain', choose: [], rules: null, placeholder: '' },
+          { name: 'agentCode', value: '', label: '代理人编码', type: 'text', rules: null, placeholder: '请输入代理人编码' },
+          { name: 'clientAirline', value: [], filterable: true, multiple: true, label: '代理航空公司', type: 'select', choose: [], rules: null, placeholder: '' },
+          { name: 'description', value: '', label: '描述', type: 'textarea', rules: [ { max: 10, min: 1, required: true, message: '请输入一位到十位字符串的描述' } ], placeholder: '请输入说明' }
+        ],
+        API: API,
+        baseUtil: baseUtil
+      }
+    },
+    computed: {
+      pageNumber () {
+        return this.$refs['page'].get('pageNumber')
+      },
+      pageSize () {
+        return this.$refs['page'].get('pageSize')
+      }
+    },
+    components: {
+      chooseDialog: chooseDialog,
+      commonAddOrUpdate: commonAddOrUpdate,
+      commonDelete: commonDelete,
+      pagination: Pagination
+    },
+    methods: {
+      // 获取用户列表
+      getGeneralagentsList () {
+        let para = Object.assign({}, this.filters, this.$refs['page'].queryParam())
+        this.listLoading = true
+        API.getGeneralagentsListPage().go(para).then((data) => {
+          if (data.ok) {
+            this.$refs['page'].set('total', data.attr.data.pager.recordCount)
+            this.generalagents = data.attr.data.list
+            this.filters.agentCode = ''
+            this.filters.airportCode = ''
+            this.getUsedAgentCode()
+          } else {
+            this.$notify(Util.notifyBody(false, data.msg))
+          }
+          this.listLoading = false
+        })
+      },
+      selsChange: function (sels) {
+        this.sels = sels
+      },
+      handleCommand: function (command, self) {
+        var node = self.$vnode.data.attrs
+        /* eslint-disable */
+        eval('this.' + command).call(this, node.index, node.row)
+        /* eslint-enable */
+      },
+      // 删除
+      handleDel: function (index, row) {
+        this.$refs['delConfirm'].del(row.id)
+      },
+      // 显示新增界面
+      handleAdd: function () {
+        this.addUpdateTag = 'add'
+        this.fields[1].choose = this.airportsChoose
+        this.fields[2].rules = [ { validator: this.agentCodeValidate } ]
+        this.fields[3].choose = this.airportLinesChoose
+        let addFields = Util.deepCopy(this.fields)
+        this.$refs['addForm'].show(addFields)
+      },
+      // 显示编辑界面
+      handleEdit: function (index, row) {
+        // 这边之所以不使用row在row上修改是因为row修改了，那么它本行的值也会被修改，会影响到cellValue
+        var rowCache = null
+        rowCache = Util.deepCopy(row)
+        this.addUpdateTag = 'edit'
+        this.row = rowCache
+        console.log('rowCache.clientAirline', rowCache.clientAirline)
+        rowCache.clientAirline = rowCache.clientAirline.split('/')
+        this.fields[1].choose = this.airportsChoose
+        this.fields[2].rules = [ { validator: this.agentCodeValidate } ]
+        this.fields[3].choose = this.airportLinesChoose
+        let editFields = Util.deepCopy(this.fields)
+        for (let i = 0; i < editFields.length; i++) {
+          editFields[i].value = rowCache[editFields[i].name]
+        }
+        this.$refs['editForm'].show(editFields)
+      },
+      // 获取航空公司的所有详细信息,为了获得下拉框的value与text
+      getAirportLines: function () {
+        let para = {
+          iatacode: '',
+          icaocode: '',
+          pageNumber: 1,
+          pageSize: 10000
+        }
+        API.getAirlines().go(para).then((data) => {
+          this.airportLinesChoose = []
+          for (var i = 0; i < data.attr.data.list.length; i++) {
+            var item = {}
+            item['text'] = data.attr.data.list[i].cnname
+            item['value'] = data.attr.data.list[i].iatacode
+            this.airportLinesChoose.push(item)
+          }
+        })
+      },
+      // 获取所有机场的详细信息,为了获得下拉框的value与text
+      getBaseAirports: function () {
+        let para = {
+          iatacode: '',
+          icaocode: '',
+          pageNumber: 1,
+          pageSize: 10000
+        }
+        API.getAirportListPage().go(para).then((data) => {
+          this.airportsChoose = []
+          var userSubscribeAirports = JSON.parse(localStorage.getItem('AdminSubscribeAirportJson'))
+          for (var i = 0; i < userSubscribeAirports.length; i++) {
+            var item = {}
+            item['text'] = ''
+            item['value'] = ''
+            item['code'] = ''
+            for (var j = 0; j < data.attr.data.list.length; j++) {
+              if (userSubscribeAirports[i].airportCode === data.attr.data.list[j].iatacode) {
+                item['text'] = data.attr.data.list[j].airportcnname
+                item['value'] = data.attr.data.list[j].iatacode
+                item['code'] = data.attr.data.list[j].iatacode + '/' + data.attr.data.list[j].icaocode
+              }
+            }
+            this.airportsChoose.push(item)
+          }
+        })
+      },
+      // 格式化代理航空公司
+      formatterAirline: function (row, column, cellValue) {
+        var result = []
+        cellValue = cellValue.split('/')
+        for (var i = 0; i < cellValue.length; i++) {
+          for (var j = 0; j < this.airportLinesChoose.length; j++) {
+            if (cellValue[i] === this.airportLinesChoose[j].value) {
+              result.push(this.airportLinesChoose[j].text)
+            }
+          }
+        }
+        result = result.join(',')
+        return result
+      },
+      // 格式化运营机场
+      formatterAirport: function (row, column, cellValue) {
+        for (var i = 0; i < this.airportsChoose.length; i++) {
+          if (cellValue === this.airportsChoose[i].value) {
+            return this.airportsChoose[i].text
+          }
+        }
+      },
+      // 为代理人代码进行pattern校正
+      getUsedAgentCode: function () {
+        var characters = []
+        var selectedCharacters = []
+        var resultCharacters = []
+        // 让characters为26个大写字母
+        for (var i = 0; i < 26; i++) {
+          var item = String.fromCharCode(65 + i)
+          characters.push(item)
+        }
+        // 获取出已经使用的大写字母selectedCharacters
+        for (var j = 0; j < this.generalagents.length; j++) {
+          selectedCharacters.push(this.generalagents[j].agentCode)
+        }
+        // 获取出可以使用的大写字母usedCharecter
+        for (var k = 0; k < characters.length; k++) {
+          for (var l = 0; l < selectedCharacters.length; l++) {
+            if (characters[k] === selectedCharacters[l]) {
+              characters[k] = 0
+            }
+          }
+        }
+        for (var s = 0; s < characters.length; s++) {
+          if (characters[s] !== 0) {
+            resultCharacters.push(characters[s])
+          }
+        }
+        this.usedCharecter = resultCharacters
+        // 正则表达式判断
+        this.agentCodeValidate = (rule, value, callback) => {
+          // 是否输入了值
+          if (!value) {
+            return callback(new Error('代理人编码不能为空！'))
+          }
+          // 是否输入的值已经被使用了
+          if (this.addUpdateTag === 'add') {
+            for (var s = 0; s < selectedCharacters.length; s++) {
+              if (value === selectedCharacters[s]) {
+                return callback(new Error('代理人编码已被使用！'))
+              }
+            }
+          }
+          if (this.addUpdateTag === 'edit') {
+            var valueSelectedCharacters = []
+            for (var a = 0; a < selectedCharacters.length; a++) {
+              if (selectedCharacters[a] !== this.row.agentCode) {
+                valueSelectedCharacters.push(selectedCharacters[a])
+              }
+            }
+            selectedCharacters = valueSelectedCharacters
+            for (var b = 0; b < selectedCharacters.length; b++) {
+              if (value === selectedCharacters[b]) {
+                return callback(new Error('代理人编码已被使用！'))
+              }
+            }
+        }
+          if (value.length !== 1) {
+            return callback(new Error('请输入一位字母！'))
+          }
+          if ((value.charCodeAt(0) < 65) || (value.charCodeAt(0) > 90)) {
+            return callback(new Error('请输入大写字母！'))
+          }
+          callback()
+       }
+      }
+    },
+    mounted () {
+      this.getGeneralagentsList()
+      this.getAirportLines()
+      this.getBaseAirports()
+    }
+  }
+
+</script>
+
+<style scoped>
+
+</style>

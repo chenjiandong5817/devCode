@@ -1,0 +1,21 @@
+/*
+* @Author: cdroid
+* @Date:   2018-07-03 15:03:39
+* @Last Modified by:   chenjiandong
+* @Last Modified time: 2018-07-03 15:19:31
+*/
+import { axios, bus } from './../raiis-axios'
+
+let defaultType = 'distributionCode'
+
+export const getDistributionCode = () => {
+    let url = `${bus}/bus`
+    return {
+        name: 'getDistributionCode',
+        type: defaultType,
+        url: url,
+        requetType: 'GET',
+        remark: '获取分销二维码',
+        go: params => { return axios.get(url + '?id=' + params).then(res => res.data) }
+    }
+}

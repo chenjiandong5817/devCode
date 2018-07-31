@@ -1,0 +1,82 @@
+<template>
+  <div class="taxi-time" @click="showTimePicker">
+    <i class="clock"></i>
+    <span>{{selectedText | Dateformt}}</span>
+</div>
+</template>
+<script>
+import {mapState} from 'vuex'
+export default {
+  filters: {
+    Dateformt (val) {
+      // 仅仅用于展示
+      console.log('仅仅用于展示', val)
+      if (val === '现在') {
+        return '现在出发'
+      } else return val.replace(/[:]/g, '')
+    }
+  },
+  computed: mapState({
+    selectedText (state) {
+      return state.order.departTimeTXT
+    }
+  }),
+  methods: {
+    showTimePicker () {
+      this.$createTimePicker({
+        showNow: true,
+        minuteStep: 10,
+        delay: 15,
+        day: {
+          len: 3,
+          filter: ['今天', '明天', '后天'],
+          format: 'M月d日'
+        },
+        onSelect: (selectedTime, selectedText) => {
+          // this.selectedText = selectedText
+          // console.log(selectedTime)
+          // console.log('selectedTime', selectedTime)
+          // console.log('selectedText', selectedText)
+          // 修正时间戳
+          // var result = selectedTime.slice(0, selectedTime.length - 3)
+          var result = selectedTime / 1000
+          // console.log('result', result)
+          selectedTime = result
+          this.$store.dispatch('switch_order', {name: 'departTime', val: selectedTime})
+          this.$store.dispatch('switch_order', {name: 'departTimeTXT', val: selectedText})
+        },
+        onCancel: () => {
+          this.$createToast({
+            type: 'correct',
+            txt: '操作已取消',
+            time: 1000
+          }).show()
+        }
+      }).show()
+    }
+  }
+}
+</script>
+<style lang="less">
+.taxi-time{
+  position: relative;
+  padding: 0 15px;
+  height: 50px;
+  line-height: 50px;
+  color: #6b7886;
+  background: #fff;
+  span{
+    line-height: 100%;
+    font-size: 12px;
+  }
+}
+i.clock{
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin:0 6px; 
+  background: url('../../assets/images/clock.png') no-repeat center;
+  background-size:100% 100%; 
+}
+</style>

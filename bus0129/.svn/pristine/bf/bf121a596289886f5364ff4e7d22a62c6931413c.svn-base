@@ -1,0 +1,202 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <el-col :span="11">
+        <span class="editor-label">翻转间隔(interval)</span>
+        <el-input type="number" :value="conf.interval" @input="val => Tools.inputStr2Number(conf, 'interval', val)" placeholder="单位毫秒"></el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">
+        <el-popover :ref="`popover-text-multiSource`" placement="top-start" width="250" trigger="hover">
+          <div>
+            打开多源字段，会把主字段ColumnName 和 其他字段进行拼接显示
+          </div>
+          <i
+            class="el-icon-warning"
+            slot="reference" />
+        </el-popover>
+        多源字段(multiSource)
+        <el-switch v-model="switchOptions.multiSource.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+      </span>
+      <div v-show="switchOptions.multiSource.switch" class="editor-inner-pannel editor-inner-pannel-left">
+        <el-form-item>
+          <span class="editor-label">
+            <el-popover :ref="`popover-text-columnName`" placement="top-start" width="250" trigger="hover">
+              <div>
+                如果没有选项可供选择，请检查父级节点是否正确配置数据源
+              </div>
+              <i class="el-icon-warning" slot="reference" />
+            </el-popover>
+            主字段(columnName)
+          </span>
+          <selector v-model="switchOptions.multiSource.columnName" :options="columnNameOptions" filterable :showValue="false" :showLabel="false" placeholder="选择主字段"></selector>
+        </el-form-item>
+        <!-- 临时设置 当multiSource 内容大于1 就隐藏 -->
+        <el-form-item v-show="switchOptions.multiSource.value.length < 1">
+          <el-button type="primary" size="mini" icon="plus" @click="handleAddMultiSource"></el-button>
+        </el-form-item>
+        <el-form-item v-show="switchOptions.multiSource.value.length > 0">
+          <el-col :span="6">
+            <span class="editor-label">多源字段(name)</span>
+          </el-col>
+          <el-col :span="6" style="margin-left: 6px;">
+            <span class="editor-label">
+              <el-popover :ref="`popover-text-columnName`" placement="top-start" width="250" trigger="hover">
+                <div>
+                  把多源字段和主字段进行拼接，放空则不连接
+                </div>
+                <i class="el-icon-warning" slot="reference" />
+              </el-popover>
+              连接符(separator)
+            </span>
+          </el-col>
+          <el-col :span="10" style="margin-left: 6px;">
+            <el-col :span="10">
+              <span class="editor-label">
+                <el-popover :ref="`popover-text-columnName`" placement="top-start" width="250" trigger="hover">
+                  <div>
+                    通过该字符串把字段在切割成多个字段展示，放空则不切割
+                  </div>
+                  <i class="el-icon-warning" slot="reference" />
+                </el-popover>
+                切割符(split)
+              </span>
+            </el-col>
+            <el-col :span="13" style="margin-left: 6px;">
+              <span class="editor-label">
+                <el-popover :ref="`popover-text-columnName`" placement="top-start" width="250" trigger="hover">
+                  <div>
+                    正则匹配，只有满足条件的才被显示
+                  </div>
+                  <i class="el-icon-warning" slot="reference" />
+                </el-popover>
+                正则匹配(regex)
+              </span>
+            </el-col>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.multiSource.value" :key="index">
+          <el-col :span="6">
+            <selector v-model="item.name" :options="columnNameOptions" filterable :showValue="false" :showLabel="false" placeholder="选择其他字段"></selector>
+          </el-col>
+          <el-col :span="6" style="margin-left: 6px;">
+            <el-input v-model="item.separator" placeholder="连接符"></el-input>
+          </el-col>
+          <el-col :span="10" style="margin-left: 6px;">
+            <el-col :span="10">
+              <el-input v-model="item.handle.split" placeholder="切割符"></el-input>
+            </el-col>
+            <el-col :span="13" style="margin-left: 6px;">
+              <el-input v-model="item.handle.regex" placeholder="正则匹配"></el-input>
+            </el-col>
+          </el-col>
+          <el-col :span="1">
+            <el-button type="default" icon="close" @click="handleRemoveMultiSource(index)"></el-button>
+          </el-col>
+        </el-form-item>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式(style)</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="9">
+              <span class="editor-label">
+                <i class="el-icon-star-on editor-label-require" title="此项必填"></i>高度(height)
+              </span>
+              <el-input :min="0" type="number" :value="conf.style.height" @input="val => Tools.changeValAndLink2Number(conf.style, Array.of('height', 'lineHeight'), val)"></el-input>
+            </el-col>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import ColorPicker from './form-items/ColorPicker'
+  import Selector from './form-items/Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      ColorPicker, Selector
+    },
+    data () {
+      return {
+        conf: {},
+        Tools,
+        switchOptions: {
+          multiSource: {
+            switch: false,
+            value: [],
+            // 用来保存切换后的columnName
+            columnName: ''
+          }
+        }
+      }
+    },
+    computed: {
+      columnNameOptions () {
+        // return Tools.getDataSourceColumns(this.$parent.currentDataSource)
+        return this.$parent.dataSourceColumns
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      'switchOptions.multiSource': {
+        handler (val) {
+          if (val.switch) {
+            this.conf.multiSource = []
+            for (let item of val.value) {
+              this.conf.multiSource.push(item)
+            }
+            this.$set(this.conf, 'columnName', val.columnName)
+          } else {
+            delete this.conf.multiSource
+            delete this.conf.columnName
+          }
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Flop',
+          typeLabel: '翻牌',
+          interval: 3000,
+          style: {},
+          columnName: '',
+          children: []
+        }
+      } else {
+        this.conf = this.value
+        this.initSwitch()
+      }
+    },
+    methods: {
+      handleAddMultiSource () {
+        this.switchOptions.multiSource.value.push({name: '', separator: '', handle: {split: '', regex: ''}})
+      },
+      handleRemoveMultiSource (index) {
+        this.switchOptions.multiSource.value.splice(index, 1)
+      },
+      initSwitch () {
+        if (this.conf.multiSource) {
+          this.$set(this.switchOptions.multiSource, 'columnName', this.conf.columnName)
+          this.$set(this.switchOptions.multiSource, 'value', this.conf.multiSource)
+          this.$set(this.switchOptions.multiSource, 'switch', true)
+        }
+      }
+    }
+  }
+</script>

@@ -1,0 +1,13 @@
+imagePubPath=/qianxx/arport/images
+#imageRootPath
+imageRootPath=d:/qianxx/arport/images
+
+filePubPath = /qianxx/arport/file
+fileRootPath=d:/qianxx/arport/file
+
+imageSize=1048576
+#
+serverIp=http://114.55.115.102
+
+#Web/pub/imagesÏÂµÄÂ·¾¶
+imageWebPubPath=/pub/images

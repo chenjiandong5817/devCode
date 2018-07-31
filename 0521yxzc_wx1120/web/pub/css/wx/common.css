@@ -1,0 +1,121 @@
+.container-fluid
+{
+    padding: 0;
+}
+.bg-img
+{
+    width: 100%;
+    height: auto;
+}
+.login-form
+{
+    width: 90%;
+    margin: auto;
+}
+.form-group
+{
+    margin-bottom: 0;
+}
+.control-label
+{
+    line-height: 34px;
+
+    height: 34px;
+
+    text-align: right;
+    /*padding-right: 0px;*/
+}
+.tips1
+{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 35px;
+
+    margin-top: 25px;
+
+    color: #333;
+}
+.tips2
+{
+    font-size: 14px;
+    line-height: 35px;
+
+    color: #999;
+}
+.tips4
+{
+    font-size: 14px;
+    line-height: 35px;
+
+    margin-top: 25px;
+    margin-bottom: 0;
+
+    color: #e46c13;
+}
+.tips3
+{
+    font-size: 16px;
+    line-height: 35px;
+
+    position: absolute;
+    bottom: 35px;
+    left: 0;
+
+    width: 100%;
+
+    color: #999;
+}
+.tips5{
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 15px 0;
+}
+#btn_login
+{
+    line-height: 50px;
+
+    width: 100%;
+    height: 50px;
+    padding: 0;
+
+    text-align: center;
+
+    color: #fff;
+    background-color: #e46c13;
+}
+#telNum,#codeNum{
+    color: #e46c13;
+}
+.kaijiang
+{
+    font-size: 22px;
+    font-weight: 700;
+
+    position: relative;
+
+    width: 70%;
+    height: 100px;
+    margin: auto;
+
+    color: #e46c13;
+    border: 1px solid #666;
+}
+.kj-title
+{
+    position: absolute;
+    top: -15px;
+    left: 50%;
+
+    width: 90px;
+    margin-left: -45px;
+
+    color: #333;
+    background-color: #fff;
+}
+.kj-time
+{
+    line-height: 100px;
+
+    height: 100px;
+}

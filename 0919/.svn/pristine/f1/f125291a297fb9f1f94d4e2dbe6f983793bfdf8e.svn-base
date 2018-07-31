@@ -1,0 +1,173 @@
+import Vue from 'vue'
+// import DataSourceList from '/static/dataSource.json'
+let DataSourceList = []
+// 获取节点所处父节点
+function getNodeParent (node, rootNode, curArgs = {isRoot: true, match: null, isMatch: false}) {
+  // debugger
+  if (node.root) {
+    return curArgs
+  }
+  let list = rootNode.children
+  for (let i = 0; i < list.length; i++) {
+    if (curArgs.isMatch) {
+      break
+    }
+    let item = list[i]
+    if (item === node) {
+      curArgs.match = item
+      break
+    } else if (item.children && item.children.length > 0) {
+      let isRootBefore = curArgs.isRoot
+      if (isRootBefore) {
+        curArgs.isRoot = false
+      }
+      let matchAfter = getNodeParent(node, item, curArgs)
+      if (!curArgs.isMatch && matchAfter.match) {
+        curArgs.match = item
+        curArgs.isMatch = true
+      }
+      if (isRootBefore) {
+        curArgs.isRoot = !isRootBefore
+      }
+    }
+  }
+  if (curArgs.isRoot && node === curArgs.match) {
+    curArgs.match = rootNode
+    curArgs.isMatch = true
+  }
+  return curArgs
+}
+export default {
+  // vue set
+  vmSet (target, key, value) {
+    Vue.set(target, key, value)
+  },
+  alignOptions () {
+    return [
+      {label: '左边', value: 'left'},
+      {label: '中间', value: 'center'},
+      {label: '右边', value: 'right'}
+    ]
+  },
+  langOptions () {
+    return [
+      {label: '中文', value: 'zh-cn'},
+      {label: '英文', value: 'en-ww'}
+    ]
+  },
+  borderStyleOptions () {
+    return [
+      {label: '实线', value: 'solid'},
+      {label: '虚线', value: 'dashed'}
+    ]
+  },
+  imgTypeOptions () {
+    return [
+      {label: '航班图片', value: 'flight_logo'}
+    ]
+  },
+  imgSizeOptions () {
+    return [
+      {label: '220x220', value: '220x220'},
+      {label: '700x400', value: '700x400'}
+    ]
+  },
+  specialMethodOptions () {
+    return [
+      {label: '柜台聚合', value: 'induceCounter'}
+    ]
+  },
+  // 判断对象未 null 或者 空属性
+  isEmptyObject (o) {
+    if (o instanceof Array) {
+      return !o || o.length === 0
+    } else if (typeof o === 'string' || typeof o === 'number' || typeof o === 'boolean') {
+      return false
+    } else {
+      return !o || Object.keys(o).length === 0
+    }
+  },
+  // 获取数据源选项列表
+  getDataSourceList () {
+    return DataSourceList
+  },
+  // 根据数据源id获取字段列表
+  getDataSourceColumns (dataSourceId) {
+    let columns = []
+    if (dataSourceId) {
+      for (let i = 0; i < DataSourceList.length; i++) {
+        if (DataSourceList[i].id === dataSourceId) {
+          columns = DataSourceList[i].columns
+          break
+        }
+      }
+    }
+    return columns
+  },
+  // 添加数据源相关属性
+  addDataSource (conf) {
+    Vue.set(conf, 'dataSource', '')
+    Vue.set(conf, 'singleData', true)
+    Vue.set(conf, 'mainPager', false)
+    Vue.set(conf, 'mainSource', false)
+    Vue.set(conf, 'refreshInterval', 0)
+    Vue.set(conf, 'pageInterval', 0)
+  },
+  // 移除数据源相关属性
+  removeDataSource (conf) {
+    Vue.delete(conf, 'dataSource')
+    Vue.delete(conf, 'singleData')
+    Vue.delete(conf, 'mainPager')
+    Vue.delete(conf, 'mainSource')
+    Vue.delete(conf, 'refreshInterval')
+    Vue.delete(conf, 'pageInterval')
+  },
+  // 判断是否含有数据源属性
+  haveDataSource (conf) {
+    let result = false
+    for (let key in conf) {
+      if (key === 'dataSource') {
+        result = true
+        break
+      }
+    }
+    return result
+  },
+  // 文本框字符串转数字
+  inputStr2Number (target, property, value) {
+    Vue.set(target, property, Number(value))
+  },
+  // 深拷贝
+  deepCopy: function (o) {
+    if (o instanceof Function) {
+      return o
+    } else if (o instanceof Array) {
+      var array = []
+      for (var i = 0; i < o.length; ++i) {
+        array[i] = this.deepCopy(o[i])
+      }
+      return array
+    } else if (o instanceof Object) {
+      var obj = {}
+      for (var j in o) {
+        obj[j] = this.deepCopy(o[j])
+      }
+      return obj
+    } else {
+      return o
+    }
+  },
+  searchNodeParent (node, rootNode) {
+    let result = getNodeParent(node, rootNode)
+    if (result.isMatch) {
+      return result.match
+    }
+    return null
+  },
+  changeValAndLink2Number (target, keys, value) {
+    keys = keys instanceof Array ? keys : [keys]
+    for (let key of keys) {
+      this.inputStr2Number(target, key, value)
+    }
+  }
+}

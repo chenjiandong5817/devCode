@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_user.mappers.UserAccountDetailMapper">
+    <!--添加记录-->
+    <insert id="add" parameterType="userAccountDetailDto">
+		insert into ap_user_account_detail
+			(
+				uuid,
+				serialNumber,
+				type,
+				userUuid,
+				userMobile,
+				money,
+				giftMoney,
+				payType,
+				payed,
+				balance,
+				status,
+				remark,
+				createTime,
+				creator,
+				updateTime,
+				orderUuid
+			)
+		values
+			(
+				#{uuid},
+				#{serialNumber},
+				#{type},
+				#{userUuid},
+				#{userMobile},
+				#{money},
+				#{giftMoney},
+				#{payType},
+				#{payed},
+				#{balance},
+				#{status},
+				#{remark},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{orderUuid}
+			)
+	</insert>
+
+    <!--修改记录-->
+    <update id="edit" parameterType="userAccountDetailDto">
+        update ap_user_account_detail
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="serialNumber != null and '' != serialNumber">serialNumber = #{serialNumber},</if>
+            <if test="type != null and '' != type">type = #{type},</if>
+            <if test="userUuid != null and '' != userUuid">userUuid = #{userUuid},</if>
+            <if test="userMobile != null and '' != userMobile">userMobile = #{userMobile},</if>
+            <if test="money != null and '' != money">money = #{money},</if>
+            <if test="giftMoney != null and '' != giftMoney">giftMoney = #{giftMoney},</if>
+            <if test="payType != null and '' != payType">payType = #{payType},</if>
+            <if test="payed != null and '' != payed">payed = #{payed},</if>
+            <if test="balance != null and '' != balance">balance = #{balance},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="remark != null and '' != remark">remark = #{remark},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="orderUuid != null and '' != orderUuid">orderUuid = #{orderUuid},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <!--删除记录-->
+    <delete id="del" parameterType="userAccountDetailDto">
+		delete from
+		ap_user_account_detail
+		where
+		uuid = #{uuid}
+	</delete>
+
+    <!--查询实体-->
+    <select id="selInfo" resultType="userAccountDetailDto">
+		select
+		*
+		from
+		ap_user_account_detail
+		where
+		uuid = #{uuid}
+	</select>
+
+    <!--通用SQL-->
+    <sql id="sqlForList">
+        from
+        ap_user_account_detail
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="serialNumber != null and '' != serialNumber">and serialNumber = #{serialNumber}</if>
+            <if test="type != null and '' != type">and type = #{type}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="userMobile != null and '' != userMobile">and userMobile = #{userMobile}</if>
+            <if test="money != null and '' != money">and money = #{money}</if>
+            <if test="giftMoney != null and '' != giftMoney">and giftMoney = #{giftMoney}</if>
+            <if test="payType != null and '' != payType">and payType = #{payType}</if>
+            <if test="payed != null and '' != payed">and payed = #{payed}</if>
+            <if test="balance != null and '' != balance">and balance = #{balance}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="remark != null and '' != remark">and remark = #{remark}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="orderUuid != null and '' != orderUuid">and orderUuid = #{orderUuid}</if>
+
+            <if test="startTime != null and '' != startTime"> and createTime &gt;= to_date(#{startTime},'yyyy-mm-dd,hh24:mi:ss') </if>
+            <if test="endTime != null and '' != endTime"> and createTime &lt;= to_date(#{endTime},'yyyy-mm-dd,hh24:mi:ss') </if>
+        </where>
+        <if test="sortField != null and '' != sortOrder">ORDER BY ${sortField} ${sortOrder}</if>
+    </sql>
+
+    <!--统计-->
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--查询列表-->
+    <select id="list" resultType="userAccountDetailDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--分页查询-->
+    <select id="queryPage" resultType="userAccountDetailDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--根据字段统计-->
+    <select id="sum" resultType="java.lang.Double">
+        SELECT COALESCE (SUM (${sumField}),0)
+        from
+        ap_user_account_detail
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="serialNumber != null and '' != serialNumber">and serialNumber = #{serialNumber}</if>
+            <if test="type != null and '' != type">and type = #{type}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="userMobile != null and '' != userMobile">and userMobile = #{userMobile}</if>
+            <if test="money != null and '' != money">and money = #{money}</if>
+            <if test="giftMoney != null and '' != giftMoney">and giftMoney = #{giftMoney}</if>
+            <if test="payType != null and '' != payType">and payType = #{payType}</if>
+            <if test="payed != null and '' != payed">and payed = #{payed}</if>
+            <if test="balance != null and '' != balance">and balance = #{balance}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="remark != null and '' != remark">and remark = #{remark}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+        </where>
+    </select>
+
+    <!--通过交易流水号查询-->
+    <select id="selInfoBySerialNumber" resultType="userAccountDetailDto">
+        select
+        *
+        from
+        ap_user_account_detail
+        where
+        serialNumber = #{tradeNumber}
+    </select>
+
+</mapper>

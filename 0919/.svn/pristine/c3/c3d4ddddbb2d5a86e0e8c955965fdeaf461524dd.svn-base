@@ -1,0 +1,91 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-09-21 17:14:14
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-09-25 15:13:17
+ */
+
+ <template>
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="true" :modal="false" :before-close="handleClose" size="small" :modal-append-to-body="false">
+    <!--<el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" class="demo-ruleForm" >-->
+    <el-form ref="staticName" :model="checkinFiled">
+      <el-col :gutter="20">
+        <el-row :span="6">
+            <el-form-item label="文件命名">
+              <el-input v-model="checkinFiled.namedFile" placeholder="文件命名"></el-input>
+            </el-form-item>
+        </el-row>
+      </el-col>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="visible = false">取消</el-button>
+      <el-button @click="resetForm('staticName')">重置</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+ <script>
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () { }
+    },
+    callback: {
+      type: Function,
+      default: function () { }
+    }
+  },
+  data () {
+    return {
+      visible: false,
+      loading: false,
+      oldValue: {},
+      checkinFiled: { namedFile: '' }
+      // deviceStatusList: [ { text: '删除', value: -1 }, { text: '在线', value: 0 }, { text: '离线', value: 1 }, { text: '异常', value: 2 } ],
+      // 动态插入
+    }
+  },
+  methods: {
+    show: function () {
+        // this.setData()
+      this.visible = true
+    },
+    handleClose: function (params) {
+      this.visible = false
+      this.$refs['staticName'].resetFields()
+      this.checkinFiled.airCompany = ''
+    },
+    handleSubmit: function (params) {
+      this.$refs['staticName'].validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            let name = this.checkinFiled.namedFile
+            this.loading = true
+            this.visible = false
+            this.$emit('staticImage', name)
+            this.$refs['staticName'].resetFields()
+            this.loading = false
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+    },
+    resetForm (formName) {
+      // console.log(formName)
+      this.$refs[formName].resetFields()
+      this.checkinFiled.namedFile = ''
+    }
+  }
+}
+</script>

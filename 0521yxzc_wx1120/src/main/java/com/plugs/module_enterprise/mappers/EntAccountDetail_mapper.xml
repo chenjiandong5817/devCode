@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_enterprise.mappers.EntAccountDetailMapper">
+    <insert id="add" parameterType="entAccountDetailDto">
+		insert into ap_ent_account_detail
+			(
+				uuid,
+				serialNumber,
+				type,
+				entUuid,
+				entMobile,
+				userUuid,
+				money,
+				giftMoney,
+				payType,
+				payed,
+				balance,
+				status,
+				remark,
+				createTime,
+				creator,
+				updateTime,
+				orderUuid
+			)
+		values
+			(
+				#{uuid},
+				#{serialNumber},
+				#{type},
+				#{entUuid},
+				#{entMobile},
+				#{userUuid},
+				#{money},
+				#{giftMoney},
+				#{payType},
+				#{payed},
+				#{balance},
+				#{status},
+				#{remark},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{orderUuid}
+			)
+	</insert>
+
+    <update id="edit" parameterType="entAccountDetailDto">
+        update ap_ent_account_detail
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="serialNumber != null and '' != serialNumber">serialNumber = #{serialNumber},</if>
+            <if test="type != null and '' != type">type = #{type},</if>
+            <if test="entUuid != null and '' != entUuid">entUuid = #{entUuid},</if>
+            <if test="entMobile != null and '' != entMobile">entMobile = #{entMobile},</if>
+            <if test="userUuid != null and '' != userUuid">userUuid = #{userUuid},</if>
+            <if test="money != null and '' != money">money = #{money},</if>
+            <if test="giftMoney != null and '' != giftMoney">giftMoney = #{giftMoney},</if>
+            <if test="payType != null and '' != payType">payType = #{payType},</if>
+            <if test="payed != null and '' != payed">payed = #{payed},</if>
+            <if test="balance != null and '' != balance">balance = #{balance},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="remark != null and '' != remark">remark = #{remark},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="orderUuid != null and '' != orderUuid">orderUuid = #{orderUuid},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="entAccountDetailDto">
+		delete from
+			ap_ent_account_detail
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <select id="selInfo" resultType="entAccountDetailDto">
+		select
+			*
+		from
+			ap_ent_account_detail
+		where
+			uuid = #{uuid}
+	</select>
+
+    <sql id="sqlForList">
+        from
+        ap_ent_account_detail
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="serialNumber != null and '' != serialNumber">and serialNumber = #{serialNumber}</if>
+            <if test="type != null and '' != type">and type = #{type}</if>
+            <if test="entUuid != null and '' != entUuid">and entUuid = #{entUuid}</if>
+            <if test="entMobile != null and '' != entMobile">and entMobile = #{entMobile}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="money != null and '' != money">and money = #{money}</if>
+            <if test="giftMoney != null and '' != giftMoney">and giftMoney = #{giftMoney}</if>
+            <if test="payType != null and '' != payType">and payType = #{payType}</if>
+            <if test="payed != null and '' != payed">and payed = #{payed}</if>
+            <if test="balance != null and '' != balance">and balance = #{balance}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="remark != null and '' != remark">and remark = #{remark}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="orderUuid != null and '' != orderUuid">and orderUuid = #{orderUuid}</if>
+            <if test="thisMonth != null and 1==thisMonth">and trunc(createTime,'mm') = trunc(sysdate,'mm')</if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="entAccountDetailDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="entAccountDetailDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+    <select id="sum" resultType="java.lang.Double">
+        SELECT COALESCE (SUM (${sumField}),0)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="sumDepartmentThisMonth" resultType="java.lang.Double">
+        SELECT COALESCE (SUM (money),0)
+        from
+        ap_ent_account_detail
+        where
+         trunc(createTime,'mm') = trunc(sysdate,'mm')
+         and userUuid in(
+         select uuid from ap_user_passenger
+         where departmentUuid = #{departmentUuid}
+        )
+    </select>
+
+</mapper>

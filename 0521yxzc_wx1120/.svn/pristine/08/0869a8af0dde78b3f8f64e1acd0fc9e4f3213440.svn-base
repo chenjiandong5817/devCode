@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_user.mappers.UserCouponMapper">
+    <insert id="add" parameterType="userCouponDto">
+		insert into ap_user_coupon
+			(
+				uuid,
+				sysCouponUuid,
+				userUuid,
+				serialNum,
+				money,
+				status,
+				orderUuid,
+				useTime,
+				createTime,
+				creator,
+				updateTime,
+				updator
+			)
+		values
+			(
+				#{uuid},
+				#{sysCouponUuid},
+				#{userUuid},
+				#{serialNum},
+				#{money},
+				#{status},
+				#{orderUuid},
+				#{useTime},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{updator}
+        )
+	</insert>
+
+    <update id="edit" parameterType="userCouponDto">
+        update ap_user_coupon
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="sysCouponUuid != null and '' != sysCouponUuid">sysCouponUuid = #{sysCouponUuid},</if>
+            <if test="userUuid != null and '' != userUuid">userUuid = #{userUuid},</if>
+            <if test="serialNum != null and '' != serialNum">serialNum = #{serialNum},</if>
+            <if test="money != null and '' != money">money = #{money},</if>
+            <if test="status != null and '' != status">status = #{status},</if>
+            <if test="orderUuid != null">orderUuid = #{orderUuid},</if>
+            <if test="useTime != null and '' != useTime">useTime = #{useTime},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="updator != null and '' != updator">updator = #{updator},</if>
+
+            <if test="creator != null and 'unlockCoupon' == creator">orderUuid = NULL,</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="userCouponDto">
+		delete from
+			ap_user_coupon
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <select id="selInfo" resultType="userCouponDto">
+		select
+			*
+		from
+			ap_user_coupon
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="sysCouponUuid != null and '' != sysCouponUuid">and sysCouponUuid = #{sysCouponUuid}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+        </where>
+	</select>
+
+
+    <sql id="sqlForList">
+        from
+        ap_user_coupon
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="sysCouponUuid != null and '' != sysCouponUuid">and sysCouponUuid = #{sysCouponUuid}</if>
+            <if test="userUuid != null and '' != userUuid">and userUuid = #{userUuid}</if>
+            <if test="serialNum != null and '' != serialNum">and serialNum = #{serialNum}</if>
+            <if test="money != null and '' != money">and money = #{money}</if>
+            <if test="status != null and '' != status">and status = #{status}</if>
+            <if test="orderUuid != null and '' != orderUuid">and orderUuid = #{orderUuid}</if>
+            <if test="useTime != null and '' != useTime">and useTime = #{useTime}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="updator != null and '' != updator">and updator = #{updator}</if>
+        </where>
+        <if test="sortField != null and '' != sortField">ORDER BY ${sortField} ${sortOrder}</if>
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="userCouponDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+    <select id="queryPage" resultType="userCouponDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+    <!--用户优惠券返回结果（包含优惠券具体信息）-->
+    <resultMap id="couponMap" type="userCouponDto">
+        <id property="uuid" column="uuid"></id>
+        <collection property="couponDetail" ofType="sysCouponDto" column="{sysCouponUuid=sysCouponUuid}"
+                    select="getSysCouponByCouponUuid">
+        </collection>
+    </resultMap>
+    <select id="getSysCouponByCouponUuid" resultType="sysCouponDto">
+		SELECT *
+		FROM ap_sys_coupon
+		WHERE uuid  = #{sysCouponUuid}
+	</select>
+
+
+    <!--查找本次行程可用电子券-->
+    <select id="findEnableCouponWithUseCarType" resultType="map">
+        select *
+        from (
+        select a.uuid "uuid",
+            a.syscouponuuid "sysCouponUuid",
+            b.name "couponName",
+            b.type "type",
+            b.money "money",
+            b.discount "discount",
+            b.useCarType "useCarType",
+            b.useCondition "useCondition",
+            case when b.termtype=1 then  b.useEndTime else a.createtime+b.useexpiretime end  "useEndTime" ,
+            b.highestmoney "highestMoney",
+            b.termType "termType",
+            a.createtime "createTime",
+            b.useExpireTime "useExpireTime"
+            from ap_user_coupon a, ap_sys_coupon b
+            where a.syscouponuuid = b.uuid
+                <if test="areaUuid != null and '' != areaUuid">and (b.areaUuid = #{areaUuid} or b.areaUuid = '-1') </if>
+                and a.useruuid = #{userUuid}
+                and (a.status = 1 or (a.status = 3 and orderUuid = #{orderUuid}))
+                <if test="useCarType != null and '' != useCarType">and (b.usecartype = 0 or b.usecartype  LIKE '%'||#{useCarType}||'%') </if>
+                <if test="orderType != null and '' != orderType">and (b.usecartype = 0 or b.usecartype  LIKE '%'||#{orderType}||'%') </if>
+                and ( b.type=2 and b.astrict &lt;= #{totalFare} or b.type=1)
+                and ((b.useStartTime &lt;= sysdate and b.useendtime &gt;= sysdate and b.termtype=1)
+                or (to_date(trunc(sysdate)) - to_date(trunc(a.createtime)) &lt;= b.useExpireTime and b.termtype=2))
+           )
+        order by "useEndTime" desc
+    </select>
+
+
+    <!--我的电子券-->
+    <select id="listMyCouponMap" resultType="map">
+        select a.uuid "uuid",
+            a.syscouponuuid "sysCouponUuid",
+            b.name "couponName",
+            b.type "type",
+            b.money "money",
+            b.discount "discount",
+            b.useCarType "useCarType",
+            b.useCondition "useCondition",
+            case when b.termtype=1 then  b.useEndTime else a.createtime+b.useexpiretime end  "useEndTime" ,
+            b.highestmoney "highestMoney"
+        from ap_user_coupon a, ap_sys_coupon b
+        <where>
+            a.syscouponuuid = b.uuid
+            <if test="userUuid != null and '' != userUuid">and a.userUuid = #{userUuid}</if>
+            <if test="serialNum != null and '' != serialNum">and a.serialNum = #{serialNum}</if>
+            <if test="money != null and '' != money">and a.money = #{money}</if>
+            <if test="status != null and '' != status">and a.status = #{status}</if>
+            <if test="orderUuid != null and '' != orderUuid">and a.orderUuid = #{orderUuid}</if>
+            <if test="useTime != null and '' != useTime">and a.useTime = #{useTime}</if>
+            <if test="creator != null and '' != creator">and a.creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and a.updateTime = #{updateTime}</if>
+            <if test="useCarTypeLike23 != null and 1 == useCarTypeLike23">and (b.useCarType like '%2%' or b.useCarType like '%3%' or b.useCarType =0)</if>
+        </where>
+        order by case when b.termtype=1 then  b.useEndTime else a.createtime+b.useexpiretime end  desc
+    </select>
+
+
+    <!--预估获取可用电子券-->
+    <select id="findEnableCouponForEstimate" resultType="map">
+        select *
+        from (
+        select
+        a.uuid "uuid",
+        a.syscouponuuid "sysCouponUuid",
+        b.name "couponName",
+        b.type "type",
+        b.money "money",
+        b.discount "discount",
+        b.useCarType "useCarType",
+        b.useCondition "useCondition",
+        case when b.termtype=1 then  b.useEndTime else a.createtime+b.useexpiretime end  "useEndTime" ,
+        b.highestmoney "highestMoney",
+        b.termType "termType",
+        a.createtime "createTime",
+        b.useExpireTime "useExpireTime"
+        from ap_user_coupon a, ap_sys_coupon b
+        where a.syscouponuuid = b.uuid
+        <if test="areaUuid != null and '' != areaUuid">and (b.areaUuid = #{areaUuid} or b.areaUuid = '-1') </if>
+        and a.useruuid = #{userUuid}
+        and a.status = 1
+        <if test="useCarType != null and '' != useCarType">and (b.usecartype = 0 or b.usecartype  LIKE '%'||#{useCarType}||'%') </if>
+        <if test="orderType != null and '' != orderType">and (b.usecartype = 0 or b.usecartype  LIKE '%'||#{orderType}||'%') </if>
+        and ((b.useStartTime &lt;= sysdate and b.useendtime &gt;= sysdate and b.termtype=1)
+        or (to_date(trunc(sysdate)) - to_date(trunc(a.createtime)) &lt;= b.useExpireTime and b.termtype=2))
+        )
+        order by "useEndTime" desc
+    </select>
+
+    <!--最折扣的优惠劵-->
+    <select id="findMinCoupon" resultType="map">
+        select *
+        from (
+        select tbl.*,
+        case when tbl."couponMoney" &lt;= #{toalFare} then 1 else 2 end "sortId"
+        from(
+            select a.uuid "uuid",
+                a.syscouponuuid "sysCouponUuid",
+                b.highestmoney "highestMoney",
+                b.name "couponName",
+                case when b.type=1 then (case when (#{toalFare}-#{toalFare} * (b.discount/10))> b.highestmoney and
+                b.highestmoney>0 then b.highestmoney else #{toalFare}-#{toalFare} * (b.discount/10) end )
+                when b.type=2 AND b.astrict &lt;= #{toalFare} then b.money else 0 end "couponMoney",
+                b.termType "termType"
+            from ap_user_coupon a, ap_sys_coupon b
+            <where>
+                a.syscouponuuid = b.uuid
+                <if test="areaUuid != null and '' != areaUuid">and (b.areaUuid = #{areaUuid} or b.areaUuid = '-1') </if>
+                and a.useruuid = #{userUuid} and  a.status=1
+                <if test="useCarType != null and '' != useCarType">and (b.usecartype = 0 or b.usecartype  LIKE '%'||#{useCarType}||'%') </if>
+                <if test="orderType != null and '' != orderType">and (b.usecartype = 0 or b.usecartype  LIKE '%'||#{orderType}||'%') </if>
+                and ((b.useStartTime &lt;= to_date(#{endDate},'yyyy-mm-dd hh24:mi:ss') and b.useendtime &gt;= to_date(#{nowDate},'yyyy-mm-dd hh24:mi:ss') and b.termtype=1)
+                or (to_date(trunc(sysdate)) - to_date(trunc(a.createtime)) &lt;= b.useExpireTime and b.termtype=2))
+            </where>
+        )  tbl order by "couponMoney" desc
+        )tmp
+        order by
+        case when "sortId"=1  then 1 else 2 end desc,
+        case when "sortId"=1  then 0 else "couponMoney" end asc,
+        case when "sortId"=1  then "couponMoney" else 0 end desc
+    </select>
+
+    <select id="selInfoWithSysCoupon" resultMap="couponMap">
+        select
+        *
+        from
+        ap_user_coupon
+        where
+        uuid = #{uuid}
+    </select>
+
+    <select id="listMap" resultMap="couponMap">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+    <select id="getCountByUuidAndArea" resultType="int">
+        select count(*) from ap_sys_coupon a
+        left join ap_user_coupon b on a.uuid = b.syscouponuuid
+        where b.uuid = #{userCouponUuid}
+        and a.areauuid = #{areaUuid}
+    </select>
+
+</mapper>

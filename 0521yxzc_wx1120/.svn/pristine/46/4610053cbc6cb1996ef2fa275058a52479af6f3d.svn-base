@@ -1,0 +1,58 @@
+<%=htmlWebpackPlugin.options.jsp%>
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <!-- 声明文档使用的字符编码 -->
+  <meta charset='utf-8'>
+  <!-- 优先使用 IE 最新版本和 Chrome -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <!-- 页面描述 -->
+  <meta name="description" content="元翔专车" />
+  <!-- 页面关键词 -->
+  <meta name="keywords" content="元翔专车" />
+  <!-- 网页作者 -->
+  <meta name="author" content="tuisemo, tuisemo@sina.cn" />
+  <!-- 搜索引擎抓取 -->
+  <meta name="robots" content="index,follow" />
+  <!-- 为移动设备添加 viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <!-- <meta name="flexible" content="initial-dpr=2" /> -->
+  <!-- 不允许页面缓存 -->
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <title>
+    <%=htmlWebpackPlugin.options.title%>
+  </title>
+  <script>
+    function setLocalStorage(key, value) {
+    if (window.localStorage) {
+      var storage = window.localStorage
+      if (typeof(value) !== 'string') { storage.setItem(key, JSON.stringify(value)) } else { storage.setItem(key, value) }
+    } else {
+      console.log('该应用不支持本地存储！')
+    }
+  };
+    setLocalStorage('openId', 'o_GUFwN8b1Ruw6Pqn9Ew_2VyKtsU');
+    //        setLocalStorage('nickName', "慎独");
+    //        setLocalStorage('wxUserSex', "1");
+    //打包成功后的时候把$\改成$，且在头部加上jsp 字符编码
+    //setLocalStorage('openId', "$\{snsUserInfo.openId}");
+    //setLocalStorage('areaUuid', "$\{areaUuid}");
+    setLocalStorage('nickName', "$\{snsUserInfo.nickname}");
+    setLocalStorage('wxUserSex', "$\{snsUserInfo.sex}");
+    setLocalStorage('headImgUrl', "http://thirdwx.qlogo.cn/mmopen/vi_32/l0umLia61h9J66UgGYrAvm4fBY4MTjrEfH2iaic9Nw1xzlnFCZUYic674nZv2xsAS0SbkoazJZxd5vHMss71TTr8Ww/132");
+    // setLocalStorage('openId', "$\{snsUserInfo.openId}");
+
+  </script>
+  <!-- <script src="./src/assets/js/flexible.min.js"></script> -->
+</head>
+
+<body>
+  <div id="app"></div>
+  <script src="/static/js/vendor.dll.js"></script>
+</body>
+
+</html>

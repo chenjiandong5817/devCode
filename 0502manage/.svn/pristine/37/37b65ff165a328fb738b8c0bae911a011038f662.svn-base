@@ -1,0 +1,21 @@
+/*
+* @Author: cdroid
+* @Date:   2018-07-03 15:04:10
+* @Last Modified by:   chenjiandong
+* @Last Modified time: 2018-07-03 15:20:18
+*/
+import { axios, bus } from './../raiis-axios'
+
+let defaultType = 'userIncrement'
+
+export const getUserIncrement = () => {
+    let url = `${bus}/bus`
+    return {
+        name: 'getUserIncrement',
+        type: defaultType,
+        url: url,
+        requetType: 'GET',
+        remark: '获取用户增量',
+        go: params => { return axios.get(url + '?id=' + params).then(res => res.data) }
+    }
+}

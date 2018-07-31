@@ -1,0 +1,439 @@
+/*
+ * @Author: mikey.zhaopeng
+ * @Date: 2017-09-14 11:02:04
+ * @Last Modified by: ylj
+ * @Last Modified time: 2017-11-06 17:23:42
+ */
+<template>
+<div class="resClass">
+  <div :class="widthCls">
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="false" @close="handleClose" :modal="false" @open="initBaseData">
+    <el-form label-position="right" :model="form.segment" ref="resConfig">
+      <div class="signClass">
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="执行日期">
+            <!--<date-time v-model="form.segment.opDate" :visitTime="false" style="width: 30%;" datePlaceholder="执行日期" formatter="yyyy-MM-dd" dateStyle="width:100%" :allDisable="true"></date-time>-->
+            <el-date-picker v-model="form.segment.opDate" placeholder="执行日期" style="width: 68%;" format="yyyy-MM-dd" :disabled="editAble"></el-date-picker>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="公 司">
+            <el-input name="carrier" placeholder="公司" :value="form.segment.carrier" style="width: 78%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="航班号">
+            <el-input v-model="form.segment.flightNo" name="flightNo" style="width:73%;" placeholder="航班号" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="区 域">
+            <el-input name="flightNature" placeholder="区域" :value="$cache.findByName('flightnatures', 'flightNatureCode', form.segment.flightNature, 'description')" style="width: 73%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="机 号" style="padding-left: 24px;">
+            <el-input name="registration" placeholder="机号" :value="form.segment.registration" style="width: 76%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="机 型">
+            <el-input name="aircraftType" placeholder="机型" :value="form.segment.aircraftType" style="width: 76%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="航站楼">
+            <el-input name="terminal" placeholder="航站楼" :value="form.segment.terminal" style="width: 73%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label=" 任 务" label-width="54px;">
+            <el-input name="flightTask" placeholder="任务" :value="$cache.findByName('flighttasks', 'flightTaskCode', form.segment.flightTask, 'abbr2w') + '(' + form.segment.flightTask + ')'" style="width: 73%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="进 出" style="padding-left: 24px;">
+            <el-input name="direction" placeholder="进出" :value="$cache.findByName('flightdirections', 'directionCode', form.segment.direction, 'description')" style="width: 76%;" :disabled="editAble"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      </div>
+      <hr class="hrClass"/>
+      <el-row :gutter="20">
+        <el-col :span="24" class="content-wrapper">
+          <el-tabs ref="resTab" v-model="activeName" type="border-card" @tab-click="handleClick" style="min-height: 450px">
+            <el-tab-pane label="柜台" name="counterConf" v-if="curSelectRow.direction === 'D'">
+              <template>
+                <res-config-detail ref="counterConfForm" :initData="API.getCkCounterList().go" :to="API.editCkCounterRes().go" :openOpt="API.openOrCloseCkCounterRes().go" :delOpt="API.removeCkCounterRes().go" ></res-config-detail>
+              </template>
+            </el-tab-pane>
+            <el-tab-pane label="登机口" name="gateConf" v-if="curSelectRow.direction === 'D'">
+              <template>
+                <res-config-detail ref="gateConfForm" :initData="API.getGateList().go" :to="API.editGateRes().go" :openOpt="API.openOrCloseGateRes().go" :delOpt="API.removeGateRes().go"></res-config-detail>
+              </template>
+            </el-tab-pane>
+            <el-tab-pane label="转盘" name="carConf">
+              <template>
+                <res-config-detail ref="carConfForm" :initData="API.getCarouselList().go" :to="API.editCarouselRes().go" :openOpt="API.openOrCloseCarsRes().go" :delOpt="API.removeCarouselRes().go"></res-config-detail>
+              </template>
+            </el-tab-pane>
+            <el-tab-pane label="机位" name="standConf">
+              <template>
+                <res-config-detail ref="standConfForm" :initData="API.getStandList().go" :to="API.editStandRes().go" :openOpt="API.openOrCloseStandRes().go" :delOpt="API.removeStandRes().go"></res-config-detail>
+              </template>
+            </el-tab-pane>
+            <el-tab-pane label="值机/登机时间" name="checkinConf" v-if="curSelectRow.direction === 'D'">
+              <template>
+                <ckeck-and-board-time ref="checkinConfForm"></ckeck-and-board-time>
+              </template>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="handleClose">取消</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+  </div>
+</div>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import API from '../../../api'
+import Tabs from '../../../components/Tabs.vue'
+import resConfigDetail from './resConfigDetail'
+import dateTime from '../../../components/DateTime'
+import ckeckAndBoardTime from '../dynamicFlightForm/checkAndBoardTime'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () {}
+    },
+    callback: {
+      type: Function,
+      default: function () {}
+    }
+  },
+  data () {
+    return {
+      widthCls: 'normalClss',
+      activeName: 'counterConf',
+      editAble: true,
+      visible: false,
+      loading: false,
+      API: API,
+      form: {
+        segment: {
+          id: null,
+          flightId: null,
+          linkedFlightId: null,
+          combineFlightId: null,
+          direction: null,
+          opDate: '',
+          terminal: null,
+          generalAgent: null,
+          carrier: null,
+          airportCode: null,
+          flightNo: null,
+          registration: null,
+          aircraftType: null,
+          flightStatus: null,
+          flightTask: null
+        },
+        segment1: []
+      },
+      curSelectRow: [],
+      counterGroupls: [],
+      counterList: [],
+      standList: [],
+      carList: [],
+      gateList: []
+    }
+  },
+  components: {
+    resConfigDetail: resConfigDetail,
+    Tabs: Tabs,
+    dateTime: dateTime,
+    ckeckAndBoardTime: ckeckAndBoardTime
+  },
+  methods: {
+    setClassName: function () {
+      this.widthCls = (document.body.clientWidth < 1920 ? 'specialClss' : 'normalClss')
+    },
+    initFormData: function () {
+      this.setActiveName()
+      this.editAble = true
+      this.visible = false
+      this.loading = false
+      this.form = { segment: {}, segment1: [] }
+      this.counterList = []
+    },
+    setActiveName: function () {
+      if (this.curSelectRow.direction === 'D') {
+        this.activeName = 'counterConf'
+      } else {
+        this.activeName = 'carConf'
+      }
+    },
+    bindData () {
+    },
+    show: function (row) {
+      if (row !== undefined) {
+        this.curSelectRow = Util.deepCopy(row)
+        this.form.segment = Object.assign({}, this.form.segment, row)
+        this.form.segment1.push(this.form.segment)
+      }
+      this.visible = true
+    },
+    handleClose: function () {
+      this.initFormData()
+      // 还原资源配置信息
+      if (this.curSelectRow.direction === 'D') {
+        this.$refs['counterConfForm'].initResData()
+        this.$refs['gateConfForm'].initResData()
+        this.$refs['checkinConfForm'].handleClose()
+      }
+      this.$refs['carConfForm'].initResData()
+      this.$refs['standConfForm'].initResData()
+    },
+    opdateFmt: function (row, column, cellValue) {
+      let date = row[column.property]
+      if (date === undefined) {
+        return ''
+      }
+      return Util.formatDate.format(new Date(date), 'yyyy-MM-dd')
+    },
+    handleSubmit: function () {
+      let closeFlag = ''
+      this.$confirm('确认提交吗？', '提示', {}).then(() => {
+        if (this.curSelectRow.direction === 'D') {
+          closeFlag += this.$refs['counterConfForm'].handleSubmit()
+          closeFlag += this.$refs['gateConfForm'].handleSubmit()
+          closeFlag += this.$refs['checkinConfForm'].handleSubmit()
+        }
+        closeFlag += this.$refs['carConfForm'].handleSubmit()
+        closeFlag += this.$refs['standConfForm'].handleSubmit()
+        if (closeFlag.indexOf('false') === -1) {
+          this.loading = false
+          this.visible = false
+          this.callback()
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        })
+      })
+    },
+    handleClick: function (tab, event) {
+      let date = Util.formatDate.format(new Date(), 'yyyy-MM-dd') + ' 00:00:00'
+      let terminal = this.form.segment.terminal
+      // 0923 确认airportcode取值
+      let chcounterFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'flightId', value: this.form.segment.id, hidden: true, rules: null },
+        { name: 'flight', value: this.form.segment.flightNo, hidden: true, rules: null },
+        { name: 'carrier', value: this.form.segment.carrier, hidden: true, rules: null },
+        { name: 'flightTask', value: this.form.segment.flightTask, hidden: true, rules: null },
+        { name: 'airportCode', value: this.form.segment.airportCode, hidden: true, rules: null },
+        { name: 'checkinCounterId', value: null, hidden: true, rules: null },
+        { name: 'terminal', value: terminal, label: '航站楼', selVal: 'terminalCode', selText: 'terminalCode', type: 'select', filterable: true, clearable: true, choose: this.$cache.fetch('terminals'), rules: [ { required: true, message: '请选择航站楼' } ], isLink: false, isSetChange: true, changeFun: 'setLinkLs', linklsName: 'counterGroupls', linkCIndex: 8, linkField: 'terminal' },
+        { name: 'checkinGroup', value: null, label: '值机岛', selVal: 'checkinGroup', selText: 'checkinGroup', type: 'select', filterable: true, clearable: true, choose: this.counterGroupls, rules: [ { required: true, message: '请选择值机岛编码' } ], isLink: false, isSetChange: true, changeFun: 'setLinkLs', linklsName: 'counterList', linkCIndex: 9, linkField: 'checkinGroup' },
+        { name: 'checkinCounter', value: null, label: '值机柜台', selVal: 'counterCode', selText: 'counterCode', type: 'select', filterable: true, clearable: true, choose: this.counterList, rules: [ { required: true, message: '请选择值机柜台编码' } ], isLink: false, isSetChange: true, changeFun: 'setCkCounterInfo' },
+        { name: 'counterMode', value: null, label: '操作模式', selVal: 'opModeCode', selText: 'description', type: 'select', filterable: true, clearable: true, choose: this.$cache.fetch('ckcounteropmodes'), rules: [ { required: true, message: '请选择操作模式' } ], isLink: false, isSetChange: true, changeFun: 'setLinkLs', linklsName: 'ckcouOpmodeLs', linkCIndex: 0, linkField: 'ckCounterTemplate' }],
+        [{ name: 'serviceType', value: null, label: '服务类型', selVal: 'serviceTypeCode', selText: 'description', type: 'select', filterable: true, clearable: true, choose: this.$cache.fetch('ckcounterservicetypes'), rules: [ { required: true, message: '请选择服务类型' } ], isLink: false, isSetChange: false },
+        { name: 'scheduleOpen', value: date, label: '开办时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '开办日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null },
+        { name: 'scheduleClose', value: date, label: '停办时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '停办日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+
+      let gateFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'flightSegmentId', value: this.form.segment.id, hidden: true, rules: null },
+        { name: 'airportCode', value: this.form.segment.airportCode, hidden: true, rules: null },
+        { name: 'gateId', value: null, hidden: true, rules: null },
+        { name: 'gateCode', value: null, label: '登机口', selVal: 'gateCode', selText: 'displayCode', type: 'select', filterable: true, clearable: true, choose: this.gateList, rules: [ { required: true, message: '请选择登机口编码' } ], isLink: false, isSetChange: true, changeFun: 'setGateInfo' },
+        { name: 'boardingIndex', value: 1, hidden: false, label: '使用次序', type: 'number', rules: null },
+        { name: 'scheduleOpen', value: date, label: '开始时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '开始日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null },
+        { name: 'scheduleClose', value: date, label: '结束时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '结束日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+
+      let carFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'airportCode', value: this.form.segment.airportCode, hidden: true, rules: null },
+        { name: 'flightSegmentId', value: this.form.segment.id, hidden: true, rules: null },
+        { name: 'carouselId', value: null, hidden: true, rules: null },
+        { name: 'ruleId', value: null, hidden: true, rules: null },
+        { name: 'terminal', value: terminal, label: '航站楼', selVal: 'terminalCode', selText: 'terminalCode', type: 'select', filterable: true, clearable: true, choose: this.$cache.fetch('terminals'), rules: null, isLink: true, isSetChange: true, changeFun: 'setLinkLs', linklsName: 'carList', linkCIndex: 6, linkField: 'terminal' },
+        { name: 'carouselCode', value: null, label: '转盘编码', selVal: 'carouselCode', selText: 'carouselCode', type: 'select', filterable: true, clearable: true, choose: this.carList, rules: [ { required: true, message: '请选择转盘编码' } ], isLink: false, isSetChange: true, changeFun: 'setCarlInfo' },
+        { name: 'scheduleOpen', value: date, label: '开启时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '开启日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null },
+        { name: 'scheduleClose', value: date, label: '关闭时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '关闭日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+
+      let standFields = [
+        [{ name: 'id', value: '', hidden: true, rules: null },
+        { name: 'currentAircraft', value: this.form.segment.registration, hidden: true, rules: null },
+        { name: 'aFlightId', value: this.form.segment.direction === 'A' ? this.form.segment.id : this.form.segment.linkedFlightId, hidden: true, rules: null },
+        { name: 'dFlightId', value: this.form.segment.direction === 'D' ? this.form.segment.linkedFlightId : this.form.segment.id, hidden: true, rules: null },
+        { name: 'linkedId', value: null, hidden: true, rules: null },
+        { name: 'airportCode', value: this.form.segment.airportCode, hidden: true, rules: null },
+        { name: 'standId', value: null, hidden: true, rules: null },
+        { name: 'standCode', value: null, label: '机位编码', selVal: 'standCode', selText: 'standCode', type: 'select', filterable: true, clearable: true, choose: this.standList, rules: [ { required: true, message: '请选择机位编码' } ], isLink: false, isSetChange: true, changeFun: 'setStandInfo' },
+        { name: 'action', value: null, label: '动作', selVal: 'value', selText: 'text', type: 'select', filterable: true, clearable: true, choose: [ { text: '初始', value: '0' }, { text: '移动', value: '1' }, { text: '顶推', value: '2' }, { text: '作废', value: '-1' } ], rules: [ { required: true, message: '请选择占用类型' } ], isLink: false, isSetChange: false },
+        { name: 'estOccupiedBegin', value: date, label: '开始时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '开始日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null },
+        { name: 'estOccupiedEnd', value: date, label: '结束时间', visitTime: true, type: 'dateTimeGroup', datePlaceholder: '结束日期', timePlaceholder: '时间', formatter: 'yyyy-MM-dd', rules: null }]
+      ]
+
+      let formid = this.activeName + 'Form'
+      let baseList = { counterGroupls: this.counterGroupls, counterList: this.counterList, gateList: this.gateList, carList: this.carList, standList: this.standList, terminalList: this.$cache.fetch('terminals'), ckcouOpmodeLs: this.$cache.fetch('ckcounteropmodes') }
+      this.$refs[formid].baseList = Util.deepCopy(baseList)
+      switch (this.activeName) {
+        case 'counterConf': {
+          this.$refs[formid].show(formid, this.curSelectRow, chcounterFields)
+          break
+        }
+        case 'gateConf': {
+          this.$refs[formid].show(formid, this.curSelectRow, gateFields)
+          break
+        }
+        case 'carConf': {
+          this.$refs[formid].show(formid, this.curSelectRow, carFields)
+          break
+        }
+        case 'standConf': {
+          this.$refs[formid].show(formid, this.curSelectRow, standFields)
+          break
+        }
+        case 'checkinConf': {
+          this.$refs[formid].show(this.curSelectRow)
+          break
+        }
+        default: break
+      }
+    },
+    initBaseData: function () {
+      // 调整弹框宽度
+      this.setClassName()
+      this.setActiveName()
+      this.getBaseList()
+      setTimeout(() => {
+        this.$nextTick(() => {
+          this.handleClick()
+        })
+      }, 80)
+    },
+    getBaseList: function () {
+      let airportCode = this.form.segment.airportCode
+      let direction = this.form.segment.direction
+      // 值机柜台基础信息过滤
+      let counterList = this.$cache.fetch('checkinCounters').filter(item => {
+        return item.airportCode === airportCode
+      })
+      this.counterList = counterList
+      // 值机柜台分配模式基础信息过滤
+      let para = {airportCode: airportCode, pageSize: 99999}
+      API.checkingroups().go(para).then((data) => {
+        if (data.ok) {
+          this.counterGroupls = data.attr.data
+        } else {
+          this.counterGroupls = []
+        }
+      })
+      // let counterGroupls = this.$cache.fetch('counterGroups').filter(item => {
+      //   return item.airportCode === airportCode
+      // })
+      // this.counterGroupls = counterGroupls
+      // 机位基础信息过滤
+      let standList = this.$cache.fetch('stand').filter(item => {
+        return item.airportCode === airportCode
+      })
+      this.standList = standList
+      // 转盘基础信息过滤
+      let carList = this.$cache.fetch('baggageCarousels').filter(item => {
+        return item.airportCode === airportCode && item.carouselType === direction
+      })
+      this.carList = carList
+      // 登机口基础信息过滤
+      let gateList = this.$cache.fetch('gate').filter(item => {
+        return item.airportCode === airportCode && item.direction === direction
+      })
+      this.gateList = gateList
+    }
+  },
+  mounted () {
+    // 加载时，运行第一个资源分配TAB
+    // 自适应浏览器窗口大小
+    window.addEventListener('resize', this.setClassName)
+  }
+}
+</script>
+
+<style lang="scss">
+.resClass {
+  .el-dialog__body {
+    padding: 8px 20px!important;
+  }
+  .el-form-item {
+    margin-bottom: 8px!important;
+  }
+  .el-tabs__content {
+    padding-top: 5px!important;
+  }
+  .hrClass {
+    padding: 0px!important;
+    margin-top: 10px!important;
+    color: #987cb9;
+    size: 1;
+  }
+
+  .normalClss {
+    .el-dialog--small {
+      width: 50%!important;
+      top: 15%!important;
+    }
+  }
+
+  .specialClss {
+    .el-dialog--small {
+      width: 73%!important;
+      top: 10%!important;
+    }
+  }
+
+  .signClass [name=carrier] {
+    background: #FFA500!important;
+    color: black!important;
+  }
+
+  .signClass [name=flightNo] {
+    background: #FFA500!important;
+    color: black!important;
+  }
+
+  .signClass [name=direction] {
+    background: #FFA500!important;
+    color: black!important;
+  }
+}
+</style>

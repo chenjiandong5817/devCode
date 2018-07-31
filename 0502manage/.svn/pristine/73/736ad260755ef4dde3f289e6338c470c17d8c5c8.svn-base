@@ -1,0 +1,386 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section id="newAdd" class="new_add">
+    <div>
+      <el-tabs v-model="operateAdd" @tab-click="handleClick(operateAdd)">
+        <el-tab-pane label="第一广告位" name="firstAdd">
+          <!-- 第一行 组别切换 -->
+          <el-row class="first_group">
+            <el-col>
+              <el-tag
+                v-for="tag in firstTags"
+                :key="tag.name"
+                :closable="closable"
+                :type="tag.type"
+                @close="showDelDia(tag)">
+                <div class="group_name" @click="clickTag(tag)">
+                  {{tag.name}}
+                </div>
+              </el-tag>
+              <div class="add_button" @click="addGroup">
+                <i class="el-icon-plus add_icon"></i>
+              </div>
+              <div class="edit_button" @click="editGroup">
+                <div class="edit_name">
+                  {{editName}}
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+          <!-- 第二行 关联设备 -->
+          <el-row class="second_device">
+            <el-col :span="3">
+               <div class="device_name">关联设备：</div>
+            </el-col>
+            <el-col :span="2">
+                <div class="device_num">{{deviceNum}}台</div>
+            </el-col>
+            <el-col :span="3">
+              <div class="device_oprate">
+                <el-button @click="setDevice">设置</el-button>
+              </div>
+            </el-col>
+          </el-row>
+          <!-- 第三行文字提示 -->
+          <el-row>
+            <el-col>
+               <div class="imgName">广告图片：</div>
+            </el-col>
+          </el-row>
+          <!-- 第四行图片操作 -->
+          <el-row>
+             <el-col>
+                <div class="imgOperate">
+                  <el-upload
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      list-type="picture-card"
+                      :on-preview="handlePictureCardPreview"
+                      :on-remove="handleRemove">
+                      <i class="el-icon-plus"></i>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                      <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog>
+                </div>
+             </el-col>
+          </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="第二广告位" name="secondAdd">
+          <div class="second_content">
+            
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="第三广告位" name="thirdAdd">
+          <div class="third_content">
+            
+          </div>
+        </el-tab-pane>
+      </el-tabs> 
+    </div>
+  <!-- 弹出删除界面 -->
+  <div class="del_dialog">
+    <el-dialog
+      title="提示"
+      :visible.sync="isShowDel"
+      width="30%"
+      :before-close="handleDelClose">
+      <div style="display: inline-block">
+        <div class="el-message-box__status el-icon-warning"></div>
+      </div>
+      <div style="display: inline-block;margin-left: 50px;margin-top: 20px;">
+        <div>确认删除该组数据吗！</div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleDelClose">取 消</el-button>
+        <el-button type="primary" @click="confirmDel">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+  <!-- 设置该广告位的这个组别下的关联设备 -->
+  <div class="device_dialog">
+    <el-dialog title="选择关联设备" :visible.sync="dialogDeviceShow">
+      <el-table :data="devicesData">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column property="name" label="设备名称" min-width="150"></el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogDeviceShow = false">取 消</el-button>
+        <el-button type="primary" @click="confirmDevice">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
+  </section>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        // 该显示哪一个组的变量，默认显示第一组
+        operateAdd: null,
+        // 当点击编辑的时候为true,默认为false
+        closable: false,
+        // 当编辑没有被点击的时候就显示编辑,当被点击的时候显示取消.
+        editName: '编辑',
+        // 关联设备的台数，取数组的长度所得
+        deviceNum: null,
+        // 某个组的全部信息
+        groupAllData: null,
+        // 点到哪一个组别
+        whichTag: null,
+        // 是否展示删除界面
+        isShowDel: false,
+        // 需要删除的值
+        delData: null,
+        // 是否展示设备编辑页面
+        dialogDeviceShow: false,
+        // 关联设备表格的数据
+        devicesData: null,
+        // 图片的URL
+        dialogImageUrl: '',
+        // 是否显示图片的弹出框
+        dialogVisible: false,
+        // 每次切换广告位的时候，根据参数请求数据，获得一个数组，
+        // 每个数组里有关联设备的属性，广告图片的属性
+        firstTags: [
+          { name: 'a', type: 'info', devices: [ { id: '1', name: 'a' }, { id: '2', name: 'b' }, { id: '3', name: 'c' } ], addImg: [] },
+          { name: 'b', type: 'info', devices: [ { id: '4', name: 'd' }, { id: '5', name: 'e' } ], addImg: [] }
+        ]
+      }
+    },
+    computed: {
+    },
+    components: {
+    },
+    methods: {
+      // 切换广告位的函数
+      handleClick (value) {
+        // 展示哪一个广告位
+        this.operateAdd = value
+        // 根据所展示的广告位匹配数据
+        // 初始化广告位数据
+        this.getAddData()
+      },
+      // 切换组别的函数，默认是第一个组,从value中识别出是哪一个组的
+      clickTag (value) {
+        // 首先获取第一广告位的全部数据并且命名
+        for (var i = 0; i < this.firstTags.length; i++) {
+          var nameTag = i + 1
+          this.firstTags[i].name = '组别' + nameTag
+        }
+        // 把这个组所拥有的信息给保存下来
+        this.groupAllData = value
+        // 获取这个组有多少设备的数量
+        this.deviceNum = value.devices.length
+        // 识别是哪一个组，然后点击的时候加颜色给识别
+        this.whichTag = null
+        for (var j = 0; j < this.firstTags.length; j++) {
+          if (this.firstTags[j].name === value.name) {
+            this.whichTag = j
+          }
+        }
+        this.getColor()
+      },
+      // 给颜色
+      getColor () {
+        this.$nextTick(() => {
+          var tags = document.getElementsByClassName('el-tag')
+          for (var j = 0; j < tags.length; j++) {
+            tags[j].style.backgroundColor = 'white'
+          }
+          tags[this.whichTag].style.backgroundColor = '#409EFF'
+        })
+      },
+      // 点击编辑按钮，组别可以删除，并且编辑按钮变为取消按钮
+      editGroup () {
+        if (this.editName === '编辑') {
+          this.closable = true
+          this.editName = '取消'
+          // 再次绑定数据为了有颜色
+          this.getColor()
+          return
+        }
+        if (this.editName === '取消') {
+          this.closable = false
+          this.editName = '编辑'
+          // 再次绑定数据为了有颜色
+          this.getColor()
+        }
+      },
+      // 删除一个组确定后的操作
+      showDelDia (value) {
+        this.delData = value
+        this.isShowDel = true
+        this.clickTag(this.groupAllData)
+      },
+      // 确认删除
+      confirmDel () {
+        // 寻找下标删除数组
+        var whichTag = null
+        for (var i = 0; i < this.firstTags.length; i++) {
+          if (this.firstTags[i].name === this.delData.name) {
+            whichTag = i
+          }
+        }
+        this.firstTags.splice(whichTag, 1)
+        this.isShowDel = false
+        // 如果删除的是已经点击的就显示第一个组别，不是的话就删除原来的组别
+        if (this.delData.name === this.groupAllData.name) {
+          this.clickTag(this.firstTags[0])
+        } else {
+          this.clickTag(this.groupAllData)
+        }
+      },
+      // 关闭删除按钮
+      handleDelClose () {
+        this.isShowDel = false
+        this.clickTag(this.groupAllData)
+      },
+      // 点击新增
+      addGroup () {
+        var newGroup = { name: 'h', type: 'info', devices: [], addImg: [] }
+        this.firstTags.push(newGroup)
+        this.clickTag(this.groupAllData)
+      },
+      // 设置某个广告位下的某个组别的设备
+      setDevice () {
+        this.dialogDeviceShow = true
+        this.devicesData = this.groupAllData.devices
+      },
+      // 确认就是这么多关联设备
+      confirmDevice () {
+        this.dialogDeviceShow = false
+      },
+      // 移除图片
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      // 放大图片
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
+      // 初始化数据
+      getAddData () {
+        // 然后默认选中组别一，其他广告位也一样
+        this.clickTag(this.firstTags[0])
+      }
+    },
+    mounted () {
+      this.handleClick('firstAdd')
+    }
+  }
+</script>
+
+<style>
+  .new_add .el-tabs__item {
+    padding: 0 70px;
+  }
+  .new_add .first_group {
+    margin-top: 25px;
+  }
+  .new_add .second_device {
+    margin-top: 70px;
+  }
+  @media screen and (min-height: 0px) and (max-height: 767px) {
+  }
+  @media screen and (min-height: 768px) and (max-height: 1080px) {
+    .new_add .el-tag {
+      background-color: white;
+      height: 24px;
+      line-height: 55px;
+      font-size: 14px;
+      color: #000000;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      border: 1px solid;
+      color: black;
+      margin-left: 60px;
+      width: 100px;
+      height: 60px;
+      border-radius: 0;
+      cursor: pointer;
+    }
+    .new_add .el-icon-close {
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      font-size: 15px;
+      -webkit-transform: scale(.75,.75);
+      transform: scale(.75,.75);
+      height: 18px;
+      width: 18px;
+      line-height: 18px;
+      vertical-align: middle;
+      top: -70px;
+      right: -70px;
+    }
+    .new_add .first_group {
+      margin-top: 25px;
+      height: 100px;
+    }
+    .new_add .group_name {
+      text-align: center;
+    }
+    .new_add .add_button {
+      width: 100px;
+      height: 58px;
+      border: 1px solid;
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 55px;
+      cursor: pointer;
+    }
+    .new_add .add_icon {
+      margin-left: 41px;
+      margin-top: 20px;
+    }
+    .new_add .edit_button {
+      width: 100px;
+      height: 58px;
+      border: 1px solid;
+      display: inline-block;
+      vertical-align: top;
+      float: right;
+      margin-right: 40px;
+      cursor: pointer;
+    }
+    .new_add .edit_name {
+      margin-left: 35px;
+      margin-top: 17px;
+    }
+    .del_dialog .el-dialog {
+      width: 20%;
+    }
+    .device_dialog .el-dialog {
+      width: 15%;
+    }
+    .device_name {
+      margin-left: 60px;
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .device_num {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .imgName {
+      margin-left: 60px;
+      margin-top: 80px;
+      font-size: 20px;
+    }
+    .imgOperate {
+      margin-left: 60px;
+      margin-top: 80px;
+    }
+    .device_operate {
+
+    }
+  }
+</style>

@@ -1,0 +1,1123 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<!-- 代码模块化预备 -->
+<template>
+  <section class="order-statistics">
+    <!-- 订单概况 -->
+    <el-row class="data-row-first" style="position: relative">
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="20" style="margin-top: 25px;" class="data-panel-first">
+        <div>
+          <el-row class="title-panel">
+            <!-- 容器文字说明 -->
+            <el-col :span="6">
+              <div class="title">
+                <p>
+                  <span>订单概况</span>
+                </p>
+              </div>
+            </el-col>
+            <!-- 移动长度 -->
+            <el-col :span="8">
+              <div style="width: 5px;height: 5px;"></div>
+            </el-col>
+            <el-col :span="10" class="operation_panel">
+            <!-- 区域选择文字说明 -->
+              <div class="operation_name">所属区域</div>
+              <!-- 区域选择的操作 -->
+              <div style="display: inline-block;" class="area_select">
+                <el-select v-model="selectedTopCity" clearable placeholder="请选择" @change="toSelectCity">
+                  <el-option
+                    v-for="item in allCities"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <!-- 时间操作 -->
+              <div style="display: inline-block;" class="operation-type">
+                  <el-radio-group v-model="status" size="medium" @change="getChangeData">
+                    <el-radio-button label="总" ></el-radio-button>
+                    <el-radio-button label="月" ></el-radio-button>
+                    <el-radio-button label="周" ></el-radio-button>
+                    <el-radio-button label="日" ></el-radio-button>
+                  </el-radio-group>
+                </div>
+            </el-col>
+          </el-row>
+          <el-row >
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;"></div>
+            </el-col>
+            <el-col :span="4" v-for="item in orderOverview" :key="item.id">
+              <el-row style="margin-top: 10px;">
+                <el-col>
+                  <div class="title title-height-first" style="display:table-cell;vertical-align:middle;">
+                    <span>{{ item.title }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col>
+                  <div class="title result-height-first" style="display:table-cell;vertical-align:middle;">
+                    <span>{{ item.result }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;"></div>
+      </el-col>
+    </el-row>
+    <!-- 表格操作区 -->
+    <el-row class="operate_area_table">
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="20">
+        <el-form :inline="true" :model="filters">
+          <el-form-item label="所属区域">
+            <el-select v-model="filters.area" clearable placeholder="所属区域">
+              <el-option
+                v-for="item in allCities"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="业务类型">
+            <el-select v-model="filters.orderType" clearable placeholder="业务类型">
+              <el-option
+                v-for="item in allOrderTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="时间类型">
+            <el-select v-model="filters.timeType" clearable placeholder="时间类型">
+              <el-option
+                v-for="item in allTimeTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="起始时间">
+            <el-date-picker
+              v-model="filters.beginTime"
+              type="datetime"
+              placeholder="起始时间">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间">
+            <el-date-picker
+              v-model="filters.endTime"
+              type="datetime"
+              placeholder="结束时间">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="乘客手机">
+            <el-input v-model="filters.passengerPhone" placeholder="乘客手机"></el-input>
+          </el-form-item>
+          <el-form-item label="终端编号">
+            <el-input v-model="filters.machineId" placeholder="终端编号"></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="filters.payStatus" clearable placeholder="状态">
+              <el-option
+                v-for="item in allPayStatus"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="订单号">
+            <el-input v-model="filters.orderId" placeholder="订单号"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getOrderWaters">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button :type="exportExcelType" :loading="buttonLoading" @click="exportExcelDialog">{{ exportExcelName }}</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 订单管理 -->
+    <el-row class="data-row" style="position: relative">
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+      <el-col :span="20" class="data-panel">
+        <div>
+          <el-row class="title-panel">
+            <el-col :span="6">
+              <div class="title">
+                <p>
+                  <span>订单管理</span>
+                </p>
+              </div>
+            </el-col>
+            <el-col :span="18">
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 10px;">
+            <el-col :span="24" class="table-border" style="padding-left: 10px;padding-right: 10px;">
+              <el-table :data="orderWaterDatas" highlight-current-row style="width: 100%" height="275" v-loading="tableLoading">
+                <el-table-column prop="orderId" label="订单号" min-width="150">
+                </el-table-column>
+                <el-table-column prop="orderType" label="订单类型" min-width="100">
+                </el-table-column>
+                <el-table-column prop="buyTime" label="购票时间" min-width="180" :formatter="baseUtil.formatterDated">
+                </el-table-column>
+                <el-table-column prop="sellstationId" label="售票点" min-width="150" :formatter="formatterSellStationId">
+                </el-table-column>
+                <el-table-column prop="machineid" label="终端编号" min-width="200">
+                </el-table-column>
+                <el-table-column prop="price" label="金额" min-width="80">
+                </el-table-column>
+                <el-table-column prop="busId" label="大巴车次" min-width="100">
+                </el-table-column>
+                <el-table-column label="操作" width="100" fixed="right" >
+                  <template slot-scope="scope">
+                    <el-button size="small" @click="viewOrder(scope.$index, scope.row)"><span><i class="el-icon-view"></i> 查看 </span></el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+        </div>
+        <!-- 用于分页 -->
+        <div class="page_style">
+          <el-row style="position: relative;top: 70px;">
+             <pagination :to="getOrderWaters" ref="pageOrderWater"></pagination>
+          </el-row>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 5px;height: 5px;">
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 查看订单详情页面 -->
+    <div class="detailDialog">
+    <el-dialog title="订单详情" :visible.sync="dialogTableVisible">
+      <!-- 重新编写样式 -->
+      <div style="width: 100%;min-height: 400px;border: 1px solid;">
+       <div>
+        <!-- 数据显示 -->
+        <el-form ref="detailForm" :label-position="labelPosition" :model="detailDatas" label-width="120px">
+          <el-form-item label="订单号：">
+            {{ detailDatas.orderId }}
+          </el-form-item>
+          <el-form-item label="订单类型：">
+            {{ detailDatas.orderType }}
+          </el-form-item>
+          <el-form-item label="订单时间：">
+            {{ formatterDate(detailDatas.buyTime) }}
+          </el-form-item>
+          <el-form-item label="售票站点：">
+            {{ formatterSellStationId(0, 1, detailDatas.sellstationId) }}
+          </el-form-item>
+          <el-form-item label="终端机编号：">
+            {{ detailDatas.machineid }}
+          </el-form-item>
+          <el-form-item label="行程信息：">
+            {{ formatterSellStationId(0, 1, detailDatas.sellstationId) }}<div style="width: 5px;display: inline-block"></div>到<div style="width: 5px;display: inline-block"></div>{{ formatterAllStationId(0, 1, detailDatas.endstationId) }}
+          </el-form-item>
+          <el-form-item label="大巴车次：">
+            {{ detailDatas.busId }}
+          </el-form-item>
+          <el-form-item label="身份证号：">
+            {{ detailDatas.peopleId }}
+          </el-form-item>
+          <el-form-item label="金额：">
+            {{ detailDatas.price }}
+          </el-form-item>
+          <el-form-item label="手机号：">
+            {{ detailDatas.passengerPhone }}
+          </el-form-item>
+        </el-form>
+        </div>
+        <!-- 确定按钮 -->
+        <div style="width: 100%;text-align: center;margin-bottom: 10px;">
+          <!-- <el-button size="small" @click="closeDetail">确定</el-button> -->
+        </div>
+      </div>
+    </el-dialog>
+    </div>
+    <!-- 导出excel时的条件过滤的页面 -->
+    <div class="excel-dialog">
+      <el-dialog
+        title="订单导出"
+        :visible.sync="dialogExcelVisible"
+        width="30%">
+        <el-row style="margin-left: 25px;">
+          <el-col>
+            <span class="demonstration">起始时间：</span>
+            <el-date-picker
+              v-model="startTimeExcel"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px;margin-left: 25px;">
+          <el-col>
+            <span class="demonstration">结束时间：</span>
+            <el-date-picker
+              v-model="endTimeExcel"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px;margin-left: 25px;">
+          <el-col>
+            <el-checkbox v-model="specialOrderExcel">专车订单</el-checkbox>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px;margin-left: 25px;">
+          <el-col>
+            <el-checkbox v-model="cableReleaseOrderExcel">快线订单</el-checkbox>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px;margin-left: 25px;">
+          <el-col>
+            <el-checkbox v-model="isPayOrderExcel">是否是支付订单</el-checkbox>
+          </el-col>
+        </el-row>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogExcelVisible = false">取 消</el-button>
+          <el-button type="primary" @click="ensureExport">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+  </section>
+</template>
+
+<script>
+  import util from '../../common/js/util'
+  import baseUtil from '../../common/js/base-util'
+  import Pagination from '../../components/Pagination'
+  import API from './../../api'
+  export default {
+    data () {
+      return {
+        status: null,
+        // 显示在页面上的数据
+        orderOverview: null,
+        // 总的数据
+        orderSurveyData: [
+          {
+            id: 0,
+            title: '总订单数',
+            totalOrders: null
+          },
+          {
+            id: 1,
+            title: '已完成订单',
+            orderCompleted: null
+          },
+          {
+            id: 2,
+            title: '日均订单数',
+            averageDailyOrders: null
+          },
+          {
+            id: 3,
+            title: '人均支付',
+            perPayment: null
+          }
+        ],
+        // 格式化售票站点
+        sellStations: [],
+        // 格式化站点
+        allStationList: [],
+        // 订单流水
+        orderWaterDatas: [],
+        // 是否显示详情页面的变量
+        dialogTableVisible: false,
+        // 详情页面的表格的变量
+        detailDatas: {
+          orderId: '',
+          orderType: '',
+          buyTime: '',
+          sellstationId: '',
+          machineid: '',
+          endstationId: '',
+          busId: '',
+          peopleId: '',
+          price: '',
+          passengerPhone: ''
+        },
+        // 订单导出页面的是否显示
+        dialogExcelVisible: false,
+        // 起始时间
+        startTimeExcel: this.setDefDate(),
+        // 结束时间
+        endTimeExcel: this.setDefDate(),
+        // 是否是专车订单
+        specialOrderExcel: false,
+        // 是否是快线订单
+        cableReleaseOrderExcel: false,
+        // 是否是支付订单
+        isPayOrderExcel: false,
+        // 导出到excel表格的数据
+        exportExcelDatas: [],
+        // 导出EXCEL按钮名称
+        exportExcelName: '导出订单',
+        // 导出EXCEL按钮类型
+        exportExcelType: 'primary',
+        // 按钮加载状态
+        buttonLoading: false,
+        // 所有城市的选择
+        allCities: [
+          {
+            label: '全部',
+            value: ''
+          },
+          {
+            label: '厦门区域',
+            value: '厦门'
+          },
+          {
+            label: '福州区域',
+            value: '福州'
+          }
+        ],
+        // 所有业务类型的选择
+        allOrderTypes: [
+          {
+            label: '全部',
+            value: ''
+          },
+          {
+            label: '快线订单',
+            value: '快线'
+          },
+          {
+            label: '专车订单',
+            value: '专车'
+          }
+        ],
+        // 所有时间类型的选择
+        allTimeTypes: [
+          {
+            label: '出发时间',
+            value: 0
+          },
+          {
+            label: '下单时间',
+            value: 1
+          }
+        ],
+        // 所有订单状态的选择
+        allPayStatus: [
+          {
+            label: '全部',
+            value: ''
+          },
+          {
+            label: '已支付',
+            value: '1'
+          },
+          {
+            label: '未支付',
+            value: '0'
+          }
+        ],
+        // 已经选中的城市,全部为默认的城市，订单概况的变量
+        selectedTopCity: '',
+        // 已经选中的城市，全部为默认城市，订单流水的变量
+        selectedBottomCity: '全部',
+        labelPosition: 'left',
+        // 过滤的值
+        filters: {
+          area: '',
+          orderType: '',
+          timeType: 0,
+          beginTime: '',
+          endTime: '',
+          passengerPhone: '',
+          machineId: '',
+          payStatus: '',
+          orderId: ''
+        },
+        tableLoading: false,
+        API: API,
+        baseUtil: baseUtil
+      }
+    },
+    computed: {
+      pageNumberPaied () {
+        return this.$refs['pageOrderWater'].get('pageNumber')
+      },
+      pageSizePaied () {
+        return this.$refs['pageOrderWater'].get('pageSize')
+      }
+    },
+    components: {
+      pagination: Pagination
+    },
+    methods: {
+      // 订单概况的数据
+      getData () {
+        // 强制让页面刷新后再进行赋值
+        this.status = '月'
+        this.getChangeData(this.status)
+      },
+      // 处理数据，为了在页面上进行显示
+      resolveData (value) {
+        var result = null
+        result = util.deepCopy(value)
+        for (var i = 0; i < result.length; i++) {
+          var key = Object.keys(result[i])[2]
+          result[i]['result'] = result[i][key]
+        }
+        return result
+      },
+      getChangeData (value) {
+        this.$nextTick(() => {
+          var dataType = null
+          if (value === '总') {
+            dataType = 0
+          }
+          if (value === '月') {
+            dataType = 1
+          }
+          if (value === '周') {
+            dataType = 2
+          }
+          if (value === '日') {
+            dataType = 3
+          }
+          var params = {
+            area: this.selectedTopCity,
+            dataType: dataType
+          }
+          API.queryAllOrder().go(params).then((data) => {
+            if (data.status === 1) {
+              this.orderSurveyData[0].totalOrders = data.data.totalCount
+              this.orderSurveyData[1].orderCompleted = data.data.completeCount
+              if (dataType === 0) {
+                this.orderSurveyData[2].averageDailyOrders = '--'
+              } else {
+                this.orderSurveyData[2].averageDailyOrders = data.data.perdayCount
+              }
+              this.orderSurveyData[3].perPayment = data.data.perOrderMoney
+              this.orderOverview = this.resolveData(this.orderSurveyData)
+            } else {
+              this.$notify(util.notifyBody(false, data.message))
+            }
+          })
+        })
+      },
+      // 订单流水的数据的获取
+      getOrderWaters () {
+        // let para = {
+        //   area: this.selectedBottomCity,
+        //   pageNum: this.pageNumberPaied,
+        //   pageSize: this.pageSizePaied
+        // }
+        // API.getPayOrderListPage().go(para).then((data) => {
+        //   if (data.status === 1) {
+        //     this.$refs['pageOrderWater'].set('total', data.data.total)
+        //     this.orderWaterDatas = data.data.list
+        //   } else {
+        //     this.$notify(util.notifyBody(false, data.message))
+        //   }
+        // })
+        let para = Object.assign({}, this.filters)
+        // 添加分页字段
+        para['pageNum'] = this.pageNumberPaied
+        para['pageSize'] = this.pageSizePaied
+        // 时间格式转换
+        if (para.beginTime === '') {
+          para.beginTime = 0
+        } else {
+          para.beginTime = Number(this.setTimeStamp(para.beginTime))
+        }
+        if (para.endTime === '') {
+          para.endTime = 99999999999999
+        } else {
+          para.endTime = Number(this.setTimeStamp(para.endTime))
+        }
+        // para.beginTime = Number(this.setTimeStamp(para.beginTime))
+        // para.endTime = Number(this.setTimeStamp(para.endTime))
+        console.log('para', para)
+        this.tableLoading = true
+        API.searchOrderData().go(para).then((data) => {
+          if (data.status === 1) {
+            this.$refs['pageOrderWater'].set('total', data.data.total)
+            this.orderWaterDatas = data.data.list
+          } else {
+            this.$notify(util.notifyBody(false, data.message))
+          }
+          this.tableLoading = false
+        })
+        // ？？？？
+        // this.$refs['pageOrderWater'].set('total', 16)
+      },
+      // 切换城市，默认为厦门
+      toSelectCity () {
+        this.getData()
+      },
+      // 查看已支付订单详情
+      viewOrder (index, row) {
+        this.dialogTableVisible = true
+        this.$nextTick(() => {
+          this.detailDatas = {
+            orderId: '',
+            orderType: '',
+            buyTime: '',
+            sellstationId: '',
+            machineid: '',
+            endstationId: '',
+            busId: '',
+            peopleId: '',
+            price: '',
+            passengerPhone: ''
+          }
+        })
+        // 需要请求
+        API.queryOrder().go(row.orderId).then((data) => {
+          if (data.status === 1) {
+            this.$nextTick(() => {
+              this.detailDatas = this.resolveDetailData(data.data)
+            })
+          } else {
+            this.$notify(util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 处理详细订单的数据的函数
+      resolveDetailData (value) {
+        // 大巴车次
+        if (value.orderType === '快线') {
+          value.busId = value.busId
+        }
+        if (value.orderType === '专车') {
+          value.busId = '---'
+        }
+        // 手机号
+        if (value.seats[0].passengerPhone) {
+          var star = '****'
+          value['passengerPhone'] = value.seats[0].passengerPhone.substring(0, 3) + star + value.seats[0].passengerPhone.substring(7, 11)
+        } else {
+          value['passengerPhone'] = '---'
+        }
+        // 身份证号
+        value['peopleId'] = ''
+        for (var i = 0; i < value.seats.length; i++) {
+          value.peopleId = value.peopleId + value.seats[i].passengerIDCard.substring(0, 6) + '****' + value.seats[i].passengerIDCard.substring(14, 18) + '，'
+        }
+        value.peopleId = value.peopleId.substring(0, value.peopleId.length - 1)
+        return value
+      },
+      formatterSellStationId (row, column, cellValue) {
+        var result = null
+        for (var i = 0; i < this.sellStations.length; i++) {
+          if (this.sellStations[i].value === cellValue) {
+            result = this.sellStations[i].text
+          }
+        }
+        return result
+      },
+      formatterAllStationId (row, column, cellValue) {
+        var result = null
+        for (var i = 0; i < this.allStationList.length; i++) {
+          if (this.allStationList[i].value === cellValue) {
+            result = this.allStationList[i].text
+          }
+        }
+        return result
+      },
+      getSellStation () {
+        let para = {
+          sellStationName: '',
+          pageNum: 1,
+          pageSize: 10000
+        }
+        API.getSellStationListPage().go(para).then((data) => {
+          if (data.status === 1) {
+            for (var i = 0; i < data.data.list.length; i++) {
+              var item = {}
+              item['text'] = data.data.list[i].sellStationName
+              item['value'] = data.data.list[i].sellStationId
+              this.sellStations.push(item)
+            }
+          } else {
+            this.$notify(util.notifyBody(false, data.msg))
+          }
+        })
+      },
+      getAllStationList () {
+        let para = {
+          pageNum: null,
+          pageSize: null
+        }
+        para.pageNum = 1
+        para.pageSize = 10000
+        API.getAllStationListPage().go(para).then((data) => {
+          if (data.status === 1) {
+            // 组织数据结构
+            this.allStationList = []
+            for (var i = 0; i < data.data.list.length; i++) {
+              var result = {}
+              result['text'] = data.data.list[i].stationName
+              result['value'] = data.data.list[i].stationId
+              this.allStationList.push(result)
+            }
+          } else {
+            this.$notify(util.notifyBody(false, data.msg))
+          }
+        })
+      },
+      getTicketTypeName (row, column, cellValue) {
+        if (cellValue === '1') {
+          return '全票'
+        }
+        if (cellValue === '2') {
+          return '半票'
+        }
+        if (cellValue === '3') {
+          return '携童票'
+        } else {
+          return null
+        }
+      },
+      // 导出订单的弹出页面
+      exportExcelDialog () {
+        this.startTimeExcel = this.setDefDate()
+        this.endTimeExcel = this.setDefDate()
+        this.specialOrderExcel = false
+        this.cableReleaseOrderExcel = false
+        this.isPayOrderExcel = false
+        this.dialogExcelVisible = true
+      },
+      // 确定导出
+      ensureExport () {
+        // 按钮状态变化
+        this.exportExcelName = '正在导出，禁止操作'
+        this.exportExcelType = 'danger'
+        this.buttonLoading = true
+        // 清空
+        this.exportExcelDatas = []
+        let params = {
+          beginTime: null,
+          endTime: null,
+          orderType: null,
+          payStatus: null
+        }
+        // 开始时间
+        params.beginTime = this.setTimeStamp(this.startTimeExcel)
+        // 结束时间
+        params.endTime = this.setTimeStamp(this.endTimeExcel)
+        // 判断是否可以导出
+        if (params.beginTime > params.endTime) {
+          this.exportExcelName = '导出订单'
+          this.exportExcelType = 'primary'
+          this.buttonLoading = false
+          this.$notify(util.notifyBody(false, '起始时间不能大于结束时间！'))
+          return
+        }
+        // 判断获取值
+        if (this.specialOrderExcel) {
+          params.orderType = '专车'
+        }
+        if (this.cableReleaseOrderExcel) {
+          params.orderType = '快线'
+        }
+        if (this.specialOrderExcel && this.cableReleaseOrderExcel) {
+          params.orderType = ''
+        }
+        if (!this.specialOrderExcel && !this.cableReleaseOrderExcel) {
+          params.orderType = ''
+        }
+        if (this.isPayOrderExcel) {
+          params.payStatus = '1'
+        } else {
+          params.payStatus = ''
+        }
+        API.orderExportData().go(params).then((data) => {
+          if (data.status === 1) {
+            this.exportExcelDatas = data.data
+            for (var i = 0; i < this.exportExcelDatas.length; i++) {
+              this.exportExcelDatas[i].buyTime = baseUtil.formatterDated(0, 1, this.exportExcelDatas[i].buyTime)
+              this.exportExcelDatas[i].sellstationId = this.formatterSellStationId(0, 1, this.exportExcelDatas[i].sellstationId)
+              this.exportExcelDatas[i].paystatus = this.formatterPayStatus(this.exportExcelDatas[i].paystatus)
+            }
+            this.exportExcel()
+          } else {
+            this.dialogExcelVisible = false
+            this.$notify(util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 导出excel的函数
+      exportExcel () {
+        require.ensure([], () => {
+        const { export_json_to_excel } = require('./../../common/vendor/Export2Excel')
+        const tHeader = ['订单号', '订单类型', '订单状态', '购票时间', '售票点', '终端编号', '金额', '大巴车次']
+        const filterVal = ['orderId', 'orderType', 'paystatus', 'buyTime', 'sellstationId', 'machineid', 'price', 'busId']
+        const list = this.exportExcelDatas
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '日志信息')
+        })
+        this.exportExcelName = '导出订单'
+        this.exportExcelType = 'primary'
+        this.buttonLoading = false
+        this.dialogExcelVisible = false
+        this.$notify(util.notifyBody(true, '导出成功'))
+      },
+      formatJson (filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => v[j]))
+      },
+      // 初始化时间
+      setDefDate () {
+        let moment = require('moment')
+        let nextDate = moment().format('YYYY-MM-DD HH:mm:ss')
+        return nextDate
+      },
+      // 把时间转换成时间戳的函数
+      setTimeStamp (data) {
+        let moment = require('moment')
+        let timeStamp = moment(data).format('x')
+        return timeStamp
+      },
+      formatterDate (data) {
+        let moment = require('moment')
+        let nextDate = moment(data).format('YYYY-MM-DD HH:mm:ss')
+        return nextDate
+      },
+      // 格式化支付类型
+      formatterPayStatus (value) {
+        if (value === '0') {
+          return '未支付'
+        }
+        if (value === '1') {
+          return '支付'
+        }
+      }
+      // 查询数据
+      // searchUnpayData () {
+      //   let para = Object.assign({}, this.filters, this.$refs['pageOrderWater'].queryParam())
+      //   API.searchOrderData().go(para).then((data) => {
+      //     if (data.status === 1) {
+      //       this.$refs['pageOrderWater'].set('total', data.data.total)
+      //       this.orderWaterDatas = data.data.list
+      //     } else {
+      //       this.$notify(util.notifyBody(false, data.message))
+      //     }
+      //   })
+      // }
+    },
+    mounted () {
+      this.getData()
+      this.getOrderWaters()
+      this.getSellStation()
+      this.getAllStationList()
+    }
+  }
+</script>
+
+<style>
+  .order-statistics .bg-purple {
+    background: #e4e4e4;
+    margin-top: 10px;
+  }
+  .order-statistics .title-panel {
+    margin-top: 0;
+    background: #e4e4e4;
+    border-radius: 10px 10px 0 0;
+  }
+  .order-statistics .table-border .el-table {
+    border-right: 1px solid #dfe6ec;
+  }
+  .order-statistics .toolbar-bottom {
+    border: 0;
+    z-index: 90;
+    background: #fff;
+    padding: 10px;
+    position: absolute;
+    /*bottom: -70px;*/
+    width: 100%!important;
+  }
+  .excel-dialog .el-dialog--small {
+    width: 23%;
+  }
+  @media screen and (min-height: 0px) and (max-height: 767px) {
+      .order-statistics .title {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 15px;
+        margin-left: 20px;
+      }
+      .order-statistics .data-row {
+        height: 410px;
+      }
+      .order-statistics .data-row-first {
+        height: 170px;
+      }
+      .order-statistics .data-panel-first {
+        height: 140px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(121, 121, 121, 1);
+        border-radius: 10px;
+      }
+      .order-statistics .title-height-first {
+        height: 30px;
+      }
+      .order-statistics .result-height-first {
+        height: 30px;
+      }
+      .detailDialog .el-form-item {
+        margin-bottom: 0px!important;
+      }
+      .detailDialog .el-dialog--small {
+        width: 35%!important;
+      }
+      .detailDialog .el-form {
+        margin-left: 25px;
+      }
+      /*订单概况操作栏的样式*/
+      .area_select .el-select {
+        width: 80px!important;
+        margin-left: 12px;
+      }
+      .order-statistics .operation-type {
+        position: relative;
+        width: 200px;
+      }
+      .order-statistics .operation-type .el-radio-group {
+        position: absolute;
+        top: -24px;
+        right: 0;
+      }
+      /*区域名称文字的样式*/
+      .operation_name {
+        font-size: 15px;
+        display: inline-block;
+        margin-left: 10px;
+      }
+      /*右边操作栏的样式*/
+      .operation_panel {
+        margin-top: 8px;
+      }
+      /*显示数据表格的高度*/
+      .order-statistics .data-panel {
+        height: 350px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(121, 121, 121, 1);
+        border-radius: 10px;
+      }
+      /*操作区的样式*/
+      .operate_area_table {
+        height: 240px!important;
+        margin-top: 0
+      }
+      /*分页与样式*/
+      .page_style {
+        margin-top: 0;
+      }
+      /*操作栏的样式*/
+      .operate_area_table .el-form-item {
+        margin-top: 20px;
+        margin-bottom: 0;
+      }
+  }
+  @media screen and (min-height: 768px) and (max-height: 1080px) {
+      .order-statistics .title {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 18px;
+        margin-left: 20px;
+      }
+      .order-statistics .data-row {
+        height: 420px;
+      }
+      .order-statistics .data-row-first {
+        height: 260px;
+      }
+      .order-statistics .data-panel-first {
+        height: 210px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(121, 121, 121, 1);
+        border-radius: 10px;
+      }
+      .order-statistics .title-height-first {
+        height: 50px;
+      }
+      .order-statistics .result-height-first {
+        height: 50px;
+      }
+      .detailDialog .el-form-item {
+        margin-bottom: 15px!important;
+      }
+      .detailDialog .el-dialog--small {
+        width: 25%!important;
+      }
+      .detailDialog .el-form {
+        margin-left: 25px;
+      }
+      /*订单概况操作栏的样式*/
+      .area_select .el-select {
+        width: 110px!important;
+        margin-left: 20px;
+      }
+      .order-statistics .operation-type {
+        position: relative;
+        width: 210px!important;
+      }
+      .order-statistics .operation-type .el-radio-group {
+        position: absolute;
+        top: -24px;
+        right: 0;
+      }
+      /*区域名称文字的样式*/
+      .operation_name {
+        font-size: 15px;
+        display: inline-block;
+        margin-left: 150px;
+      }
+      /*右边操作栏的样式*/
+      .operation_panel {
+        margin-top: 12px;
+      }
+      /*显示数据表格的高度*/
+      .order-statistics .data-panel {
+        height: 365px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(121, 121, 121, 1);
+        border-radius: 10px;
+      }
+      /*操作区的样式*/
+      .operate_area_table {
+        height: 180px!important;
+        margin-top: 10px;
+      }
+      /*分页与样式*/
+      .page_style {
+        margin-top: 8px;
+      }
+      /*操作栏的样式*/
+      .operate_area_table .el-form-item {
+        margin-top: 20px;
+        margin-bottom: 0;
+      }
+  }
+  /*做1080以上的适配*/
+  @media screen and (min-height: 1080px) {
+      .order-statistics .title {
+        font-family: 'PingFangSC-Regular', 'PingFang SC';
+        font-weight: 400;
+        font-style: normal;
+        font-size: 18px;
+        margin-left: 20px;
+      }
+      .order-statistics .data-row {
+        height: 420px;
+      }
+      .order-statistics .data-row-first {
+        height: 260px;
+      }
+      .order-statistics .data-panel-first {
+        height: 210px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(121, 121, 121, 1);
+        border-radius: 10px;
+      }
+      .order-statistics .title-height-first {
+        height: 50px;
+      }
+      .order-statistics .result-height-first {
+        height: 50px;
+      }
+      .detailDialog .el-form-item {
+        margin-bottom: 15px!important;
+      }
+      .detailDialog .el-dialog--small {
+        width: 25%!important;
+      }
+      .detailDialog .el-form {
+        margin-left: 25px;
+      }
+      /*订单概况操作栏的样式*/
+      .area_select .el-select {
+        width: 110px!important;
+        margin-left: 20px;
+      }
+      .order-statistics .operation-type {
+        position: relative;
+        width: 210px!important;
+      }
+      .order-statistics .operation-type .el-radio-group {
+        position: absolute;
+        top: -24px;
+        right: 0;
+      }
+      /*区域名称文字的样式*/
+      .operation_name {
+        font-size: 15px;
+        display: inline-block;
+        margin-left: 150px;
+      }
+      /*右边操作栏的样式*/
+      .operation_panel {
+        margin-top: 12px;
+      }
+      /*显示数据表格的高度*/
+      .order-statistics .data-panel {
+        height: 365px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(121, 121, 121, 1);
+        border-radius: 10px;
+      }
+      /*操作区的样式*/
+      .operate_area_table {
+        height: 180px!important;
+        margin-top: 10px;
+      }
+      /*分页与样式*/
+      .page_style {
+        margin-top: 8px;
+      }
+      /*操作栏的样式*/
+      .operate_area_table .el-form-item {
+        margin-top: 20px;
+        margin-bottom: 0;
+      }
+  }
+</style>

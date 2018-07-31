@@ -1,0 +1,522 @@
+{
+  "type": "Layout",
+  "description": "普通柜台",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "dataSource": "796AF13708764F55BE0F181A6C4F3EDB",
+  "mainSource": true,
+  "singleData": true,
+  "refreshInterval": 20000,
+  "langs": [ "zh-cn", "en-ww" ],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "extraParam": {
+    "dynaScrollText": {
+      "description": "动态滚动文本",
+      "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+      "singleData": true,
+      "columnName": "scrolltext"
+    },
+    "destination": "DESTINATION"
+  },
+  "rows": [
+      {
+        "type": "Row",
+        "align": "top",
+        "justify": "start",
+        "cols": [
+          {
+            "type": "Column",
+            "span": 13,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "color": "#FAC35A",
+                    "borderBottom": "5px solid",
+                    "paddingLeft": 80
+                  },
+                  "bottomStyle": {
+                    "color": "#FAC35A",
+                    "paddingLeft": 80
+                  },
+                  "topContent": [
+                    {
+                      "type": "DoubleLayerText",
+                      "content": {
+                        "topStyle": {
+                          "fontSize": 160
+                        },
+                        "bottomStyle": {
+                          "fontSize": 60
+                        },
+                        "topContent": [
+                          {
+                            "type": "Text",
+                            "tag": "span",
+                            "columnName": "carrier",
+                            "property": "key"
+                          },
+                          {
+                            "type": "Text",
+                            "tag": "span",
+                            "columnName": "flight"
+                          }
+                        ],
+                        "bottomContent": [
+                          {
+                            "type": "MarqueeText",
+                            "speed": 80,
+                            "hiddenBy": ["shareflight"],
+                            "content": [
+                              {
+                                "type": "Text",
+                                "columnName": "shareflight"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "Row",
+                      "align": "middle",
+                      "justify": "start",
+                      "cols": [
+                        {
+                          "type": "Column",
+                          "span": 24,
+                          "children": [
+                            {
+                              "type": "DoubleLayerText",
+                              "content": {
+                                "topStyle": {
+                                  "fontSize": 80
+                                },
+                                "bottomStyle": {
+                                  "fontSize": 80
+                                },
+                                "topContent": [
+                                  {
+                                    "type": "Text",
+                                    "langLock": "zh-cn",
+                                    "columnName": "route"
+                                  }
+                                ],
+                                "bottomContent": [
+                                  {
+                                    "type": "Text",
+                                    "langExcept": ["zh-cn"],
+                                    "columnName": "route"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 11,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "paddingTop": 20,
+                    "paddingRight": 20,
+                    "textAlign": "center"
+                  },
+                  "bottomStyle": {
+                    "color": "#FAC35A",
+                    "fontSize": 40
+                  },
+                  "topContent": [
+                    {
+                      "type": "Image",
+                      "style": {
+                        "width": 700,
+                        "height": 400
+                      },
+                      "imgType": "flight_logo",
+                      "imgSize": "700x400",
+                      "columnName": "carrier"
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "DoubleLayerText",
+                      "content": {
+                        "align": "right",
+                        "translateX": -90,
+                        "topStyle": {
+                          "paddingTop": 20
+                        },
+                        "bottomStyle": {},
+                        "topContent": [
+                          {
+                            "type": "Text",
+                            "langLock": "zh-cn",
+                            "columnName": "carrier"
+                          }
+                        ],
+                        "bottomContent": [
+                          {
+                            "type": "Text",
+                            "langExcept": ["zh-cn"],
+                            "columnName": "carrier"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Row",
+        "align": "top",
+        "justify": "start",
+        "cols": [
+          {
+            "type": "Column",
+            "span": 12,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A",
+                    "paddingLeft": 80
+                  },
+                  "bottomStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A",
+                    "paddingLeft": 80
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "langLock": "zh-cn",
+                      "columnName": "servicetype"
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "content": [
+                        {
+                          "type": "Text",
+                          "langExcept": ["zh-cn"],
+                          "columnName": "servicetype"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 6,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#fff"
+                  },
+                  "bottomStyle": {
+                    "fontSize": 50,
+                    "color": "#fff"
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "langLock": "zh-cn",
+                      "value": {
+                        "zh-cn": "预计登机",
+                        "en-ww": "Boarding Time"
+                      }
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "Text",
+                      "langExcept": ["zh-cn"],
+                      "value": {
+                        "zh-cn": "预计登机",
+                        "en-ww": "Boarding Time"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 6,
+            "bodyStyle": {
+              "alignSelf": "center"
+            },
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A"
+                  },
+                  "bottomStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A"
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "columnName": "boardingtime",
+                      "date": {
+                        "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                        "formatTo": "HH:mm"
+                      }
+                    }
+                  ],
+                  "bottomContent": []
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Row",
+        "align": "top",
+        "justify": "start",
+        "cols": [
+          {
+            "type": "Column",
+            "span": 7,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#fff",
+                    "paddingLeft": 80
+                  },
+                  "bottomStyle": {
+                    "fontSize": 50,
+                    "color": "#fff",
+                    "paddingLeft": 80
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "langLock": "zh-cn",
+                      "value": {
+                        "zh-cn": "办理时间",
+                        "en-ww": "Check-In Time"
+                      }
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "Text",
+                      "langExcept": ["zh-cn"],
+                      "value": {
+                        "zh-cn": "办理时间",
+                        "en-ww": "Check-In Time"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 5,
+            "bodyStyle": {
+              "alignSelf": "center"
+            },
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A"
+                  },
+                  "bottomStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A"
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "tag": "span",
+                      "columnName": "checkinopen",
+                      "date": {
+                        "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                        "formatTo": "HH:mm"
+                      }
+                    },
+                    {
+                      "type": "Text",
+                      "tag": "span",
+                      "columnName": "checkinclose",
+                      "prefix": "-",
+                      "date": {
+                        "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                        "formatTo": "HH:mm"
+                      }
+                    }
+                  ],
+                  "bottomContent": []
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 3,
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#fff"
+                  },
+                  "bottomStyle": {
+                    "fontSize": 50,
+                    "color": "#fff"
+                  },
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "langLock": ["zh-cn"],
+                      "value": {
+                        "zh-cn": "登机口",
+                        "en-ww": "Gate"
+                      }
+                    }
+                  ],
+                  "bottomContent": [
+                    {
+                      "type": "Text",
+                      "langExcept": ["zh-cn"],
+                      "value": {
+                        "zh-cn": "登机口",
+                        "en-ww": "Gate"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 6,
+            "bodyStyle": {
+              "alignSelf": "center"
+            },
+            "children": [
+              {
+                "type": "DoubleLayerText",
+                "content": {
+                  "topStyle": {
+                    "fontSize": 50,
+                    "color": "#FAC35A"
+                  },
+                  "bottomStyle": {},
+                  "topContent": [
+                    {
+                      "type": "Text",
+                      "columnName": "gate"
+                    }
+                  ],
+                  "bottomContent": []
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Row",
+        "align": "top",
+        "justify": "start",
+        "bodyStyle": {
+          "position": "absolute",
+          "bottom": 0,
+          "zIndex": 99,
+          "width": 1920,
+          "height": 90,
+          "lineHeight": 90,
+          "fontSize": 50,
+          "color": "#FAC35A",
+          "borderTop": "2px solid",
+          "borderTopColor": "#FAC35A",
+          "backgroundColor": "#212E5B"
+        },
+        "cols": [
+          {
+            "type": "Column",
+            "span": 22,
+            "dataSource": "$current_device_info",
+            "singleData": true,
+            "children": [
+              {
+                "type": "MarqueeText",
+                "speed": 80,
+                "content": [
+                  {
+                    "type": "Text",
+                    "tag": "span",
+                    "columnName": "scrollText"
+                  },
+                  {
+                    "type": "Text",
+                    "tag": "span",
+                    "columnName": "dynamicScrollText"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "span": 2,
+            "children": [
+              {
+                "type": "Clock"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+}                                                                                                                                                        

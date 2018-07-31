@@ -1,0 +1,491 @@
+<template>
+<section class="resDetailClass">
+  <section v-for="(item, index) in form.resLists" :key="index">
+  <el-form :ref="setFormId(index)" :model.sync="form.resLists[index]" :label-position="labelPosition" :rules="rules[index]">
+    <el-row :gutter="18" v-for="(rowItem, rowIndex) in resFields" :key="rowIndex">
+      <el-col :span="6" v-for="ritem in rowItem" :key="ritem.name" v-if="!ritem.hidden">
+        <el-form-item :label="ritem.label" :prop="ritem.name + index" :key="item.id" v-if="!ritem.hidden">
+          <el-input :type="ritem.type" v-model="form.resLists[index][ritem.name]" auto-complete="off" :disabled="isDisabled(index)"
+          v-if="ritem.type === 'text' || ritem.type === 'textarea' || ritem.type === 'password'"></el-input>
+          <!-- number判断 -->
+          <el-input :type="ritem.type" value="number" v-model.number="form.resLists[index][ritem.name]" auto-complete="off" v-else-if="ritem.type === 'number'" :v-show="ritem.show" :disabled="isDisabled(index)"></el-input>
+          <!-- 时间判断 -->
+          <el-date-picker :type="item.type" v-model="form.resLists[index][ritem.name]" v-else-if="item.type === 'datetime'" :disabled="isDisabled(index)">
+          </el-date-picker>
+          <date-time v-model="form.resLists[index][ritem.name]" :visitTime="ritem.visitTime" :datePlaceholder="ritem.datePlaceholder" :timePlaceholder="ritem.timePlaceholder" :formatter="ritem.formatter" v-else-if="ritem.type === 'dateTimeGroup'" :allDisable="isDisabled(index)"></date-time>
+          <!--radio判断 -->
+          <el-radio-group v-model="form.resLists[index][ritem.name]" v-else-if="ritem.type === 'radio'">
+            <el-radio v-for="radioItem in ritem.choose" class="radio" :label="radioItem.value" :key="radioItem.value">{{radioItem.text}}</el-radio>
+          </el-radio-group>
+          <!-- select判断 -->
+          <el-select class="selectA" v-model="form.resLists[index][ritem.name]" :filterable="ritem.filterable" :clearable="ritem.clearable" :disabled="isDisabled(index)" placeholder="请选择" v-else-if="ritem.type === 'select' && ritem.name !== 'terminal' && !ritem.setLink && ritem.name !== 'carouselCode' && ritem.name !== 'checkinCounter'" >
+            <el-option
+              v-for="selectItem in ritem.choose"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+          <el-select class="selectA" v-model="form.resLists[index].res[ritem.name]" :filterable="ritem.filterable" :clearable="ritem.clearable" :disabled="isDisabled(index)" placeholder="请选择" v-else-if="ritem.type === 'select' && ritem.name === 'terminal' && ritem.isLink" @change="setLinkBaseList">
+            <el-option
+              v-for="selectItem in terminalList"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+          <el-select class="selectA" v-model="form.resLists[index][ritem.name]" :filterable="ritem.filterable" :clearable="ritem.clearable" :disabled="isDisabled(index)" placeholder="请选择" v-else-if="ritem.type === 'select' && ritem.name === 'terminal'  && !ritem.isLink" @change="setLinkBaseList">
+            <el-option
+              v-for="selectItem in terminalList"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+          <el-select class="selectA" v-model="form.resLists[index][ritem.name]" :filterable="ritem.filterable" :clearable="ritem.clearable" :disabled="isDisabled(index)" placeholder="请选择" v-else-if="ritem.type === 'select' && ritem.name === 'checkinCounter'" @change="setTerminal(form.resLists[index][ritem.name], index)">
+            <el-option
+              v-for="selectItem in counterList"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+          <el-select class="selectA" v-model="form.resLists[index][ritem.name]" :filterable="ritem.filterable" :clearable="ritem.clearable" :disabled="isDisabled(index)" placeholder="请选择" v-else-if="ritem.type === 'select' && ritem.name === 'carouselCode'" @change="setTerminal(form.resLists[index][ritem.name], index)">
+            <el-option
+              v-for="selectItem in carList"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+          <el-select class="selectA" v-model="form.resLists[index][ritem.name]" :filterable="ritem.filterable" :clearable="ritem.clearable" :disabled="isDisabled(index)" placeholder="请选择" v-else-if="ritem.type === 'select' && ritem.setLink" @change="setLinkId(form.resLists[index][ritem.name], index, ritem.name, ritem.linkFiels, ritem.choose)">
+            <el-option
+              v-for="selectItem in ritem.choose"
+              :key="selectItem[ritem.selVal]"
+              :label="selectItem[ritem.selText]"
+              :value="selectItem[ritem.selVal]">
+            </el-option>
+          </el-select>
+          <!--<el-input type="text" v-model.number="form.resLists[index][ritem.name]" v-else-if="ritem.name === 'carouselId'" v-show="false"></el-input>-->
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <!--<el-row :gutter="18" v-for="ritem in form.resFields">
+      <el-col :span="6">
+        <el-form-item label="航站楼" prop="terminal">
+          <el-select v-model="form.res.terminal" placeholder="航站楼" style="width:100%;" filterable clearable>
+            <el-option
+              v-for="item in $cache.fetch('terminals')"
+              :key="item.terminalCode"
+              :label="item.terminalCode"
+              :value="item.terminalCode">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="6">
+        <el-form-item label="转盘编码" prop="terminal">
+          <el-select v-model="form.res.carouselType" placeholder="转盘编码" style="width:100%;" filterable clearable>
+            <el-option
+              v-for="item in $cache.fetch('terminals')"
+              :key="item.terminalCode"
+              :label="item.terminalCode"
+              :value="item.terminalCode">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="6">
+        <el-form-item label="开启时间" prop="scheduleOpen">
+          <br>
+          <date-time v-model="form.res.scheduleOpen" :visitTime="true" datePlaceholder="开启日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="6">
+        <el-form-item label="关闭时间" prop="scheduleClose">
+          <br>
+          <date-time v-model="form.res.scheduleClose" :visitTime="true" datePlaceholder="关闭日期" timePlaceholder="时间" formatter="yyyy-MM-dd"></date-time>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <div class="buttonCls">
+        <span class="wrapper">
+          <el-button size="small" type="success" @click="openResInfo(index)">开启</el-button>
+          <el-button size="small" type="danger" @click="closeResInfo(index)">关闭</el-button>
+          <el-button size="small" type="info" @click="addResInfo(index)" v-if="index === form.resLists.length - 1">新增</el-button>
+          <el-button size="small" type="warning" @click="delResInfo(index)" v-if="form.resLists.length > 1">删除</el-button>
+        </span>
+      </div>
+    </el-row>
+    <hr class="hrClass"/>-->
+    <el-row>
+      <div class="buttonCls">
+        <span class="wrapper">
+          <el-button size="small" type="success" @click="openOrCloseRes(index, true)">开启</el-button>
+          <el-button size="small" type="danger" @click="openOrCloseRes(index, false)">关闭</el-button>
+          <el-button size="small" type="info" @click="addResInfo(index)" v-if="index === form.resLists.length - 1">新增</el-button>
+          <el-button size="small" type="warning" @click="delResInfo(index)">删除</el-button>
+        </span>
+      </div>
+    </el-row>
+    <hr class="hrClass" v-if="index !== form.resLists.length - 1"/>
+  </el-form>
+  </section>
+  <section v-if="form.resLists.length === 0">
+    <div class="buttonCls">
+      <span class="wrapper">
+        <el-button size="small" type="info" @click="addResInfo(0)">新增</el-button>
+      </span>
+    </div>
+  </section>
+</section>
+</template>
+
+<script>
+import Util from '../../../common/js/util'
+import API from '../../../api'
+import dateTime from '../modify/DateTime'
+
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    labelPosition: {
+      type: String,
+      default: 'top'
+    },
+    to: {
+      type: Function,
+      default: function () {}
+    },
+    initData: {
+      type: Function,
+      default: function () {}
+    },
+    callback: {
+      type: Function,
+      default: function () {}
+    },
+    openOpt: {
+      type: Function,
+      default: function () {}
+    },
+    closeOpt: {
+      type: Function,
+      default: function () {}
+    },
+    delOpt: {
+      type: Function,
+      default: function () {}
+    }
+  },
+  data () {
+    return {
+      editAble: false,
+      loading: false,
+      curTabName: '',
+      API: API,
+      form: {
+        res: {},
+        resLists: [],
+        oldResLists: []
+      },
+      resFields: [],
+      rules: [],
+      flight: {},
+      delResIdList: [],
+      baseList: {},
+      terminalList: [],
+      counterList: [],
+      carList: []
+    }
+  },
+  components: {
+    dateTime: dateTime
+  },
+  methods: {
+    bindData () {
+      let para = {}
+      if (!this.editAble) {
+        // 0923 需修改
+        if (this.curTabName === 'standConfForm') {
+          // 机位分配，关联进出港id
+          let currentAircraft = this.flight.aircraftType
+          para = { currentAircraft: currentAircraft }
+        } else if (this.curTabName === 'counterConfForm') {
+          // 值机柜台分配
+          para = {flightId: this.flight.id}
+        } else {
+          para = {flightSegmentId: this.flight.id}
+        }
+        this.form.resLists.push(Util.deepCopy(this.form.res))
+        this.initData(para).then((data) => {
+          this.loading = false
+          if (data.ok) {
+            if (data.attr.data.list.length > 0) {
+              this.form.resLists = Util.deepCopy(data.attr.data.list)
+              this.form.oldResLists = Util.deepCopy(this.form.resLists)
+            }
+          }
+          // 初始化校验规则
+          this.initRules()
+          this.editAble = 'true'
+        })
+      }
+    },
+    initResData: function () {
+      this.editAble = false
+      this.loading = false
+      this.curTabName = ''
+      this.form = {
+        res: {},
+        resLists: [],
+        oldResLists: []
+      }
+      this.resFields = []
+      this.rules = []
+      this.flight = {}
+      this.delResIdList = []
+      this.baseList = {}
+      this.terminalList = []
+      this.counterList = []
+      this.carList = []
+    },
+    setProp: function (name, index) {
+      // 0923 后期可删除
+      return 'terminal0'
+    },
+    setFormId: function (index) {
+      return 'resDetailForm' + index
+    },
+    isDisabled: function (index) {
+      return this.form.resLists[index]['id'] !== null && this.form.resLists[index]['id'] !== undefined && this.form.resLists[index]['id'] !== ''
+    },
+    handleSubmit: function () {
+      let newlist = Util.deepCopy(this.form.resLists)
+      let oldlist = Util.deepCopy(this.form.oldResLists)
+      // 表单提交未验证
+      if (JSON.stringify(newlist) !== JSON.stringify(oldlist)) {
+        let param = { newValue: newlist, oldValue: oldlist }
+        this.to(param).then((res) => {
+          this.loading = false
+          this.$notify(Util.notifyBody(res.ok, res.msg))
+        })
+      }
+    },
+    initField () {
+      let field = {}
+      for (let i = 0; i < this.resFields.length; i++) {
+        for (let j = 0; j < this.resFields[i].length; j++) {
+          if (this.resFields[i][j]['isLink']) { // 从关联的资源表中取信息
+            let res = {}
+            res[this.resFields[i][j].name] = this.resFields[i][j].value
+            field['res'] = Util.deepCopy(res)
+          } else {
+            field[this.resFields[i][j].name] = this.resFields[i][j].value
+          }
+        }
+      }
+      this.form.res = field
+    },
+    initRules: function () {
+      let result = []
+      for (let k = 0; k < this.form.resLists.length; k++) {
+        let obj = {}
+        for (let i = 0; i < this.resFields.length; i++) {
+          for (let j = 0; j < this.resFields[i].length; j++) {
+            let test = this.resFields[i][j].name + '' + k + ''
+            obj[test] = this.resFields[i][j].rules
+            // result[i][test] = this.resFields[i][j].rules
+          }
+        }
+        result.push(obj)
+      }
+      this.rules = result
+    },
+    addRule: function () {
+      let index = this.form.resLists.length - 1
+      let obj = {}
+      for (let i = 0; i < this.resFields.length; i++) {
+        for (let j = 0; j < this.resFields[i].length; j++) {
+          let test = this.resFields[i][j].name + '' + index + ''
+          obj[test] = this.resFields[i][j].rules
+        }
+      }
+      this.rules.push(obj)
+    },
+    show: function (tabKey, flightObj, fields) {
+      this.loading = false
+      this.curTabName = tabKey
+      this.resFields = fields
+      this.flight = Util.deepCopy(flightObj)
+      this.terminalList = this.baseList.terminalList
+      this.counterList = this.baseList.counterList
+      this.carList = this.baseList.carList
+      this.initField()
+      this.bindData()
+    },
+    addResInfo: function (index) {
+      if (this.curTabName === 'standConfForm') {
+        // 机位分配，机位使用列表排序处理
+        this.form.resLists.unshift(this.form.res)
+      } else {
+        this.form.resLists.push(this.form.res)
+      }
+      // 添加校验规则
+      this.addRule()
+    },
+    delResInfo: function (index) {
+      let curObj = this.form.resLists[index]
+      if (curObj.id !== null) {
+        this.delResIdList.push(curObj.id)
+      }
+      let para = Util.deepCopy(curObj)
+      this.$confirm('确认删除吗？', '提示', {}).then(() => {
+        this.loading = true
+        this.delOpt(para).then((res) => {
+          this.loading = false
+          if (index === 0 && this.curTabName === 'standConfForm') {
+            // this.set(this.form.resLists, 0, this.form.res)
+            this.form.resLists.splice(index, 1)
+          } else {
+            this.form.resLists.splice(index, 1)
+          }
+          this.rules.splice(index, 1)
+          this.$notify(Util.notifyBody(res.ok, res.msg))
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        })
+      })
+    },
+    openOrCloseRes: function (index, isOpen) {
+      this.setActTime(index, isOpen)
+      let para = {allocationinfo: this.form.resLists[index]}
+      let msg = '确认' + (isOpen ? '开启' : '关闭') + '吗？'
+      this.$confirm(msg, '提示', {}).then(() => {
+        this.loading = true
+        this.openOpt(para).then((res) => {
+          this.loading = false
+          this.$notify(Util.notifyBody(res.ok, res.msg))
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        })
+      })
+    },
+    closeResInfo: function (index) {
+
+    },
+    setActTime: function (index, isOpen) {
+      // 设置资源开启关闭时间
+      var moment = require('moment')
+      let now = moment(new Date()).format('YYYY-MM-DD hh:mm:ss')
+      switch (this.curTabName) {
+        case 'standConfForm': {
+          if (isOpen) {
+            this.form.resLists[index]['actOccupiedBegin'] = now
+          } else {
+            this.form.resLists[index]['actOccupiedEnd'] = now
+          }
+          break
+        }
+        default: {
+          if (isOpen) {
+            this.form.resLists[index]['actualOpen'] = now
+          } else {
+            this.form.resLists[index]['actualClose'] = now
+          }
+          break
+        }
+      }
+    },
+    setTerminal: function (val, index) {
+      // 设置航站楼以及转盘编码id值
+      let list = this.baseList.carList.filter(item => {
+        return item.carouselCode === val
+      })
+      if (list.length > 0) {
+        if (this.curTabName === 'counterConfForm') {
+          this.form.resLists[index]['checkinCounterId'] = list[0].id
+          this.form.resLists[index]['terminal'] = list[0].terminal
+        } else {
+          this.form.resLists[index]['carouselId'] = list[0].id
+          this.form.resLists[index]['terminal'] = list[0].terminal
+        }
+      }
+    },
+    setLinkId: function (val, index, field, linkField, baselist) {
+      let list = baselist.filter(item => {
+        return item[field] === val
+      })
+      if (list.length > 0) {
+        this.form.resLists[index][linkField] = list[0].id
+        if (field === 'carouselCode') {
+          this.form.resLists[index].res['terminal'] = list[0].terminal
+        } else if (field === 'checkinCounter') {
+          this.form.resLists[index]['terminal'] = list[0].terminal
+        }
+      }
+    },
+    setLinkBaseList: function (val) {
+      // 设置航站楼与转盘编码关联
+      let list = []
+      let linkname = ''
+      if (this.curTabName === 'counterConfForm') {
+        linkname = 'counterList'
+      } else {
+        linkname = 'carList'
+      }
+      list = this.baseList[linkname].filter(item => {
+        return item.terminal === val
+      })
+      this[linkname] = list
+    }
+  },
+  mounted () {
+    // this.bindData()
+  }
+}
+</script>
+
+<style lang="scss">
+.resDetailClass {
+  .el-form-item {
+    margin-bottom: 2px!important;
+  }
+  .el-row {
+    margin-top: 5px!important;
+  }
+  .hrClass {
+    padding: 0px;
+    margin-top: 15px!important;
+    margin-bottom: 15px!important;
+    color: #987cb9;
+    size: 1;
+  }
+  .buttonCls {
+    display: block;
+    float: right;
+    padding-top: 10px;
+  }
+  .selectA {
+    width: 100%;
+  }
+}
+
+.confirmClass [name=flightNo],.confirmClass [name=carrier] {
+  background: #FFA500!important;
+  color: black!important;
+}
+</style>

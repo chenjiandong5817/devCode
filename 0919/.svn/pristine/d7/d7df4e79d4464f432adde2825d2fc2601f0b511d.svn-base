@@ -1,0 +1,34 @@
+<template>
+  <div>当前仅显示格式： 12：01</div>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  export default {
+    props: {
+      value: Object
+    },
+    data () {
+      return {
+        conf: null
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Clock',
+          typeLabel: '时钟'
+        }
+      } else {
+        this.conf = this.value
+      }
+    }
+  }
+</script>

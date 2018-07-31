@@ -1,0 +1,96 @@
+<!-- 详细地址自动补全 -->
+<!-- 就是右边的详细地址 -->
+<template>
+  <div class="searchHistory">
+    <scroll class="wrapper" v-bind:data="searchHistory">
+        <ul class="matchlist">
+            <li v-for="(item ,index) in searchHistory" class="list-item" @click="switch_state({name:'location',val:item});resetLocation();back_home()">
+              <p>{{item.name}}</p>
+              <p class="subAddress">{{item.district+item.address}}</p></li>
+        </ul>
+    </scroll>
+  </div>
+</template>
+<script>
+import { mapState, mapActions } from 'vuex'
+import api from '@/store/index/api'
+const scroll = () => import('@/components/scroll')
+export default {
+  data () {
+    return {
+      searchHistory: api.getLocalStorage('searchHistory') ? api.getLocalStorage('searchHistory', 'object') : []
+    }
+  },
+  computed: {
+    ...mapState([
+      'location'
+    ])
+  },
+  methods: {
+    ...mapActions({
+      'switch_state': 'switch_location',
+      'resetLocation': 'resetLocation'
+    }),
+    back_home () {
+      this.$router.go(-1)
+    }
+  },
+  components: {
+    scroll
+  }
+}
+</script>
+<style lang="less" scoped>
+.searchHistory {
+  .wrapper {
+    max-height: 500px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    ul.matchlist {
+      position: relative;
+      display: block;
+      background-color: #fff;
+      overflow: hidden;
+      li.list-item {
+        display: flex;
+        flex-direction:column;
+        justify-content:center;
+        position: relative;
+        height: 50px;
+        line-height: 1.5;
+        //line-height: 50px;
+        padding: 0 16px;
+        font-size: 14px;
+        color: #666;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        &:active {
+          background: rgba(0, 0, 0, 0.04)
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 0;
+          border-bottom: 1px solid #eee;
+          transform: scaleY(.5)
+        }
+        p{
+          font-size: 14px;
+          color: #4b4e51;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+          &.subAddress{
+            font-size: 12px;
+            color: #a8abaf;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

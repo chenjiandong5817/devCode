@@ -1,0 +1,671 @@
+.header {
+    line-height: 50px;
+
+    background-color: #fff;
+}
+
+.header .img {
+    height: 20px;
+    padding: 0 20px;
+
+    border-right: 1px solid #eee;
+}
+
+.header .title {
+    font-size: 18px;
+
+    color: #3e88f5;
+}
+
+.tips {
+    font-size: 20px;
+    /*line-height: 50px;*/
+    margin-top: 60px;
+    margin-bottom: 40px;
+
+    color: #333;
+}
+
+.info-container {
+    /*width: 95%;*/
+    /*margin: 0 auto;*/
+
+    margin-bottom: 15px;
+
+    background-color: #fff;
+}
+
+.info-container .setoutTime {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 50px;
+
+    margin-bottom: 0;
+
+    color: #6b7886;
+    border-bottom: 1px solid #e4e7ea;
+    text-decoration: none;
+    width: 100%;
+}
+
+.setoutTime .img {
+    width: 15px;
+    height: 15px;
+    margin-right: 3px;
+    margin-bottom: 0px;
+}
+
+#timeshow {
+    font-size: 14px;
+}
+
+.info-container .li {
+    margin: 0 10px;
+    line-height: 50px;
+}
+
+.info-container .input {
+    font-size: 16px;
+
+    width: 90%;
+    height: 50px;
+
+    color: #4f5a67;
+    border: none;
+    border-radius: 0;
+}
+
+.info-container .qidian-input {
+    border-bottom: 1px solid #eee !important;
+}
+
+.addr-inputs .img {
+    margin-right: 10px;
+    width: 10px;
+}
+
+.info-container .takeman {
+    margin: 0;
+    padding-top: 5px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.takeman .p {
+    font-size: 14px;
+    line-height: 35px;
+
+    margin-bottom: 0;
+    cursor: pointer;
+
+    color: #6b7886;
+}
+
+.takeman .p img {
+    height: 14px;
+    margin-bottom: 3px;
+    margin-right: 5px;
+}
+
+.takeman .p:first-child {
+    border-right: 1px solid #e4e7ea;
+}
+
+.takeman .cartype {
+    cursor: pointer;
+    text-align: center;
+}
+
+.takeman .cartype-selected {
+    color: #00b5e6;
+}
+
+.takeman .cartype img {
+    width: 60%;
+}
+
+.takeman .cartype p {
+    font-size: 14px;
+}
+
+.costBox .cost {
+    font-size: 14px;
+    margin-top: 0px;
+    color: #a8abaf;
+}
+
+.costBox .tips {
+    font-size: 16px;
+    color: #00b5e6;
+    margin-bottom: 0px;
+}
+
+.costBox .cost:last-child {
+    padding-bottom: 5px;
+}
+
+.costBox .sub {
+    font-size: 16px;
+
+    margin-top: 5px;
+    padding-bottom: 15px;
+
+    color: #9ea7b1;
+}
+
+.costBox .money {
+    font-size: 28px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.btn-call {
+    font-size: 18px;
+    line-height: 50px;
+
+    display: block;
+
+    width: 95%;
+    height: 50px;
+    margin: 10px auto;
+
+    text-align: center;
+    text-decoration: none;
+
+    color: #fff;
+    border-radius: 4px;
+}
+
+.btn-call:link, .btn-call:visited, .btn-call:hover, .btn-call:active {
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-call-disabled {
+    background-color: #d0d5d9;
+}
+
+.btn-call-abled {
+    background-color: #00b5e6;
+}
+
+.btn-call-disabled {
+    background-color: #d0d5d9;
+}
+
+.header-tabs {
+    height: 50px;
+    line-height: 50px;
+    background-color: #fff;
+    margin-bottom: 15px;
+}
+
+.header-tabs .airport {
+    font-size: 18px;
+    color: #a8abaf;
+    line-height: 48px;
+    width: 80%;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.header-tabs .dropOff {
+    padding: 0px 26%;
+    text-align: center;
+}
+
+.header-tabs .airport-selected {
+    font-size: 18px;
+    color: #00b5e6;
+    border-bottom: 2px solid #00b5e6;
+}
+
+.header-tabs .toudengcang {
+    width: 50%;
+    height: auto;
+    position: absolute;
+    left: 47%;
+    top: 0px;
+}
+
+.pay-types div {
+    padding: 10px 5px;
+}
+
+.pay-types .pay-img {
+    width: 16px;
+    margin-bottom: 3px;
+}
+
+.pay-types .ptype {
+    padding-left: 5px;
+    padding-right: 0px;
+    cursor: pointer;
+}
+
+.pay-types .ptype .pay-img {
+    margin-left: 10px;
+}
+
+.pay-types .dark {
+    color: #55585a;
+    font-size: 16px;
+}
+
+.pay-types .light {
+    color: #44c8ec;
+    font-size: 16px;
+}
+
+.pay-types .pay-tips {
+    color: #c5c7ca;
+    font-size: 14px;
+    margin-bottom: 0px;
+}
+
+.pay-types .icon-go {
+    position: absolute;
+    top: 23px;
+    right: 10px;
+}
+
+/************起始点搜索样式***********/
+.searchBox {
+    line-height: 50px;
+
+    height: 50px;
+    margin: 0px;
+
+    background-color: #fff;
+}
+
+#tipinput {
+    width: 60%;
+    height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+
+    border: none;
+}
+
+.searchBox .down {
+    padding-left: 10px;
+
+    border-right: 1px solid #eee;
+}
+
+.searchBox .qidian {
+    height: 5px;
+    padding: 0 10px;
+}
+
+.no-result {
+    width: 60%;
+    margin: auto;
+    color: #6b7886;
+    font-size: 16px;
+    margin-top: 100px;
+}
+
+.no-result p {
+    margin-top: 10px;
+}
+
+.no-result img {
+    width: 100%;
+}
+
+.search-city {
+    padding: 0 10px;
+    border: none;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+}
+
+.inputAddressBox {
+    position: relative;
+    padding: 0px;
+}
+
+.showCityBox, .inputCityBox {
+    padding: 0px;
+    text-align: center;
+}
+
+#input_delete {
+    position: absolute;
+    width: 18px;
+    right: 30%;
+    top: 15px;
+    cursor: pointer;
+}
+
+/****************************VIP通道值机**************************/
+.vipAndCar {
+    background-color: #f3f4f6;
+}
+
+.vip-passageway {
+    height: 60px;
+    line-height: 60px;
+    color: #4b4d51;
+    background-color: #fff;
+    margin-bottom: 15px;
+}
+
+.vipAndCar .check-border {
+    border: 1px solid #00b5e6;
+}
+
+.vip-passageway .tips {
+    color: #4b4d51;
+    font-size: 14px;
+    margin-left: 45px;
+}
+
+.vip-passageway .help {
+    width: 14px;
+}
+
+.vip-passageway .weixuanzhong {
+    width: 44px;
+    position: absolute;
+}
+
+.vip-passageway .num-input {
+    line-height: 35px;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    margin: 0 5px;
+    border: 1px solid #e5e5e5;
+    background-color: #fff;
+    box-shadow: none;
+    color: #4b4d51;
+}
+
+.vip-passageway .num-input:disabled {
+    color: #4b4d51;
+    opacity: 1;
+    -webkit-text-fill-color: #4b4d51;
+}
+
+.vip-passageway .unit {
+    margin: 0px 10px;
+}
+
+.vip-passageway .opt-disable {
+    color: #dde1e6;
+}
+
+.vip-passageway .opt-minus, .vip-passageway .opt-plus {
+    width: 15px;
+    font-size: 16px;
+    display: inline-block;
+    text-align: center;
+}
+
+.layer-vip-passage-tip {
+    top: 50% !important;
+    margin-top: -140px !important;
+    border-radius: 20px !important;
+}
+
+.vip-passageway-tip {
+    /*width: 300px;*/
+}
+
+.vip-passageway-tip p {
+    margin-bottom: 0px;
+
+    padding: 0 10px;
+}
+
+.vip-passageway-tip .tip-1 {
+    color: #4b4d51;
+    font-size: 18px;
+    padding: 15px 30px 5px;
+}
+
+.vip-passageway-tip .tip-2 {
+    color: #9098A3;
+    opacity: 5;
+    font-size: 16px;
+    /*line-height: 20px;*/
+    margin-bottom: 20px;
+    padding: 0 30px;
+}
+
+.layui-layer .btn-ok {
+    color: #00b5e6 !important;
+    font-size: 16px;
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    line-height: 45px;
+    height: 45px;
+    border-bottom-right-radius: 10px;
+}
+
+/****************************New Style*************************/
+
+.select-p {
+    display: inline-block;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 0px;
+    width: 90%;
+    color: #c5c7ca;
+    cursor: pointer;
+}
+
+.select-p:active {
+    background-color: #e5e5e5;
+}
+
+.has-postion {
+    color: #4b4e51;
+}
+
+.start-p {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.searchResultList {
+    margin-top: 50px;
+}
+
+/**********************fixed login dailog**********************/
+.layer-user-login .layui-layer-title {
+    height: 55px;
+    line-height: 55px;
+    padding: 0;
+    margin: 10px auto;
+    text-align: center;
+    padding-right: 0px !important;
+}
+
+/**************重置高德地图搜索提示结果框**************/
+.amap-sug-result {
+    left: 0 !important;
+    min-width: 100% !important;
+}
+
+.auto-item {
+    border-bottom: 1px solid #eee;
+    margin: 0 10px;
+}
+
+.auto-item-span {
+    display: block;
+    padding-left: 0px;
+    margin-top: 5px;
+}
+
+/*************页面适配**************/
+
+@media screen and (min-width: 320px) {
+    /*当屏幕尺寸小于320px时，应用下面的CSS样式*/
+    #tipinput {
+        width: 72%;
+    }
+}
+
+@media screen and (min-width: 375px) {
+    /*当屏幕尺寸小于375px时，应用下面的CSS样式*/
+    #tipinput {
+        width: 80%;
+    }
+}
+
+@media screen and (min-width: 414px) {
+    /*当屏幕尺寸小于414px时，应用下面的CSS样式*/
+    #tipinput {
+        width: 80%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    /*当屏幕尺寸小于768px时，应用下面的CSS样式*/
+    #tipinput {
+        width: 80%;
+    }
+
+    .header-tabs .toudengcang {
+        width: 25%;
+        left: 44%;
+    }
+}
+
+/* 增加头部tab*/
+.m-headimg{
+    position: relative;
+    height: 40px;
+    width: 90%;
+    margin: 10px auto;
+}
+.headimg-img{
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    overflow: hidden;
+    border: 1px solid #b9b9b9;
+    border-radius: 20px;
+}
+.headimg-img>img{
+    width: 100%;
+    height: 100%;
+}
+
+/*侧边道行*/
+.nav_mask{
+    display: none;
+    position: fixed;
+    z-index: 33;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+}
+.l-left-nav{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 326;
+    background-color: #fff;
+    right: 30%;
+}
+.l-left-nav .user-info{
+    text-align: center;
+    margin: 25px 0;
+}
+.user-info>div{
+    font-family: PingFang-SC;
+    text-align: center;
+    color: #4f5a67;
+    margin: 5px 0;
+}
+.user-info>div.user-face{
+    width: 100px;
+    height: 100px;
+    border-radius: 70px;
+    overflow: hidden;
+    margin: 0 auto;
+    /*padding-top: 36px;*/
+    background: #e2e1e1;
+}
+.user-face>img{
+    display: inline-block;
+    vertical-align: middle;
+    /*width: 50px;*/
+    /*height: 50px;*/
+}
+.user-face>span{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.user-name{
+    font-size: 24px;
+}
+.user-mobile{
+    font-size: 16px;
+}
+.Rectangle-16-Copy-6 {
+    width: 90%;
+    margin: 0 auto;
+    height: 1px;
+    box-shadow: 0 -1px 0 0 #e4e7ea;
+}
+
+.nav-list{
+    margin-top: 10px;
+}
+.nav-list>a{
+    display: block;
+    font-family: PingFang-SC;
+    font-size: 18px;
+    color: #4f5a67;
+}
+.nav-list>a:active{
+    text-decoration: none;
+}
+.nav-list>a:before{
+    content: "";
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    margin: 10px 20px;
+}
+.nav-list>a.trip:before{
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAkBAMAAAAeMPXsAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAeUExURUxpcZ+osp+osaGps5+osqCrtKCps5+osqqut56nsUYt+joAAAAJdFJOUwCwfzPPJEfqDziyQhYAAACsSURBVCjP1ZEtD8IwEIZfNjbPBEkdYGAWh8Mg6mrw4JhE1qHwsDJy/5Z+LpQyPI9oL0+uTe49QFNyMpwFAg052t5wb1QQBXV7Q0PhWUlbe4/pMGjyxGDuqrzCd9aTmBUkxdzwIeiZGBowJ+a+uAajsLGmsyO/mxbsbwyJ2pp7IYNRfmz5I43Y8CTVOkl+ZM6FY6nrHUzTw+8u048uME2zsE6mk9Ucp/2Cs0rgBQuJ7EjndGsRAAAAAElFTkSuQmCC);
+}
+.nav-list>a.exit:before{
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAdCAYAAADPa766AAAAAXNSR0IArs4c6QAAA4NJREFUSA3NV0toU1EQnblJba2IqAsL1k1RcKG4qeJKLOJGklSk2tZfjN+NWigKbsQPKCJUEYuKH1IF+wkKJu1GXGTnQhBB0Z1YqYuKYMG21trmjec+uS8vT1/SaG18m3tnznzO/czchO89fjxncmj8EhE1kMgCjDP3MX9GsgfB+eWtwczQeBsIHJy57K5MPxd+EBxEgUSDCyrNFByUEC0sTfZsVs1BZcXSzooiwsTfmBkLyP/ZNszj+a1y0akTYRoJsFpNwjsLkLGI1PZAUNYQfHLT+UtTJsJEQxWqfCDWHO5EuBa/kCB5JNYU6g5UlvVrHz87r14TwQoKfyK0ZNT6moqn0xWxpshVYj7r9WKlTgO7pm0mvkwmtY/Xxke2FDO98wF/USPwOhn80pNOp4N7myKniNV1Y6RYtccaw2cSCQnQx+EuEVlvsEIj7t5b+AcaQeZVIWMXHukfHLmNRBxrDB3GUfQQcVe0MXRU24xmUjeBbXbZ558yvQkyb8UxEulVjFi914rqsKza9jaFjyUSr2fV1IxJbW3tRLw7eRG7djx/5iyKDbiycuni49rXJqIhvcKOnt6nGNdmTbMzvWtKqf1CnDHaFTVVL3UQLevjev9pdJXBmCRgWRZ2jlYanXvETvbiPkWMLmgmuiTjPX23SDK/JYLt749uCz8z9t6xrq5uErrnbn28O9WPJfoQobtuW4eIreTMgBt0z9HFNiDwQ+yYU2UgP4ZV7dZ2wO4Bm218gOnnY4ORvSOT0i+v8+USsXgZVuCAORORSiBb3DohGTYy5vqCznVknEm+TySzHHja2DhE9IUdtVIHDOAdscJBHM8VZsvZERHltHGs8CQrq9z4AUOPkhbsUpXRuUeLuPV+X1/3jlDIbnr2Ze1MJheNj/ENOPmWHYgkcQy+uDuJmeO4HiFmvZG9o10AwbJotGHTC453pXYRi77ds7yGHvkDquYCSXZH8O5839McuaPtOrpS+xAnGwNtFlVzAlC1J06OCDIZFj4UhPO5KZDQztUI3J4bxb4jNhGL5TKul3NHQDjH1E9A7oCwtClMlvgZzZheaN6UX99/Tcqpmj9KJFSBC7la+6JY0UPyl2y+HH9HhKgMVeHbbfMl9mL/zdHg90jh36Be9tMtaw76PXg73YGLjac5oA/z+WIdp9tec7BbfDyR3CgWl+S/L97oB7Ft9U9+AH4xUMRAfKeYAAAAAElFTkSuQmCC");
+}
+.user-face-icon{
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border: 1px solid #6b7886;
+    border-radius: 20px;
+    margin: 10px;
+}
+.header .user-face-icon .img{
+    /*width: 100%;*/
+    /*height:100%;*/
+    /*padding: 0;*/
+    /*vertical-align: text-bottom;*/
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    vertical-align: top;
+    margin-top: 8px;
+}

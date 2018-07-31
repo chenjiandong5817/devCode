@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ SummerSoft  YueYue-Travel Platform
+  ~ <p>
+  ~ Copyright (c) 2017-2018  SummerSoft Technology (Xiamen) Co.,LTD
+  ~ All rights reserved.
+  ~ <p>
+  ~ This software is the confidential and proprietary information of SummerSoft
+  ~ ("Confidential Information"). You shall not disclose such Confidential
+  ~ Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with SummerSoft.
+  ~ <p>
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysAreaConfigMapper">
+	<select id="selInfo" resultType="sysAreaConfigDto">
+		select
+			*
+		<include refid="sqlForList"/>
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_sys_area_config
+		<where>
+			1 = 1
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="areaUuid != null and '' != areaUuid"> and areaUuid = #{areaUuid} </if>
+			<if test="bannerStatus != null"> and bannerStatus = #{bannerStatus} </if>
+			<if test="bannerTitle != null and '' != bannerTitle"> and bannerTitle = #{bannerTitle} </if>
+			<if test="bannerUrl != null and '' != bannerUrl"> and bannerUrl = #{bannerUrl} </if>
+			<if test="flightStatus != null"> and flightStatus = #{flightStatus} </if>
+			<if test="flightVipStatus != null"> and flightVipStatus = #{flightVipStatus} </if>
+			<if test="flightVipName != null and '' != flightVipName"> and flightVipName = #{flightVipName} </if>
+			<if test="flightVipExplain != null and '' != flightVipExplain"> and flightVipExplain = #{flightVipExplain} </if>
+			<if test="walkStatus != null"> and walkStatus = #{walkStatus} </if>
+			<if test="rentStatus != null"> and rentStatus = #{rentStatus} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="sysAreaConfigDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+</mapper>

@@ -1,0 +1,215 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <el-button type="default" @click="Tools.addDataSource(conf)" plain v-if="!Tools.haveDataSource(conf)">添加数据源</el-button>
+      <el-button type="danger" @click="Tools.removeDataSource(conf)" plain v-else>删除数据源</el-button>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">隐藏标题(hiddenHeader)
+      <el-radio-group v-model="conf.hiddenHeader">
+        <el-radio :label="true">是</el-radio>
+        <el-radio :label="false">否</el-radio>
+      </el-radio-group>
+      </span>
+    </el-form-item>
+    <data-source-form-item v-model="conf"></data-source-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <fieldset class="editor-fieldset">
+            <legend>默认标题样式(defaultHeaderStyle)</legend>
+            <div>
+              <el-form-item>
+                <el-col :span="9">
+                  <span class="editor-label">字体大小(fontSize)</span>
+                  <el-input type="number" :value="conf.bodyStyle.defaultHeaderStyle.fontSize" @input="val => Tools.inputStr2Number(conf.bodyStyle.defaultHeaderStyle, 'fontSize', val)"></el-input>
+                </el-col>
+                <el-col :span="13" :offset="1">
+                  <color-picker v-model="conf.bodyStyle.defaultHeaderStyle.color" label="字体颜色(fontColor)"></color-picker>
+                </el-col>
+              </el-form-item>
+              <el-form-item>
+                <el-col :span="9">
+                  <selector v-model="conf.bodyStyle.defaultHeaderStyle.textAlign" :options="Tools.alignOptions()" filterable label="对齐方式(textAlign)" placeholder="选择对齐方式"></selector>
+                </el-col>
+                <el-col :span="13" :offset="1">
+                  <!-- 修改height的同时 修改lineHeight -->
+                  <span class="editor-label">高度(height)</span>
+                  <el-input type="number" :value="conf.bodyStyle.defaultHeaderStyle.height" @input="val => Tools.changeValAndLink2Number(conf.bodyStyle.defaultHeaderStyle, Array.of('height', 'lineHeight'), val)"></el-input>
+                </el-col>
+              </el-form-item>
+              <el-form-item>
+                <el-col :span="9">
+                  <color-picker v-model="conf.bodyStyle.defaultHeaderStyle.backgroundColor" label="背景颜色(backgroundColor)" placeholder="背景颜色"></color-picker>
+                </el-col>
+              </el-form-item>
+              <el-form-item>
+                <el-col :span="7">
+                  <span class="editor-label">边框大小(borderWidth)</span>
+                  <el-input type="number" :value="conf.bodyStyle.defaultHeaderStyle.borderWidth" @input="val => Tools.inputStr2Number(conf.bodyStyle.defaultHeaderStyle, 'borderWidth', val)"></el-input>
+                </el-col>
+                <el-col :span="7" :offset="1">
+                  <selector v-model="conf.bodyStyle.defaultHeaderStyle.borderStyle" :options="Tools.borderStyleOptions()" filterable label="边框样式(borderStyle)" placeholder="选择边框样式"></selector>
+                </el-col>
+                <el-col :span="8" :offset="1">
+                  <color-picker v-model="conf.bodyStyle.defaultHeaderStyle.borderColor" label="边框颜色(borderColor)" placeholder="边框颜色"></color-picker>
+                </el-col>
+              </el-form-item>
+               <el-form-item>
+                <el-col :span="7">
+                  <span class="editor-label">底部边框</span>
+                  <el-input type="number" :value="conf.bodyStyle.defaultHeaderStyle.borderBottomWidth" @input="val => Tools.inputStr2Number(conf.bodyStyle.defaultHeaderStyle, 'borderBottomWidth', val)"></el-input>
+                </el-col>
+                <el-col :span="7" :offset="1">
+                  <br />
+                  <selector v-model="conf.bodyStyle.defaultHeaderStyle.borderBottomStyle" :options="Tools.borderStyleOptions()" filterable label=" " placeholder="选择边框样式"></selector>
+                </el-col>
+                <el-col :span="8" :offset="1">
+                  <br />
+                  <color-picker v-model="conf.bodyStyle.defaultHeaderStyle.borderBottomColor" placeholder="边框颜色"></color-picker>
+                </el-col>
+              </el-form-item>
+            </div>
+          </fieldset>
+          <fieldset class="editor-fieldset">
+            <legend>默认行样式(defaultRowStyle)</legend>
+            <div>
+              <el-form-item>
+                <span class="editor-label">
+                  条纹(rowStripe)
+                  <el-switch v-model="switchOptions.rowStripe.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+                </span>
+                <div v-if="switchOptions.rowStripe.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                  <el-form-item>
+                    <el-col :span="11">
+                      <el-col :span="15">
+                        <el-input v-model="switchOptions.rowStripe.row1" @change="val => setRowStripe(0, val)"></el-input>
+                      </el-col>
+                      <el-col :span="8" style="margin-left: 4px;">
+                        <el-color-picker v-model="switchOptions.rowStripe.row1" @change="val => setRowStripe(0, val)"></el-color-picker>
+                      </el-col>
+                    </el-col>
+                    <el-col :span="11" :offset="1">
+                      <el-col :span="15">
+                        <el-input v-model="switchOptions.rowStripe.row2" @change="val => setRowStripe(1, val)"></el-input>
+                      </el-col>
+                      <el-col :span="8" style="margin-left: 4px;">
+                        <el-color-picker v-model="switchOptions.rowStripe.row2" @change="val => setRowStripe(1, val)"></el-color-picker>
+                      </el-col>
+                    </el-col>
+                  </el-form-item>
+                </div>
+              </el-form-item>
+              <el-form-item>
+                <el-col :span="9">
+                  <span class="editor-label">字体大小(fontSize)</span>
+                  <el-input type="number" :value="conf.bodyStyle.defaultRowStyle.fontSize" @input="val => Tools.inputStr2Number(conf.bodyStyle.defaultRowStyle, 'fontSize', val)"></el-input>
+                </el-col>
+                <el-col :span="13" :offset="1">
+                  <color-picker v-model="conf.bodyStyle.defaultRowStyle.color" label="字体颜色(fontColor)"></color-picker>
+                </el-col>
+              </el-form-item>
+              <el-form-item>
+                <el-col :span="9">
+                  <span class="editor-label">高度(height)</span>
+                  <el-input type="number" :value="conf.bodyStyle.defaultRowStyle.height" @input="val => Tools.changeValAndLink2Number(conf.bodyStyle.defaultRowStyle, Array.of('height', 'lineHeight'), val)"></el-input>
+                </el-col>
+              </el-form-item>
+            </div>
+          </fieldset>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import DataSourceFormItem from './form-items/DataSource'
+  import ColorPicker from './form-items/ColorPicker'
+  import Selector from './form-items/Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      DataSourceFormItem, ColorPicker, Selector
+    },
+    data () {
+      return {
+        conf: {},
+        Tools,
+        switchOptionsHistory: null,
+        switchOptions: {
+          rowStripe: {
+            switch: false,
+            value: [],
+            // 条纹间隔参数
+            row1: '#FFFFFF',
+            row2: '#FFFFFF'
+          }
+        }
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      'switchOptions.rowStripe': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.bodyStyle.defaultRowStyle, 'rowStripe', [val.row1, val.row2])
+          } else {
+            this.$delete(this.conf.bodyStyle.defaultRowStyle, 'rowStripe')
+          }
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Grid',
+          typeLabel: '表格',
+          hiddenHeader: false,
+          bodyStyle: {
+            defaultHeaderStyle: {},
+            defaultRowStyle: {}
+          },
+          children: []
+        }
+      } else {
+        this.conf = this.value
+        this.initSwitchOptions()
+      }
+    },
+    methods: {
+      setRowStripe (index, value) {
+        if (index === 0) {
+          if (this.conf.bodyStyle.defaultRowStyle.rowStripe.length > 0) {
+            this.conf.bodyStyle.defaultRowStyle.rowStripe[0] = value
+          } else {
+            this.conf.bodyStyle.defaultRowStyle.rowStripe.push(value)
+          }
+        } else if (index === 1) {
+          if (this.conf.bodyStyle.defaultRowStyle.rowStripe.length === 0) {
+            this.conf.bodyStyle.defaultRowStyle.rowStripe.push('#FFFFFF')
+          }
+          this.conf.bodyStyle.defaultRowStyle.rowStripe.push(value)
+        }
+      },
+      // 修改switch状态
+      initSwitchOptions () {
+        // rowStripe状态
+        if (this.conf.bodyStyle.defaultRowStyle.rowStripe && this.conf.bodyStyle.defaultRowStyle.rowStripe.length > 0) {
+          this.$set(this.switchOptions.rowStripe, 'switch', true)
+          this.$set(this.switchOptions.rowStripe, 'row1', this.conf.bodyStyle.defaultRowStyle.rowStripe[0])
+          this.$set(this.switchOptions.rowStripe, 'row2', this.conf.bodyStyle.defaultRowStyle.rowStripe[1] || '#FFFFFF')
+        }
+      }
+    }
+  }
+</script>

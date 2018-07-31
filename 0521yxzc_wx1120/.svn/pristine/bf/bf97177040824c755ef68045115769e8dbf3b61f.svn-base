@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_order.mappers.OrderConfigMapper">
+    <!--添加-->
+    <insert id="add" parameterType="orderConfigDto">
+		insert into ap_order_config
+			(
+				uuid,
+				orderType,
+				conflictTimeBefore,
+				conflictTimeAfter,
+				autonomyCancelFee,
+				adminCancelFee,
+				driverAssignFee,
+				createTime
+			)
+		values
+			(
+				#{uuid},
+				#{orderType},
+				#{conflictTimeBefore},
+				#{conflictTimeAfter},
+				#{autonomyCancelFee},
+				#{adminCancelFee},
+				#{driverAssignFee},
+				#{createTime}
+			)	
+	</insert>
+
+    <!--编辑-->
+    <update id="edit" parameterType="orderConfigDto">
+        update ap_order_config
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="orderType != null and '' != orderType">orderType = #{orderType},</if>
+            <if test="conflictTimeBefore != null and '' != conflictTimeBefore">conflictTimeBefore =
+                #{conflictTimeBefore},
+            </if>
+            <if test="conflictTimeAfter != null and '' != conflictTimeAfter">conflictTimeAfter = #{conflictTimeAfter},
+            </if>
+            <if test="autonomyCancelFee != null and '' != autonomyCancelFee">autonomyCancelFee = #{autonomyCancelFee},
+            </if>
+            <if test="adminCancelFee != null and '' != adminCancelFee">adminCancelFee = #{adminCancelFee},</if>
+            <if test="driverAssignFee != null and '' != driverAssignFee">driverAssignFee = #{driverAssignFee},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+
+            <if test="carLevelUp != null and '' != carLevelUp">carLevelUp = #{carLevelUp},</if>
+            <if test="forwardToSq != null and '' != forwardToSq">forwardToSq = #{forwardToSq},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <!--删除-->
+    <delete id="del" parameterType="orderConfigDto">
+		delete from
+			ap_order_config
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <!--根据UUID查询-->
+    <select id="selInfo" resultType="orderConfigDto">
+		select
+			*
+		from
+			ap_order_config
+		where
+			uuid = #{uuid}
+	</select>
+
+    <!--根据订单类型查询-->
+    <select id="selInfoByOrderType" parameterType="int" resultType="orderConfigDto">
+        select * from(select
+        *
+        from
+        ap_order_config
+        where
+        orderType = #{orderType})
+        where rownum &lt;2
+    </select>
+
+    <!--通用列表查询SQL-->
+    <sql id="sqlForList">
+        from
+        ap_order_config
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="orderType != null and '' != orderType">and orderType = #{orderType}</if>
+            <if test="conflictTimeBefore != null and '' != conflictTimeBefore">and conflictTimeBefore =
+                #{conflictTimeBefore}
+            </if>
+            <if test="conflictTimeAfter != null and '' != conflictTimeAfter">and conflictTimeAfter =
+                #{conflictTimeAfter}
+            </if>
+            <if test="autonomyCancelFee != null and '' != autonomyCancelFee">and autonomyCancelFee =
+                #{autonomyCancelFee}
+            </if>
+            <if test="adminCancelFee != null and '' != adminCancelFee">and adminCancelFee = #{adminCancelFee}</if>
+            <if test="driverAssignFee != null and '' != driverAssignFee">and driverAssignFee = #{driverAssignFee}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+        </where>
+    </sql>
+
+    <!--统计-->
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--查询列表-->
+    <select id="list" resultType="orderConfigDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--分页查询列表-->
+    <select id="queryPage" resultType="orderConfigDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+</mapper>

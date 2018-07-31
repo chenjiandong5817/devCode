@@ -1,0 +1,1231 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section id="newAdd">
+    <div class="new_add">
+      <el-tabs v-model="operateAdd" @tab-click="handleClick(operateAdd)">
+        <el-tab-pane label="第一广告位" name="firstAdd">
+          <div class="first_content" v-if="firstAdd">
+              <!-- 第一行 组别切换 -->
+	          <el-row class="first_group">
+	            <el-col :span="18" style="margin-left: 60px;">
+	              <el-tag
+	                v-for="tag in webTags"
+	                :key="tag.name"
+	                :closable="closable"
+	                :type="tag.type"
+	                @close="showDelDia(tag)">
+	                <div class="group_name" @click="clickTag(tag)">
+	                  {{tag.name}}
+	                </div>
+	              </el-tag>
+              </el-col>
+              <el-col :span="2">
+	              <div class="add_button" @click="addGroup">
+	                <i class="el-icon-plus add_icon"></i>
+	              </div>
+              </el-col>
+              <el-col :span="2">
+	              <div class="edit_button" @click="editGroup">
+	                <div class="edit_name">
+	                  {{editName}}
+	                </div>
+	              </div>
+	            </el-col>
+	          </el-row>
+	          <!-- 第二行 关联设备 -->
+	          <el-row class="second_device">
+	            <el-col :span="3">
+	               <div class="device_name">关联设备：</div>
+	            </el-col>
+	            <el-col :span="2">
+	                <div class="device_num">{{deviceNum}}台</div>
+	            </el-col>
+	            <el-col :span="3">
+	              <div class="device_oprate">
+	                <el-button @click="setDevice">设置</el-button>
+	              </div>
+	            </el-col>
+	          </el-row>
+	          <!-- 第三行文字提示 -->
+	          <el-row>
+	            <el-col>
+	               <div class="imgName">广告图片：</div>
+	            </el-col>
+	          </el-row>
+	          <!-- 第四行图片操作 -->
+	          <el-row>
+	             <el-col>
+	                <div class="imgOperate_third">
+                    <el-upload
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        list-type="picture-card"
+                        :on-preview="handlePictureCardPreview"
+                        :before-upload="beforeUpload"
+                        :on-remove="handleRemove"
+                        :file-list="fileList">
+                        <i class="el-icon-plus"></i>
+                      </el-upload>
+                      <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                      </el-dialog>
+                  </div>
+	             </el-col>
+	          </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="第二广告位" name="secondAdd">
+          <div class="second_content" v-if="secondAdd">
+	          <!-- 第一行 组别切换 -->
+	          <el-row class="first_group">
+	            <el-col :span="18" style="margin-left: 60px;">
+	              <el-tag
+	                v-for="tag in webTags"
+	                :key="tag.name"
+	                :closable="closable"
+	                :type="tag.type"
+	                @close="showDelDia(tag)">
+	                <div class="group_name" @click="clickTag(tag)">
+	                  {{tag.name}}
+	                </div>
+	              </el-tag>
+              </el-col>
+              <el-col :span="2">
+	              <div class="add_button" @click="addGroup">
+	                <i class="el-icon-plus add_icon"></i>
+	              </div>
+              </el-col>
+              <el-col :span="2">
+	              <div class="edit_button" @click="editGroup">
+	                <div class="edit_name">
+	                  {{editName}}
+	                </div>
+	              </div>
+	            </el-col>
+	          </el-row>
+	          <!-- 第二行 关联设备 -->
+	          <el-row class="second_device">
+	            <el-col :span="3">
+	               <div class="device_name">关联设备：</div>
+	            </el-col>
+	            <el-col :span="2">
+	                <div class="device_num">{{deviceNum}}台</div>
+	            </el-col>
+	            <el-col :span="3">
+	              <div class="device_oprate">
+	                <el-button @click="setDevice">设置</el-button>
+	              </div>
+	            </el-col>
+	          </el-row>
+              <!-- 第三行文字提示 -->
+	          <el-row>
+	            <el-col>
+	               <div class="imgName">广告图片：</div>
+	            </el-col>
+	          </el-row>
+              <!-- 第四行图片操作 -->
+	          <el-row>
+	             <el-col>
+	                <div class="imgOperate_third">
+                    <el-upload
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        list-type="picture-card"
+                        :on-preview="handlePictureCardPreview"
+                        :before-upload="beforeUpload"
+                        :on-remove="handleRemove"
+                        :file-list="fileList">
+                        <i class="el-icon-plus"></i>
+                      </el-upload>
+                      <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                      </el-dialog>
+                  </div>
+	             </el-col>
+	          </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="第三广告位" name="thirdAdd">
+          <div class="third_content" v-if="thirdAdd">
+            <!-- 第一行 组别切换 -->
+            <el-row class="first_group_third">
+              <el-col :span="18" style="margin-left: 60px;">
+                <el-tag
+                  v-for="tag in webTags"
+                  :key="tag.name"
+                  :closable="closable"
+                  :type="tag.type"
+                  @close="showDelDia(tag)">
+                  <div class="group_name" @click="clickTag(tag)">
+                    {{tag.name}}
+                  </div>
+                </el-tag>
+              </el-col>
+              <el-col :span="2">
+                <div class="add_button" @click="addGroup">
+                  <i class="el-icon-plus add_icon"></i>
+                </div>
+              </el-col>
+              <el-col :span="2">
+                <div class="edit_button" @click="editGroup">
+                  <div class="edit_name">
+                    {{editName}}
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+            <!-- 第二行 关联设备 -->
+            <el-row class="second_device_third">
+              <el-col :span="3">
+                 <div class="device_name">关联设备：</div>
+              </el-col>
+              <el-col :span="2">
+                  <div class="device_num">{{deviceNum}}台</div>
+              </el-col>
+              <el-col :span="3">
+                <div class="device_oprate">
+                  <el-button @click="setDevice">设置</el-button>
+                </div>
+              </el-col>
+            </el-row>
+            <!-- 第三行支付宝 -->
+            <el-row class="pay_class_third">
+              <el-col :span="3" class="pay_name_width">
+                <div class="device_name_third">
+                  支付宝广告语：
+                </div>
+              </el-col>
+              <el-col :span="5">
+                  <el-input v-model="aliPayParam" placeholder="请输入变更的广告语" @change="inputChange" size="large"></el-input>
+              </el-col>
+              <el-col :span="2" style="margin-left: 15px">
+                  <el-button size="large" type="primary" @click="editAdContent">提交更改</el-button>
+              </el-col>
+            </el-row>
+            <!-- 第四行微信 -->
+            <el-row class="pay_class_third">
+              <el-col :span="3" class="pay_name_width">
+                <div class="device_name_third">
+                  微信广告语：
+                </div>
+              </el-col>
+              <el-col :span="5">
+                  <el-input v-model="weChatParam" placeholder="请输入变更的广告语" @change="inputChange" size="large"></el-input>
+              </el-col>
+              <el-col :span="2" style="margin-left: 15px">
+                  <el-button size="large" type="primary" @click="editAdContent">提交更改</el-button>
+              </el-col>
+            </el-row>
+            <!-- 第五行银联 -->
+            <el-row class="pay_class_third">
+              <el-col :span="3" class="pay_name_width">
+                <div class="device_name_third">
+                  银联广告语：
+                </div>
+              </el-col>
+              <el-col :span="5">
+                 <el-input v-model="unionPayParam" placeholder="请输入变更的广告语" @change="inputChange" size="large"></el-input>
+              </el-col>
+              <el-col :span="2" style="margin-left: 15px">
+                 <el-button size="large" type="primary" @click="editAdContent">提交更改</el-button>
+              </el-col>
+            </el-row>
+            <!-- 第六行文字提示 -->
+            <el-row>
+              <el-col>
+                 <div class="imgName_third">广告图片：</div>
+              </el-col>
+            </el-row>
+            <!-- 第七行图片操作 -->
+            <el-row>
+               <el-col>
+                  <div class="imgOperate">
+                    <el-upload
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        list-type="picture-card"
+                        :on-preview="handlePictureCardPreview"
+                        :before-upload="beforeUpload"
+                        :on-remove="handleRemove"
+                        :file-list="fileList">
+                        <i class="el-icon-plus"></i>
+                      </el-upload>
+                      <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                      </el-dialog>
+                  </div>
+               </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+      </el-tabs> 
+    </div>
+  <!-- 弹出删除界面 -->
+  <div class="del_dialog">
+    <el-dialog
+      title="提示"
+      :visible.sync="isShowDel"
+      width="30%"
+      :before-close="handleDelClose">
+      <div style="display: inline-block">
+        <div class="el-message-box__status el-icon-warning"></div>
+      </div>
+      <div style="display: inline-block;margin-left: 50px;margin-top: 20px;">
+        <div>确认删除该组数据吗！</div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleDelClose">取 消</el-button>
+        <el-button type="primary" @click="confirmDel">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+  <!-- 设置该广告位的这个组别下的关联设备 -->
+  <div class="device_dialog">
+    <el-dialog title="选择关联设备" :visible.sync="dialogDeviceShow" :before-close="handleDeviceClose">
+      <el-table :data="allDevices" :height="400" ref="deviceTable" row-key="deviceid" @selection-change="selsChangeDevice">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column property="deviceid" label="设备名称" min-width="120"></el-table-column>
+        <el-table-column label="设备类别" min-width="80">
+          <template slot-scope="scope">
+             <el-tag type="success" v-if="scope.row.tag===1">本组已选</el-tag>
+             <el-tag type="danger" v-if="scope.row.tag===2">其他组已选</el-tag>
+             <el-tag type="warning" v-if="scope.row.tag===3">可选</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleDeviceClose">取 消</el-button>
+        <el-button type="primary" @click="confirmDevice">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
+  </section>
+</template>
+
+<script>
+  import API from './../../api'
+  import Util from './../../common/js/util'
+  export default {
+    data () {
+      return {
+        // 该显示哪一个组的变量，默认显示第一组
+        operateAdd: null,
+        // 当点击编辑的时候为true,默认为false
+        closable: false,
+        // 当编辑没有被点击的时候就显示编辑,当被点击的时候显示取消.
+        editName: '编辑',
+        // 关联设备的台数，取数组的长度所得
+        deviceNum: null,
+        // 某个组的全部信息
+        groupAllData: null,
+        // 点到哪一个组别
+        whichTag: null,
+        // 是否展示删除界面
+        isShowDel: false,
+        // 需要删除的值
+        delData: null,
+        // 是否展示设备编辑页面
+        dialogDeviceShow: false,
+        // 图片的URL
+        dialogImageUrl: '',
+        // 是否显示图片的弹出框
+        dialogVisible: false,
+        // 显示广告位哪一个
+        firstAdd: false,
+        secondAdd: false,
+        thirdAdd: false,
+        // 支付宝广告文字
+        aliPayParam: '',
+        // 微信广告文字
+        weChatParam: '',
+        // 银联广告文字
+        unionPayParam: '',
+        // 所有广告的内容
+        allAdContent: null,
+        // 组的类别
+        groupType: null,
+        // 文件列表
+        fileList: [],
+        // 文件列表的缓存
+        streamsGetted: [],
+        // 获得的图片的详细信息
+        imgInfos: [],
+        // 用于缓存的文件列表的信息
+        fileListGetted: [],
+        // 请求次数图片
+        requestImgIndex: null,
+        // 所有的设备
+        allDevices: null,
+        // 该组的已经选中的
+        thisGroupSelectedDevice: null,
+        // 被其他组选中的设备
+        thisOtherGroupSelectedDevice: null,
+        // 在页面上显示打钩的
+        pageShowSelectedDevice: null,
+        // 删除设备的数据
+        delDeviceData: [],
+        // 新增设备的数据
+        addDeviceData: [],
+        webTags: null
+      }
+    },
+    computed: {
+    },
+    components: {
+    },
+    methods: {
+      // 切换组别的函数，默认是第一个组,从value中识别出是哪一个组的
+      clickTag (value) {
+    	  // 首先获取第一广告位的全部数据并且命名
+        for (var i = 0; i < this.webTags.length; i++) {
+          var nameTagFirst = i + 1
+          this.webTags[i]['name'] = '组别' + nameTagFirst
+        }
+        // 把这个组所拥有的信息给保存下来
+        this.groupAllData = value
+        // 识别是哪一个组，然后点击的时候加颜色给识别
+        this.whichTag = null
+        for (var j = 0; j < this.webTags.length; j++) {
+          if (this.webTags[j].id === value.id) {
+            this.whichTag = j
+          }
+        }
+        this.getColor()
+        // 一切换图片就给他清空
+        this.fileList = []
+        // 获取图片，每次更换广告位或者切换组别时执行
+        this.getPicturesList()
+        // 获取这个组有多少设备的数量
+        this.getThisGroupDevicesCount()
+        // 只有第三组能够获得广告位
+        if (this.operateAdd === 'thirdAdd') {
+          // 清空内容
+          this.aliPayParam = ''
+          this.weChatParam = ''
+          this.unionPayParam = ''
+          this.getAllAdContent()
+        }
+      },
+      // 给颜色
+      getColor () {
+        this.$nextTick(() => {
+          var tags = document.getElementsByClassName('el-tag')
+          for (var j = 0; j < tags.length; j++) {
+            tags[j].style.backgroundColor = 'white'
+          }
+          tags[this.whichTag].style.backgroundColor = '#409EFF'
+        })
+      },
+      // 点击编辑按钮，组别可以删除，并且编辑按钮变为取消按钮
+      editGroup () {
+        if (this.editName === '编辑') {
+          this.closable = true
+          this.editName = '取消'
+          // 再次绑定数据为了有颜色
+          this.getColor()
+          return
+        }
+        if (this.editName === '取消') {
+          this.closable = false
+          this.editName = '编辑'
+          // 再次绑定数据为了有颜色
+          this.getColor()
+        }
+      },
+      // 删除一个组确定后的操作
+      showDelDia (value) {
+        this.delData = value
+        this.isShowDel = true
+        this.getColor()
+        // this.clickTag(this.groupAllData)
+      },
+      // 确认删除
+      confirmDel () {
+    	// 寻找下标删除数组
+        API.removeAdGroup().go(this.delData.id).then((data) => {
+          if (data.status === 1) {
+            this.$notify(Util.notifyBody(true, data.message))
+            // 回调获得这个广告位的所有组
+            API.getAdGroup().go(this.groupType).then((data) => {
+              if (data.status === 1) {
+                for (var i = 0; i < data.data.length - 1; i++) {
+                  for (var j = 0; j < data.data.length - i - 1; j++) {
+                    if (parseInt(data.data[j].num) > parseInt(data.data[j + 1].num)) {
+                      var swap = data.data[j]
+                      data.data[j] = data.data[j + 1]
+                      data.data[j + 1] = swap
+                    }
+                  }
+                }
+                this.webTags = data.data
+                // 如果删除的是已经点击的就显示第一个组别，不是的话就删除原来的组别
+                if (this.delData.id === this.groupAllData.id) {
+                  this.clickTag(this.webTags[0])
+                } else {
+                  this.clickTag(this.groupAllData)
+                }
+                this.isShowDel = false
+              } else {
+                this.$notify(Util.notifyBody(false, data.message))
+              }
+            })
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+        if (this.operateAdd === 'thirdAdd') {
+          this.delAdContent()
+        }
+      },
+      // 关闭删除按钮
+      handleDelClose () {
+        this.isShowDel = false
+        this.getColor()
+        // this.clickTag(this.groupAllData)
+      },
+      // 点击新增
+      addGroup () {
+        // 定义该广告位有多少个组，用于上传的参数num
+        var max = null
+        if (this.webTags.length === 0) {
+          max = (1).toString()
+        }
+        if (this.webTags.length === 1) {
+          max = (parseInt(this.webTags[0].num) + 1).toString()
+        }
+        if (this.webTags.length > 1) {
+          max = parseInt(this.webTags[0].num)
+          for (var c = 0; c < this.webTags.length; c++) {
+            if (parseInt(this.webTags[c].num) > max) {
+              max = parseInt(this.webTags[c].num) + 1
+            }
+          }
+          max = (max + 1).toString()
+        }
+        // 上传的参数
+        var param = { id: '', num: max, type: this.groupType }
+        // 调用接口
+        API.addAdGroup().go(param).then((data) => {
+          if (data.status === 1) {
+            // 回调获得这个广告位的所有组
+            API.getAdGroup().go(this.groupType).then((data) => {
+              if (data.status === 1) {
+                for (var i = 0; i < data.data.length - 1; i++) {
+                  for (var j = 0; j < data.data.length - i - 1; j++) {
+                    if (parseInt(data.data[j].num) > parseInt(data.data[j + 1].num)) {
+                      var swap = data.data[j]
+                      data.data[j] = data.data[j + 1]
+                      data.data[j + 1] = swap
+                    }
+                  }
+                }
+                this.webTags = data.data
+                if (this.groupAllData) {
+                  this.clickTag(this.groupAllData)
+                  // 获取到新加的组的id
+                  for (var a = 0; a < this.webTags.length; a++) {
+                    if (this.webTags[a].num === param.num) {
+                      if (this.operateAdd === 'thirdAdd') {
+                        this.addAdContent(this.webTags[a].id)
+                      }
+                    }
+                  }
+                } else {
+                  this.clickTag(this.webTags[0])
+                  if (this.operateAdd === 'thirdAdd') {
+                    this.addAdContent(this.webTags[0].id)
+                  }
+                }
+              } else {
+                this.$notify(Util.notifyBody(false, data.message))
+              }
+            })
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 移除图片
+      handleRemove (file, fileList) {
+        if (file.id) {
+          API.removeNewAdPicture().go(file.id).then((data) => {
+            if (data.status === 1) {
+              this.getPicturesList()
+              this.$notify(Util.notifyBody(true, data.message))
+            } else {
+              this.$notify(Util.notifyBody(false, data.message))
+            }
+          })
+        }
+      },
+      // 放大图片
+      handlePictureCardPreview (file) {
+        this.dialogImageUrl = file.url
+        this.dialogVisible = true
+      },
+      // 上传图片之前的钩子
+      beforeUpload (file) {
+        if (this.fileListGetted.length === 5) {
+          this.$notify(Util.notifyBody(false, '最多只能添加5涨图片！'))
+          return false
+        }
+        var fileNum = null
+        let fd = new FormData()
+        fd.append('groupid', this.groupAllData.id)
+        if (this.fileListGetted.length === 0) {
+          fileNum = 0
+        } else {
+          fileNum = (parseInt(this.fileListGetted[this.fileListGetted.length - 1].pictureNum) + 1).toString()
+        }
+        fd.append('pictureNum', fileNum)
+        fd.append('multipartFile', file)
+        API.uploadNewAdPicture().go(fd).then((data) => {
+          if (data.status === 1) {
+            this.getPicturesList()
+            this.$notify(Util.notifyBody(true, data.message))
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+        return false
+      },
+      // 获得图片列表
+      getPicturesList () {
+        this.getColor()
+        this.streamsGetted = []
+        this.fileListGetted = []
+        this.requestImgIndex = 0
+        API.getNewAdPicture().go(this.groupAllData.id).then((data) => {
+          if (data.status === 1) {
+            this.imgInfos = data.data
+            this.fileListGetted = data.data
+            this.getFileList()
+            // 使用url去请求图片流
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 拼接图片流已经list数据
+      getFileList () {
+        if (this.imgInfos.length !== 0) {
+          API.getNewAdPictureImg().go(this.imgInfos[this.requestImgIndex].url).then((data) => {
+            var headFlow = 'data:image/jpg;base64,'
+            var afterFlow = data
+            var imgUrl = headFlow + afterFlow
+            this.streamsGetted.push(imgUrl)
+            for (var i = 0; i < this.streamsGetted.length; i++) {
+              // 防止找不到地址
+              this.fileListGetted[i].url = null
+              this.fileListGetted[i].url = this.streamsGetted[i]
+            }
+            this.fileList = this.fileListGetted
+            this.getColor()
+            if (this.requestImgIndex < this.imgInfos.length - 1) {
+              this.requestImgIndex = this.requestImgIndex + 1
+              this.getFileList()
+            }
+          })
+        }
+      },
+      // 获取这个广告位的所有组
+      getThisAddAllGroups () {
+        API.getAdGroup().go(this.groupType).then((data) => {
+          if (data.status === 1) {
+            for (var i = 0; i < data.data.length - 1; i++) {
+              for (var j = 0; j < data.data.length - i - 1; j++) {
+                if (parseInt(data.data[j].num) > parseInt(data.data[j + 1].num)) {
+                  var swap = data.data[j]
+                  data.data[j] = data.data[j + 1]
+                  data.data[j + 1] = swap
+                }
+              }
+            }
+            this.webTags = data.data
+            this.clickTag(this.webTags[0])
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 设备的操作
+      // 组装该组选中的和其他组选中的以及为被选中的设备
+      getDeviceTableData () {
+        this.thisGroupSelectedDevice = []
+        this.thisOtherGroupSelectedDevice = []
+        var params = { type: this.groupType, num: this.groupAllData.num }
+        // 该组的已经选中的
+        API.getNewAdDevice().go(params).then((data) => {
+          this.thisGroupSelectedDevice = data.data
+          // 其他组选中的
+          API.getNewAdNoDevice().go(params).then((data) => {
+            this.thisOtherGroupSelectedDevice = data.data
+            // 让它正常显示
+            this.$nextTick(() => {
+              this.$refs.deviceTable.clearSelection()
+              // 是否被勾选的数组
+              var selectedDevices = []
+              // 重置标签
+              for (var x = 0; x < this.allDevices.length; x++) {
+                this.allDevices[x].tag = 3
+              }
+              // 自己的
+              for (var i = 0; i < this.thisGroupSelectedDevice.length; i++) {
+                for (var j = 0; j < this.allDevices.length; j++) {
+                  if (this.thisGroupSelectedDevice[i].deviceid === this.allDevices[j].deviceid) {
+                    this.allDevices[j].tag = 1
+                    this.allDevices[j].id = this.thisGroupSelectedDevice[i].id
+                    selectedDevices.push(this.allDevices[j])
+                  }
+                }
+              }
+              // 别人的
+              for (var a = 0; a < this.thisOtherGroupSelectedDevice.length; a++) {
+                for (var b = 0; b < this.allDevices.length; b++) {
+                  if (this.thisOtherGroupSelectedDevice[a].deviceid === this.allDevices[b].deviceid) {
+                    this.allDevices[b].tag = 2
+                    this.allDevices[b].id = this.thisOtherGroupSelectedDevice[a].id
+                    selectedDevices.push(this.allDevices[b])
+                  }
+                }
+              }
+              this.forbiddenCheckbox(this.allDevices)
+              this.pageShowSelectedDevice = selectedDevices
+              selectedDevices.forEach(selectedDevices => {
+                this.$refs.deviceTable.toggleRowSelection(selectedDevices)
+              })
+            })
+            this.getColor()
+          })
+        })
+      },
+      // 这个函数用来筛选出哪些是要删除的数据，哪些是要新增的数据
+      selsChangeDevice (sels) {
+        // 组织数据
+        var delData = []
+        var addData = []
+        this.delDeviceData = []
+        this.addDeviceData = []
+        // 获得删除的数据
+        for (var i = 0; i < this.pageShowSelectedDevice.length; i++) {
+          // 删除标记和已经勾选的对比
+          var delTag = 0
+          for (var j = 0; j < sels.length; j++) {
+            if (this.pageShowSelectedDevice[i].deviceid !== sels[j].deviceid) {
+              delTag = delTag + 1
+            }
+          }
+          if (delTag === sels.length) {
+            delData.push(this.pageShowSelectedDevice[i])
+          }
+        }
+        // 获得添加的数据
+        for (var a = 0; a < sels.length; a++) {
+          var addTag = 0
+          for (var b = 0; b < this.pageShowSelectedDevice.length; b++) {
+            if (sels[a].deviceid !== this.pageShowSelectedDevice[b].deviceid) {
+              addTag = addTag + 1
+            }
+          }
+          if (addTag === this.pageShowSelectedDevice.length) {
+            addData.push(sels[a])
+          }
+        }
+        // 组织删除上传的数据
+        for (var c = 0; c < delData.length; c++) {
+          var item = {}
+          item['id'] = delData[c].id
+          this.delDeviceData.push(item)
+        }
+        for (var d = 0; d < addData.length; d++) {
+          var item1 = {}
+          item1['deviceid'] = addData[d].deviceid
+          item1['num'] = this.groupAllData.num
+          item1['type'] = this.groupType
+          this.addDeviceData.push(item1)
+        }
+      },
+      // 添加一个钩子用于让其他组的chebox被禁选
+      forbiddenCheckbox (sels) {
+        var forbiddenIndex = []
+        for (var i = 0; i < sels.length; i++) {
+          if (sels[i].tag === 2) {
+            forbiddenIndex.push(i + 1)
+          }
+        }
+        this.$nextTick(() => {
+          var allSpans = document.getElementsByClassName('el-checkbox__inner')
+          var allCheckBoxs = document.getElementsByClassName('el-checkbox__original')
+          for (var a = 0; a < allSpans.length; a++) {
+            allSpans[a].style.cursor = 'default'
+          }
+          for (var b = 0; b < allCheckBoxs.length; b++) {
+            allCheckBoxs[b].removeAttribute('disabled')
+          }
+          if (forbiddenIndex.length !== 0) {
+            // allSpans[0].style.cursor = 'not-allowed'
+            // allCheckBoxs[0].setAttribute('disabled', true)
+          }
+          for (var i = 0; i < forbiddenIndex.length; i++) {
+            allSpans[forbiddenIndex[i]].style.cursor = 'not-allowed'
+          }
+          for (var j = 0; j < forbiddenIndex.length; j++) {
+            allCheckBoxs[forbiddenIndex[j]].setAttribute('disabled', true)
+          }
+        })
+      },
+      // 设置显示某个广告位下的某个组别的设备
+      setDevice () {
+        this.dialogDeviceShow = true
+        this.$nextTick(() => {
+          this.getDeviceTableData()
+          this.getColor()
+        })
+        // this.clickTag(this.groupAllData)
+      },
+      // 确认就是这么多关联设备
+      confirmDevice () {
+        // 删除数据调用接口
+        // 定义一个标记只提示一次等于1时提示，等于0时不提示
+        var tipTag = 1
+        for (var i = 0; i < this.delDeviceData.length; i++) {
+          API.removeNewAdDevice().go(this.delDeviceData[i].id).then((data) => {
+            if (data.status === 1) {
+              if (tipTag === 1) {
+                this.getThisGroupDevicesCount()
+                this.$notify(Util.notifyBody(true, '更新成功！'))
+                tipTag = 0
+                this.getColor()
+              }
+            } else {
+              this.$notify(Util.notifyBody(false, data.message))
+            }
+          })
+        }
+        // 添加数据调用接口
+        for (var j = 0; j < this.addDeviceData.length; j++) {
+          API.addNewAdDevice().go(this.addDeviceData[j]).then((data) => {
+            if (data.status === 1) {
+              if (tipTag === 1) {
+                this.getThisGroupDevicesCount()
+                this.$notify(Util.notifyBody(true, '更新成功！'))
+                tipTag = 0
+                this.getColor()
+              }
+            } else {
+              this.$notify(Util.notifyBody(false, data.message))
+            }
+          })
+        }
+        this.dialogDeviceShow = false
+        // this.clickTag(this.groupAllData)
+      },
+      // 关闭设备显示
+      handleDeviceClose () {
+        this.dialogDeviceShow = false
+        this.getColor()
+        // this.clickTag(this.groupAllData)
+      },
+      // 获取该组下的设备的数量
+      getThisGroupDevicesCount () {
+        var params = { type: this.groupType, num: this.groupAllData.num }
+        API.getNewAdDeviceCount().go(params).then((data) => {
+          if (data.status === 1) {
+            this.deviceNum = data.data
+            this.getColor()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 获取所有的设备
+      getAllDevices () {
+        var params = { pageNum: 1, pageSize: 100000 }
+        API.getAllDevicesListPage().go(params).then((data) => {
+          if (data.status === 1) {
+            this.allDevices = data.data.list
+            // 添加标记属性
+            for (var i = 0; i < this.allDevices.length; i++) {
+              // 1代表自己的，2代表它们的，3代表可以选的
+              this.allDevices[i]['tag'] = 3
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 获取所有广告标语
+      getAllAdContent () {
+        var groupid = this.groupAllData.id
+        API.getAllAdContent().go(groupid).then((data) => {
+          if (data.status === 1) {
+            if (data.data) {
+              this.allAdContent = data.data
+              this.aliPayParam = data.data.alipayword
+              this.weChatParam = data.data.wechatpayword
+              this.unionPayParam = data.data.unionpayword
+            }
+            this.getColor()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 删除该组广告标语
+      delAdContent () {
+        var groupid = this.delData.id
+        API.removeAllAdContent().go(groupid).then((data) => {
+          if (data.status === 1) {
+            // this.$notify(Util.notifyBody(true, data.message))
+            this.getColor()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 修改该组广告标语
+      editAdContent () {
+        var params = { id: this.allAdContent.id, groupid: this.groupAllData.id, alipayword: this.aliPayParam, wechatpayword: this.weChatParam, unionpayword: this.unionPayParam }
+        API.editAllAdContent().go(params).then((data) => {
+          if (data.status === 1) {
+            this.getAllAdContent()
+            this.$notify(Util.notifyBody(true, data.message))
+            this.getColor()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      // 添加广告标语
+      addAdContent (groupid) {
+        var params = { groupid: groupid, alipayword: '', wechatpayword: '', unionpayword: '' }
+        API.addAllAdContent().go(params).then((data) => {
+          if (data.status === 1) {
+            // this.$notify(Util.notifyBody(true, data.message))
+            this.getColor()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      inputChange () {
+        this.getColor()
+      },
+      // 初始化数据
+      getAddData (value) {
+      	this.webTags = null
+        this.groupAllData = null
+        this.closable = false
+        this.deviceNum = 0
+        this.editName = '编辑'
+        // 然后默认选中组别一，其他广告位也一样
+        // 根据是哪一个广告位来获得对应的数据
+        if (value === 'firstAdd') {
+        	this.firstAdd = true
+        	this.secondAdd = false
+          this.thirdAdd = false
+          this.groupType = '第一广告位'
+        	this.getThisAddAllGroups()
+        }
+        if (value === 'secondAdd') {
+        	this.firstAdd = false
+        	this.secondAdd = true
+          this.thirdAdd = false
+          this.groupType = '第二广告位'
+        	this.getThisAddAllGroups()
+        }
+        if (value === 'thirdAdd') {
+          this.firstAdd = false
+          this.secondAdd = false
+          this.thirdAdd = true
+          this.groupType = '第三广告位'
+          this.getThisAddAllGroups()
+        }
+      },
+      // 切换广告位的函数
+      handleClick (value) {
+        // 展示哪一个广告位
+        this.operateAdd = value
+        // 根据所展示的广告位匹配数据
+        // 初始化广告位数据
+        this.getAddData(value)
+      }
+    },
+    mounted () {
+      this.handleClick('firstAdd')
+      this.getAllDevices()
+    }
+  }
+</script>
+
+<style>
+  /*第一广告位第二广告位样式通用*/
+/*  .new_add .first_group {
+    margin-top: 25px;
+  }*/
+  /*第三广告位的样式*/
+  @media screen and (min-height: 0px) and (max-height: 767px) {
+    /*第一广告位第二广告位样式通用*/
+    .new_add .el-tabs__item {
+      padding: 0 100px;
+    }
+    .new_add .el-tag {
+      background-color: white;
+      height: 24px;
+      line-height: 55px;
+      font-size: 14px;
+      color: #000000;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      border: 1px solid;
+      color: black;
+      margin-left: 0;
+      margin-right: 20px;
+      width: 70px;
+      height: 30px;
+      border-radius: 0;
+      cursor: pointer;
+      margin-bottom: 49px;
+    }
+    .new_add .el-icon-close {
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      font-size: 10px;
+      -webkit-transform: scale(.75,.75);
+      transform: scale(.75,.75);
+      height: 18px;
+      width: 18px;
+      line-height: 18px;
+      vertical-align: middle;
+      top: -63px!important;
+      right: -46px!important;
+    }
+    .new_add .first_group {
+      margin-top: 35px;
+      min-height: 80px;
+    }
+    .new_add .second_device {
+      margin-top: 20px;
+    }
+    .new-add .second_device_third {
+      margin-top: 20px;
+    }
+    .new_add .first_group_third {
+      margin-top: 0px;
+      min-height: 80px;
+    }
+    .new_add .group_name {
+      text-align: center;
+      margin-top: -12px;
+    }
+    .new_add .add_button {
+      width: 70px;
+      height: 30px;
+      border: 1px solid;
+      /*display: inline-block;*/
+      /*vertical-align: top;*/
+      margin-left: 0;
+      cursor: pointer;
+    }
+    .new_add .add_icon {
+      margin-left: 30px;
+      margin-top: 9px;
+    }
+    .new_add .edit_button {
+      width: 70px;
+      height: 30px;
+      border: 1px solid;
+      /*display: inline-block;*/
+      /*vertical-align: top;*/
+      /*float: right;*/
+      margin-right: 0px;
+      cursor: pointer;
+    }
+    .new_add .edit_name {
+      margin-left: 22px;
+      margin-top: 6px;
+    }
+    .del_dialog .el-dialog {
+      width: 20%;
+    }
+    .device_dialog .el-dialog {
+      width: 40%;
+    }
+    .device_name {
+      margin-left: 60px;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+    .device_name_third {
+      margin-left: 60px;
+      margin-top: 10px;
+      font-size: 15px;
+      width: 100%;
+    }
+    .pay_name_width {
+      width: 15%!important
+    }
+    .pay_class_third {
+      margin-top: 15px;
+    }
+    .device_num {
+      margin-top: 10px;
+      font-size: 15px;
+    }
+    .imgName {
+      margin-left: 60px;
+      margin-top: 60px;
+      font-size: 15px;
+    }
+    .imgName_third {
+      margin-left: 60px;
+      margin-top: 20px;
+      font-size: 15px;
+    }
+    .imgOperate {
+      margin-left: 60px;
+      margin-top: 15px;
+    }
+    .imgOperate_third {
+      margin-left: 60px;
+      margin-top: 40px;
+    }
+    .device_operate {
+
+    }
+  }
+  @media screen and (min-height: 768px) and (max-height: 1080px) {
+    /*第一广告位第二广告位样式通用*/
+    .new_add .el-tabs__item {
+      padding: 0 150px;
+    }
+    .new_add .el-tag {
+      background-color: white;
+      height: 24px;
+      line-height: 55px;
+      font-size: 14px;
+      color: #000000;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      border: 1px solid;
+      color: black;
+      margin-left: 0;
+      margin-right: 30px;
+      width: 70px;
+      height: 30px;
+      border-radius: 0;
+      cursor: pointer;
+      margin-bottom: 49px;
+    }
+    .new_add .el-icon-close {
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      font-size: 10px;
+      -webkit-transform: scale(.75,.75);
+      transform: scale(.75,.75);
+      height: 18px;
+      width: 18px;
+      line-height: 18px;
+      vertical-align: middle;
+      top: -63px!important;
+      right: -46px!important;
+    }
+    .new_add .first_group {
+      margin-top: 70px;
+      min-height: 100px;
+    }
+    .new_add .second_device {
+      margin-top: 70px;
+    }
+    .new-add .second_device_third {
+      margin-top: 40px;
+    }
+    .new_add .first_group_third {
+      margin-top: 30px;
+      min-height: 100px;
+    }
+    .new_add .group_name {
+      text-align: center;
+      margin-top: -12px;
+      font-size: 10px;
+    }
+    .new_add .add_button {
+      width: 70px;
+      height: 28px;
+      border: 1px solid;
+      /*display: inline-block;*/
+      /*vertical-align: top;*/
+      margin-left: 0;
+      cursor: pointer;
+    }
+    .new_add .add_icon {
+      margin-left: 30px;
+      margin-top: 8px;
+    }
+    .new_add .edit_button {
+      width: 70px;
+      height: 28px;
+      border: 1px solid;
+      /*display: inline-block;*/
+      /*vertical-align: top;*/
+      /*float: right;*/
+      margin-right: 0;
+      cursor: pointer;
+    }
+    .new_add .edit_name {
+      margin-left: 23px;
+      margin-top: 5px;
+    }
+    .del_dialog .el-dialog {
+      width: 20%;
+    }
+    .device_dialog .el-dialog {
+      width: 30%;
+    }
+    .device_name {
+      margin-left: 60px;
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .device_name_third {
+      margin-left: 60px;
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .pay_class_third {
+      margin-top: 50px;
+    }
+    .device_num {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .imgName {
+      margin-left: 60px;
+      margin-top: 110px;
+      font-size: 20px;
+    }
+    .imgName_third {
+      margin-left: 60px;
+      margin-top: 60px;
+      font-size: 20px;
+    }
+    .imgOperate {
+      margin-left: 60px;
+      margin-top: 60px;
+    }
+    .imgOperate_third {
+      margin-left: 60px;
+      margin-top: 120px;
+    }
+    .device_operate {
+
+    }
+    /*第三广告位的样式*/
+  }
+</style>

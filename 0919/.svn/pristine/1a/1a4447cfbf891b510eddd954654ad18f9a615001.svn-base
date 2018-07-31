@@ -1,0 +1,29 @@
+import {axios, base} from './../raiis-axios'
+
+let defaultType = 'allocation checkincounter'
+
+// 获取航班登机时间列表 0927 API未写
+export const getFlightBoardingTime = () => {
+  let url = `${base}/allocation/checkincounter/checkintime`
+  return {
+    name: 'getFlightBoardingTime',
+    type: defaultType,
+    url: url,
+    requetType: 'GET',
+    remark: '获取航班登机时间列表',
+    go: params => { return axios.get(url, { params: params }).then(res => res.data) }
+  }
+}
+
+// 保存航班登机时间
+export const saveFlightBoardingTime = () => {
+  let url = `${base}/allocation/checkincounter/checkintime`
+  return {
+    name: 'saveFlightBoardingTime',
+    type: defaultType,
+    url: url,
+    requetType: 'PUT',
+    remark: '保存航班登机时间',
+    go: params => { return axios.put(url, params).then(res => res.data) }
+  }
+}

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_user.mappers.UserPassengerMapper">
+	<insert id="add" parameterType="userPassengerDto">
+		insert into ap_user_passenger
+			(
+				uuid,
+				entAccount,
+				entAccountUuid,
+				departmentUuid,
+				mobile,
+				password,
+				realName,
+				nickname,
+				sex,
+				face,
+				weibo,
+				qq,
+				wechat,
+				openId,
+				tokenId,
+				email,
+				point,
+				balance,
+				status,
+				abortTime,
+				abortRemark,
+				lastLogin,
+				successOrder,
+				pushId,
+				deviceType,
+				deviceToken,
+				deviceVersion,
+				appVersion,
+				errCount,
+				errLoginTime,
+				createTime,
+				updateTime,
+				creator,
+				fNumber
+			)
+		values
+			(
+				#{uuid},
+				#{entAccount},
+				#{entAccountUuid},
+				#{departmentUuid},
+				#{mobile},
+				#{password},
+				#{realName},
+				#{nickname},
+				#{sex},
+				#{face},
+				#{weibo},
+				#{qq},
+				#{wechat},
+				#{openId},
+				#{tokenId},
+				#{email},
+				#{point},
+				#{balance},
+				#{status},
+				#{abortTime},
+				#{abortRemark},
+				#{lastLogin},
+				#{successOrder},
+				#{pushId},
+				#{deviceType},
+				#{deviceToken},
+				#{deviceVersion},
+				#{appVersion},
+				#{errCount},
+				#{errLoginTime},
+				#{createTime},
+				#{updateTime},
+				#{creator},
+				#{fNumber}
+			)
+	</insert>
+
+	<update id="edit" parameterType="userPassengerDto">
+		update ap_user_passenger
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="entAccount != null and '' != entAccount"> entAccount = #{entAccount},</if>
+			<if test="entAccountUuid != null and '' != entAccountUuid"> entAccountUuid = #{entAccountUuid},</if>
+			<if test="departmentUuid != null and '' != departmentUuid"> departmentUuid = #{departmentUuid},</if>
+			<if test="mobile != null and '' != mobile"> mobile = #{mobile},</if>
+			<if test="password != null and '' != password"> password = #{password},</if>
+			<if test="realName != null and '' != realName"> realName = #{realName},</if>
+			<if test="nickname != null and '' != nickname"> nickname = #{nickname},</if>
+			<if test="sex != null and '' != sex"> sex = #{sex},</if>
+			<if test="face != null and '' != face"> face = #{face},</if>
+			<if test="weibo != null and '' != weibo"> weibo = #{weibo},</if>
+			<if test="qq != null and '' != qq"> qq = #{qq},</if>
+			<if test="wechat != null and '' != wechat"> wechat = #{wechat},</if>
+			<if test="openId != null and '' != openId"> openId = #{openId},</if>
+			<if test="tokenId != null and '' != tokenId"> tokenId = #{tokenId},</if>
+			<if test="email != null and '' != email"> email = #{email},</if>
+			<if test="point != null and '' != point"> point = #{point},</if>
+			<if test="balance != null and '' != balance"> balance = #{balance},</if>
+			<if test="insBalance != null and '' != insBalance"> balance = balance + #{insBalance},</if>
+			<if test="decBalance != null and ''!=decBalance"> balance = balance - #{decBalance},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="abortTime != null and '' != abortTime"> abortTime = #{abortTime},</if>
+			<if test="abortRemark != null "> abortRemark = #{abortRemark},</if>
+			<if test="lastLogin != null and '' != lastLogin"> lastLogin = #{lastLogin},</if>
+			<if test="successOrder != null and '' != successOrder"> successOrder = #{successOrder},</if>
+			<if test="pushId != null and '' != pushId"> pushId = #{pushId},</if>
+			<if test="deviceType != null and '' != deviceType"> deviceType = #{deviceType},</if>
+			<if test="deviceToken != null and '' != deviceToken"> deviceToken = #{deviceToken},</if>
+			<if test="deviceVersion != null"> deviceVersion = #{deviceVersion},</if>
+			<if test="appVersion != null and '' != appVersion"> appVersion = #{appVersion},</if>
+			<if test="errCount != null"> errCount = #{errCount},</if>
+			<if test="errLoginTime != null and '' != errLoginTime"> errLoginTime = #{errLoginTime},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="fNumber != null and '' != fNumber"> fNumber = #{fNumber},</if>
+		</set>
+		where
+		uuid = #{uuid}
+	</update>
+
+	<delete id="del" parameterType="userPassengerDto">
+		delete from
+			ap_user_passenger
+		where
+			uuid = #{uuid}
+	</delete>
+
+	<select id="selInfo" resultType="userPassengerDto">
+		select
+		*
+		from
+		ap_user_passenger
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="mobile != null and '' != mobile"> and mobile = #{mobile} </if>
+			<if test="openId != null and '' != openId"> and openId = #{openId} </if>
+		</where>
+	</select>
+
+	<sql id="sqlForList">
+		from
+		ap_user_passenger
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="entAccount != null and '' != entAccount"> and entAccount = #{entAccount} </if>
+			<if test="entAccountUuid != null and '' != entAccountUuid"> and entAccountUuid = #{entAccountUuid} </if>
+			<if test="departmentUuid != null and '' != departmentUuid"> and departmentUuid = #{departmentUuid} </if>
+			<if test="mobile != null and '' != mobile"> and mobile = #{mobile} </if>
+			<if test="password != null and '' != password"> and password = #{password} </if>
+			<if test="realName != null and '' != realName"> and realName = #{realName} </if>
+			<if test="nickname != null and '' != nickname"> and nickname = #{nickname} </if>
+			<if test="sex != null and '' != sex"> and sex = #{sex} </if>
+			<if test="face != null and '' != face"> and face = #{face} </if>
+			<if test="weibo != null and '' != weibo"> and weibo = #{weibo} </if>
+			<if test="qq != null and '' != qq"> and qq = #{qq} </if>
+			<if test="wechat != null and '' != wechat"> and wechat = #{wechat} </if>
+			<if test="openId != null"> and openId = #{openId} </if>
+			<if test="tokenId != null and '' != tokenId"> and tokenId = #{tokenId} </if>
+			<if test="email != null and '' != email"> and email = #{email} </if>
+			<if test="point != null and '' != point"> and point = #{point} </if>
+			<if test="balance != null and '' != balance"> and balance = #{balance} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="abortTime != null and '' != abortTime"> and abortTime = #{abortTime} </if>
+			<if test="abortRemark != null and '' != abortRemark"> and abortRemark = #{abortRemark} </if>
+			<if test="lastLogin != null and '' != lastLogin"> and lastLogin = #{lastLogin} </if>
+			<if test="successOrder != null and '' != successOrder"> and successOrder = #{successOrder} </if>
+			<if test="pushId != null and '' != pushId"> and pushId = #{pushId} </if>
+			<if test="deviceType != null and '' != deviceType"> and deviceType = #{deviceType} </if>
+			<if test="deviceToken != null and '' != deviceToken"> and deviceToken = #{deviceToken} </if>
+			<if test="deviceVersion != null and '' != deviceVersion"> and deviceVersion = #{deviceVersion} </if>
+			<if test="appVersion != null and '' != appVersion"> and appVersion = #{appVersion} </if>
+			<if test="errCount != null and '' != errCount"> and errCount = #{errCount} </if>
+			<if test="errLoginTime != null and '' != errLoginTime"> and errLoginTime = #{errLoginTime} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+
+			<if test="startTime != null and '' != startTime"> and createTime &gt;= to_date(#{startTime},'yyyy-mm-dd,hh24:mi:ss') </if>
+			<if test="endTime != null and '' != endTime"> and createTime &lt;= to_date(#{endTime},'yyyy-mm-dd,hh24:mi:ss') </if>
+			<if test="mobileLike != null and '' != mobileLike"> and mobile  LIKE '%${mobileLike}%' </if>
+		</where>
+	</sql>
+
+	<select id="count" resultType="int">
+		select
+		count(*)
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="list" resultType="userPassengerDto">
+		select
+		*
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="queryPage" resultType="userPassengerDto">
+		select
+		*
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="login" resultType="userPassengerDto">
+		SELECT *
+		from ap_user_passenger
+		<where>
+			mobile = #{mobile}
+			<if test="password != null and '' != password"> and password = #{password} </if>
+		</where>
+	</select>
+
+	<update id="update" >
+		update ap_user_passenger
+		<set>
+			<if test="entAccount != null and '' != entAccount"> entAccount = #{entAccount},</if>
+			<if test="entAccountUuid != null and '' != entAccountUuid"> entAccountUuid = #{entAccountUuid},</if>
+			<if test="departmentUuid != null and '' != departmentUuid"> departmentUuid = #{departmentUuid},</if>
+			<if test="password != null and '' != password"> password = #{password},</if>
+			<if test="realName != null and '' != realName"> realName = #{realName},</if>
+			<if test="nickname != null"> nickname = #{nickname},</if>
+			<if test="sex != null"> sex = #{sex},</if>
+			<if test="face != null"> face = #{face},</if>
+			<if test="weibo != null"> weibo = #{weibo},</if>
+			<if test="qq != null"> qq = #{qq},</if>
+			<if test="wechat != null"> wechat = #{wechat},</if>
+			<if test="openId != null"> openId = #{openId},</if>
+			<if test="tokenId != null"> tokenId = #{tokenId},</if>
+			<if test="email != null"> email = #{email},</if>
+			<if test="point != null and '' != point"> point = #{point},</if>
+			<if test="balance != null and '' != balance"> balance = #{balance},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="abortTime != null and '' != abortTime"> abortTime = #{abortTime},</if>
+			<if test="abortRemark != null "> abortRemark = #{abortRemark},</if>
+			<if test="lastLogin != null and '' != lastLogin"> lastLogin = #{lastLogin},</if>
+			<if test="successOrder != null and '' != successOrder"> successOrder = #{successOrder},</if>
+			<if test="pushId != null"> pushId = #{pushId},</if>
+			<if test="deviceType != null and '' != deviceType"> deviceType = #{deviceType},</if>
+			<if test="deviceToken != null and '' != deviceToken"> deviceToken = #{deviceToken},</if>
+			<if test="deviceVersion != null and '' != deviceVersion"> deviceVersion = #{deviceVersion},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+			<if test="appVersion != null"> appVersion = #{appVersion},</if>
+			<if test="fNumber != null"> fNumber = #{fNumber},</if>
+		</set>
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="mobile != null and '' != mobile"> and mobile = #{mobile} </if>
+			<if test="wechat != null and '' != wechat"> and wechat = #{wechat} </if>
+			<if test="oldOpenId != null and '' != oldOpenId"> and openId = #{oldOpenId} </if>
+			<if test="oldTokenId != null and '' != oldTokenId"> and tokenId = #{oldTokenId} </if>
+			<if test="pushId != null and '' != pushId"> and pushId = #{pushId} </if>
+		</where>
+	</update>
+
+	<select id="findUser" resultType="userPassengerDto">
+		SELECT *
+		from ap_user_passenger
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="mobile != null and '' != mobile"> and mobile = #{mobile} </if>
+			<if test="tokenId != null and '' != tokenId"> and tokenId = #{tokenId} </if>
+			<if test="password != null and '' != password"> and password = #{password} </if>
+			<if test="openId != null and '' != openId"> and openId = #{openId} </if>
+		</where>
+	</select>
+
+
+	<!--统计乘客在某个时间段内是否有未完成的订单-->
+	<select id="countUnfinishedOrderByPassengerUuidAndDeparTime" resultType="int">
+		select count(*)
+	  	from ap_order ao
+		where ao.passengeUuid = #{passengeUuid}
+		and	ao.mainstatus in(2,3)
+		and abs(ROUND(TO_NUMBER(ao.deparTime - to_date(#{deparTime},'yyyy-mm-dd hh24:mi:ss')) * 24 * 60 * 60)) &lt;#{limitTime}
+	</select>
+
+
+
+
+</mapper>

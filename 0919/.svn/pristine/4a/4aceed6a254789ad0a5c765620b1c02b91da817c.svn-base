@@ -1,0 +1,48 @@
+/*
+ * @Author: ylj
+ * @Date: 2017-11-09 22:32:20
+ * @Last Modified by: ylj
+ * @Last Modified time: 2017-11-15 10:29:06
+ */
+import XLSX from 'xlsx'
+// 是否将文件读取为二进制字符串
+var rABS = false
+export default {
+  importf: function (obj) {
+    // 导入
+    if (!obj.files) {
+      return
+    }
+    var f = obj.files[0]
+    var reader = new FileReader()
+    console.log(f)
+    // var name = f.name
+    reader.onload = function (e) {
+      console.log(e)
+      var data = e.target.result
+      var wb = null
+      if (rABS) {
+        wb = XLSX.read(data, { type: 'binary' })
+      } else {
+        var arr = this.fixdata(data)
+        wb = XLSX.read(btoa(arr), { type: 'base64' })
+      }
+      document.getElementById('demo').innerHTML = JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]))
+      if (rABS) {
+        reader.readAsBinaryString(f)
+      } else {
+        reader.readAsArrayBuffer(f)
+      }
+    }
+  },
+  fixdata: function (data) {
+    let o = ''
+    let l = 0
+    let w = 10240
+    for (; l < data.byteLength / w; ++l) {
+      o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)))
+      o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)))
+      return o
+    }
+  }
+}

@@ -1,0 +1,438 @@
+/*
+ * @Author: llf
+ * @Date: 2017-06-13 11:52:00
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-09-19 08:57:08
+ * @Description: 设备信息新增或更新界面
+ */
+
+ <template>
+  <el-dialog :title="title" v-model="visible" :close-on-click-modal="true" :before-close="handleClose" size="small" :modal-append-to-body="false">
+    <!--<el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" class="demo-ruleForm" >-->
+      <el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" >
+      <el-row :gutter="20">
+        <el-col :span="6" >
+          <el-form-item label="设备编号" >
+            <el-input v-model="deviceInfo.deviceNo" placeholder="设备编号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="设备名称" >
+            <el-input v-model="deviceInfo.deviceName" placeholder="设备名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="业务类型" >
+            <el-select v-model="deviceInfo.displayType" placeholder="业务类型">
+              <el-option
+                v-for="item in deviceTypeList"
+                :key="item.enumNo"
+                :label="item.displayValue"
+                :value="item.enumNo">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="设备状态" >
+            <el-select v-model="deviceInfo.deviceStatus" placeholder="设备状态">
+              <el-option
+                v-for="item in deviceStatusList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="设备IP">
+            <el-input v-model="deviceInfo.deviceIp" placeholder="设备IP"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="设备类型">
+            <el-select v-model="deviceInfo.deviceModel" placeholder="设备类型">
+              <el-option
+                v-for="item in deviceModelList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="分辨率X">
+            <el-input v-model="deviceInfo.resolutionX" placeholder="分辨率X"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="分辨率Y">
+            <el-input v-model="deviceInfo.resolutionY" placeholder="分辨率Y"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="组合">
+            <el-input v-model="deviceInfo.groupId" placeholder="组合"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="组合顺序">
+            <el-input v-model="deviceInfo.groupSort" placeholder="组合顺序"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="显示页码">
+             <el-select v-model="deviceInfo.isShowPage" placeholder="显示页码">
+              <el-option
+                v-for="item in trueOrFalseList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="每页行数">
+            <el-input v-model="deviceInfo.pageSizeC" placeholder="每页行数"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+       <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="关联资源">
+          <el-cascader
+            :options="linkIdOptions"
+            @change="showResult">
+          </el-cascader>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+       <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="航站楼">
+            <el-select v-model="deviceInfo.terminal" placeholder="航站楼">
+              <el-option
+                v-for="item in terminalList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="区域">
+            <el-input v-model="deviceInfo.area" placeholder="区域"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="设备产地">
+            <el-input v-model="deviceInfo.deviceOrigin" placeholder="设备产地"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="设备厂商">
+            <el-input v-model="deviceInfo.deviceFactory" placeholder="设备厂商"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+       <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="VNC密码">
+            <el-input v-model="deviceInfo.vncPwd" placeholder="VNC密码"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="VNC端口">
+            <el-input v-model="deviceInfo.vncPort" placeholder="VNC端口"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="开屏指令">
+            <el-input v-model="deviceInfo.screenOpenTime" placeholder="开屏指令"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="关屏指令">
+            <el-input v-model="deviceInfo.screenCloseTime" placeholder="关屏指令"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="主机名">
+            <el-input v-model="deviceInfo.hostName" placeholder="主机名"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="MAC地址">
+            <el-input v-model="deviceInfo.macAddr" placeholder="MAC地址"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="管理员">
+            <el-input v-model="deviceInfo.adminName" placeholder="管理员"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="密码">
+            <el-input v-model="deviceInfo.adminPwd" placeholder="密码"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="系统">
+            <el-input v-model="deviceInfo.osName" placeholder="系统"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="CPU">
+            <el-input v-model="deviceInfo.cpuDes" placeholder="CPU"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="内存">
+            <el-input v-model="deviceInfo.memoryDes" placeholder="内存"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="硬盘">
+            <el-input v-model="deviceInfo.hddes" placeholder="硬盘"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+       <el-row :gutter="20">
+        <el-col :span="6">
+          <el-form-item label="父设备">
+            <el-input v-model="deviceInfo.parentId" placeholder="父设备"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="不切换模版">
+            <el-input v-model="deviceInfo.notChangePage" placeholder="不切换模版"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="串口号">
+            <el-input v-model="deviceInfo.deviceCom" placeholder="串口号"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="设备描述">
+            <el-input v-model="deviceInfo.deviceNo" placeholder="设备描述"  type="textarea"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="24" >
+          <el-form-item label="备注">
+            <el-input v-model="deviceInfo.remark" placeholder="备注"  type="textarea"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="visible = false">取消</el-button>
+      <el-button @click="resetForm('deviceAddOrUpdateForm')">重置</el-button>
+      <el-button type="primary" @click.native="handleSubmit" :loading="loading">提交</el-button>
+    </div>
+  </el-dialog>
+ </template>
+
+ <script>
+ import Util from '../../../common/js/util'
+ import API from '../../../api'
+ import LoginInfo from '../../../vuex/store'
+ import GlobalData from '../../../common/config/global'
+
+ export default {
+   props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () {}
+    },
+    callback: {
+      type: Function,
+      default: function () {}
+    }
+   },
+   data () {
+     return {
+       linkIdOptions: [{
+         value: 'first',
+         label: '第一级',
+         children: [{
+           value: 'second',
+           label: '第二级',
+           children: [{
+             value: 'third',
+             label: '第三级'
+           }]
+         }]
+       }],
+       baggageList: [],
+       checkInCounterList: [],
+       gateList: [],
+       finalLinkId: '',
+       finalLinkType: '',
+       subscribeAirports: [],  // 用户订阅机场列表
+       typeKeyValue: {}, // 类型和其值的键值对关系
+       visible: false,
+       loading: false,
+       oldValue: {},
+       deviceInfo: { id: '', parentId: '', deviceNo: '', deviceName: '', deviceModel: '', deviceOrigin: null, deviceFactory: null, deviceIp: '', displayType: '', deviceStatus: 0, deviceDes: null, deviceCom: '', groupId: 0, linkResId: 0, hostName: null, macAddr: null, osName: null, cpuDes: null, memoryDes: null, hdDes: null, adminName: null, adminPwd: null, vncPwd: '', terminal: '', scrollText: '', remark: '', lastUpdate: null, groupSort: 0, airportCode: null, dynamicScrollTextSourceId: 0, isAdd: false, isShowPage: 0, pageSizeC: 0, vncPort: 0, resolutionX: 0, resolutionY: 0, backupScrollText: null, notChangePage: '', screenOpenTime: null, screenCloseTime: null, area: null, openComNo: null, closeComNo: null, comCommandType: '', terminalLevel: null, linkResType: '' },
+       deviceTypeList: {},
+       deviceStatusList: [ { text: '删除', value: -1 }, { text: '在线', value: 0 }, { text: '离线', value: 1 }, { text: '异常', value: 2 } ],
+       deviceModelList: [ { text: '工控机', value: '工控机' }, { text: '安卓盒子', value: '安卓盒子' } ],
+       trueOrFalseList: [ {text: '否', value: 0}, { text: '是', value: 1 } ],
+       terminalList: [ { text: 'T1', value: 'T1' }, { text: 'T2', value: 'T2' }, { text: 'T3', value: 'T3' }, { text: 'T4', value: 'T4' } ]
+     }
+   },
+   methods: {
+     getSubscribeAirports () {
+      let result = []
+      let data = LoginInfo.state.userStorage.user.aiisAirports
+      for (let i = 0; i < data.length; i++) {
+        result.push(data[i].airportCode)
+      }
+      return result
+     },
+     findLinkId (typeList, subscribeAirport) {
+      // 可能返回多条，选择后再找出id
+      let ll = []
+      for (let i = 0; i < typeList.length; i++) {
+        if (typeList[i].airportCode === subscribeAirport) {
+          ll.push(typeList[i])
+        }
+      }
+      return ll
+     },
+     initCascader () {
+      console.log('abc')
+      this.getSubscribeAirports = this.getSubscribeAirports()   // 用户订阅的机场列表
+      // console.log(this.getSubscribeAirports)
+      this.typeKeyValue = new Map()
+      this.typeKeyValue = GlobalData.linkTypeKeyValue
+      // console.log(this.typeKeyValue)
+      this.linkIdOptions = []
+      this.baggageList = this.$cache.fetch('baggageCarousels')
+      this.checkInCounterList = this.$cache.fetch('checkinCounters')
+      this.gateList = this.$cache.fetch('gate')
+      for (var k in this.typeKeyValue) {
+        let typeArray = {value: k, label: k, children: []}
+        this.linkIdOptions.push(typeArray)
+        for (let i = 0; i < this.getSubscribeAirports.length; i++) {
+          let subscribeAirportsArray = {value: this.getSubscribeAirports[i], label: this.getSubscribeAirports[i], children: []}
+          this.linkIdOptions[this.linkIdOptions.length - 1].children.push(subscribeAirportsArray)
+          // this.typeRoot[num].children.push(typeNode)
+          if (this.typeKeyValue[k] === 1) {   // 1 行李转盘 RES_BAGGAGECAROUSEL
+            let resultList = this.findLinkId(this.baggageList, this.getSubscribeAirports[i])
+            for (let j = 0; j < resultList.length; j++) {
+              let carouselCodeArray = {value: resultList[j].id, label: resultList[j].carouselCode}
+              this.linkIdOptions[this.linkIdOptions.length - 1].children[this.linkIdOptions[this.linkIdOptions.length - 1].children.length - 1].children.push(carouselCodeArray)
+            }
+          } else if (this.typeKeyValue[k] === 2) { // 2 值机柜台  RES_CHECKINCOUNTER
+            let resultList = this.findLinkId(this.checkInCounterList, this.getSubscribeAirports[i])
+            for (let j = 0; j < resultList.length; j++) {
+              let checkInCounterArray = {value: resultList[j].counterId, label: resultList[j].counterCode}
+              this.linkIdOptions[this.linkIdOptions.length - 1].children[this.linkIdOptions[this.linkIdOptions.length - 1].children.length - 1].children.push(checkInCounterArray)
+            }
+          } else {  // 3登机口 RES_GATE
+            let resultList = this.findLinkId(this.gateList, this.getSubscribeAirports[i])
+            for (let j = 0; j < resultList.length; j++) {
+              let gateArray = {value: resultList[j].id, label: resultList[j].gateCode}
+              this.linkIdOptions[this.linkIdOptions.length - 1].children[this.linkIdOptions[this.linkIdOptions.length - 1].children.length - 1].children.push(gateArray)
+            }
+          }
+        }
+      }
+     },
+     showResult (value) {
+      this.finalLinkId = value[2]
+      this.finalLinkType = this.typeKeyValue[value[0]]
+      console.log(this.finalLinkType)
+      this.deviceInfo.linkResId = this.finalLinkId
+      this.deviceInfo.linkResType = this.finalLinkType
+      console.log(this.deviceInfo.linkResId)
+     },
+     bindData: function () {
+      this.loading = true
+      let para = {enumType: 'BUSINESSTYPE'}
+      API.getEnumInfo().go(para).then((data) => {
+        if (data.ok) {
+          this.deviceTypeList = data.attr.data.list
+        } else {
+          this.$notify(Util.notifyBody(false, data.msg))
+        }
+        this.loading = false
+      })
+     },
+     show: function (row) {
+       this.visible = true
+       if (row != null) {
+        this.deviceInfo = row
+        this.oldValue = Object.assign({}, row)
+       }
+       this.bindData()
+     },
+     handleClose: function (params) {
+       this.visible = false
+     },
+     handleSubmit: function (params) {
+       this.$refs['deviceAddOrUpdateForm'].validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.loading = true
+            let para = { newValue: this.deviceInfo, oldValue: this.oldValue }
+            this.to(para).then((res) => {
+              this.loading = false
+              this.$notify(Util.notifyBody(res.ok, res.msg))
+              this.$refs['deviceAddOrUpdateForm'].resetFields()
+              this.visible = false
+              this.deviceInfo = { id: '', parentId: '', deviceNo: '', deviceName: '', deviceModel: '', deviceOrigin: null, deviceFactory: null, deviceIp: '', displayType: '', deviceStatus: 0, deviceDes: null, deviceCom: '', groupId: 0, linkResId: 0, hostName: null, macAddr: null, osName: null, cpuDes: null, memoryDes: null, hdDes: null, adminName: null, adminPwd: null, vncPwd: '', terminal: '', scrollText: '', remark: '', lastUpdate: null, groupSort: 0, airportCode: null, dynamicScrollTextSourceId: 0, isAdd: false, isShowPage: 0, pageSizeC: 0, vncPort: 0, resolutionX: 0, resolutionY: 0, backupScrollText: null, notChangePage: '', screenOpenTime: null, screenCloseTime: null, area: null, openComNo: null, closeComNo: null, comCommandType: '', terminalLevel: null, linkResType: '' }
+              this.callback()
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        }
+      })
+     },
+     resetForm (formName) {
+       console.log(formName)
+       this.$refs[formName].resetFields()
+       this.deviceInfo = { id: '', parentId: '', deviceNo: '', deviceName: '', deviceModel: '', deviceOrigin: null, deviceFactory: null, deviceIp: '', displayType: '', deviceStatus: 0, deviceDes: null, deviceCom: '', groupId: 0, linkResId: 0, hostName: null, macAddr: null, osName: null, cpuDes: null, memoryDes: null, hdDes: null, adminName: null, adminPwd: null, vncPwd: '', terminal: '', scrollText: '', remark: '', lastUpdate: null, groupSort: 0, airportCode: null, dynamicScrollTextSourceId: 0, isAdd: false, isShowPage: 0, pageSizeC: 0, vncPort: 0, resolutionX: 0, resolutionY: 0, backupScrollText: null, notChangePage: '', screenOpenTime: null, screenCloseTime: null, area: null, openComNo: null, closeComNo: null, comCommandType: '', terminalLevel: null, linkResType: '' }
+     }
+   },
+   mounted () {
+     this.initCascader()  // 初始化级联选择器，利用缓存
+   }
+ }
+ </script>

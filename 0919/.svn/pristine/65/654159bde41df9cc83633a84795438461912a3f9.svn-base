@@ -1,0 +1,240 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-11-06 15:47:46
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-11-09 10:38:38
+ * 播放列表多选添加界面
+ */
+<template>
+  <el-dialog v-model="visible" :before-close="handleClose" size="small" :close-on-click-modal="true">
+  <el-form ref="displayMuilt" :rules="rules1">
+      <el-form-item label="设备IP">
+        <el-select v-model="deviceId" placeholder="请选择设备" class="maxWidth" :filterable="true">
+          <el-option v-for="sub in deviceLabel" :key="sub.value" :label="sub.text" :value="sub.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <div v-for="(item, index) in displayList" :key="item.deviceId">
+      <el-card class="box-card maxWidth">
+        <el-row>
+          <el-tag type="danger">批量添加播放列表信息</el-tag>
+        </el-row>
+        </br>
+        <el-row :gutter="20" @click.native.capture="uploadClick(index)">
+            <el-form-item label="模板">
+              <el-select v-model="item.temId" placeholder="请选择模板" :filterable="true" class="maxWidth">
+                <el-option v-for="mode in templatesLabel" :key="mode.value" :label="mode.text" :value="mode.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="时间间隔">
+              <el-input-number v-model="item.timeSpan" :min="0" label="时间间隔" class="maxWidth"></el-input-number>
+            </el-form-item>
+            <el-form-item label="开始时间" prop="startTime">
+                <el-input v-model="item.begin" placeholder="添加开始时间" type="textarea"></el-input>
+            </el-form-item>
+            <el-form-item label="结束时间" prop="endTime">
+                <el-input v-model="item.end" placeholder="添加结束时间" type="textarea"></el-input>
+            </el-form-item>
+            <el-button type="success" @click="addCounters" v-if="index+1===displayList.length">新增播放列表信息</el-button>
+            <el-button type="danger" @click="removeCounters(index)">删除播放列表信息</el-button>
+            <el-button type="warning" @click.native="resetItem()">重置数据</el-button>
+        </el-row>
+    </el-card>
+    </br>
+    </div>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.native="visible = false">取消</el-button>
+      <el-button @click.native="reset()">重置</el-button>
+      <el-button type="primary" @click.native="submit">提交</el-button>
+    </div>
+    </el-dialog>
+</template>
+
+<script>
+import API from '../../api'
+import util from '../../common/js/util'
+export default {
+  props: {
+    callback: {
+      type: Function,
+      default: function () { }
+    }
+  },
+  data () {
+    var validateValue = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('选择时间不为空'))
+        } else {
+          if (!(this.displayList[this.index].begin.length === 4)) {
+            callback(new Error('输入的值必须在4位之间'))
+          }
+          if (this.displayList[this.index].begin < 0) {
+            callback(new Error('值必须大于等于0'))
+          }
+          if (!(this.displayList[this.index].begin % 100 >= 0 && this.displayList[this.index].begin % 100 <= 59 && Math.floor(this.displayList[this.index].begin / 100) >= 0 && Math.floor(this.displayList[this.index].begin / 100) <= 23)) {
+            callback(new Error('前两个数字组合应在[00,23]范围内,后两个数字组合应在[00,59]范围内'))
+          }
+        }
+    }
+    var validateValue1 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('选择时间不为空'))
+        } else {
+          if (!(this.displayList[this.index].end.length === 4)) {
+            callback(new Error('输入的值必须在4位之间'))
+          }
+          if (this.displayList[this.index].end < 0) {
+            callback(new Error('值必须大于等于0'))
+          }
+          if (!(this.displayList[this.index].end % 100 >= 0 && this.displayList[this.index].end % 100 <= 59 && Math.floor(this.displayList[this.index].end / 100) >= 0 && Math.floor(this.displayList[this.index].end / 100) <= 23)) {
+            callback(new Error('前两个数字组合应在[00,23]范围内,后两个数字组合应在[00,59]范围内'))
+          }
+        }
+    }
+    return {
+      rules1: {
+        startTime: [ {validator: validateValue, trigger: 'blur'} ],
+        endTime: [ {validator: validateValue1, trigger: 'blur'} ]
+      },
+      startTime: '',
+      endTime: '',
+      uploadSuccess: true,
+      deviceId: '',
+      deviceLabel: [],
+      device: [],
+      templatesLabel: [],
+      templates: [],
+      visible: false,
+      index: 0,
+      displayList: [], // 播放列表数组
+      // 第一个存放的是根据deviceIp存放的id(device)
+      // 第二个模板描述和id(templates)
+      displayData: {deviceId: '', temId: '', timeSpan: 0, begin: 0, end: 0},
+      displayCount: 1   // 当前添加的个数
+    }
+  },
+  watch: {
+    '$store.state.cached' (val, oldVal) {
+      this.getInfoList()
+    }
+  },
+  methods: {
+    resetItem () {  // 重置改条条目
+      for (var s in this.displayList[this.index]) {
+        this.displayList[this.index][s] = ''
+        // this.displayList[s] = ''
+      }
+    },
+    reset () {
+      this.deviceId = ''
+      this.displayList = []
+      this.displayData = {deviceId: '', temId: '', timeSpan: 0, begin: 0, end: 0}
+      this.displayList.push(this.displayData)
+    },
+    submit () {
+      for (let i = 0; i < this.displayList.length; i++) {  // 补全信息
+        this.displayList[i].deviceId = this.deviceId
+      }
+      // this.listLoading = true
+      this.$confirm('确认提交吗？', '提示', {}).then(() => {
+      for (let i = 0; i < this.displayList.length; i++) {
+        let para = { newValue: this.displayList[i] }
+        API.addDeviceConfig().go(para).then((data) => {   // 请求所有的数据
+          if (data.ok) {
+          } else {
+            this.$notify(util.notifyBody(false, data.msg))
+            this.uploadSuccess = false
+          }
+        })
+        if (this.uploadSuccess === false) {
+          break
+        }
+      }
+      if (this.uploadSuccess === true) {
+        this.$notify({
+          title: '成功',
+          message: '上传成功',
+          type: 'success'
+        })
+        this.handleClose()
+        this.callback()
+      } else {
+        this.$notify({
+          title: '失败',
+          message: '上传失败',
+          type: 'success'
+        })
+        this.handleClose()
+        this.callback()
+      }
+    })
+    },
+    handleClose () {
+      this.deviceId = ''
+      this.visible = false
+    },
+    setData () {
+      this.deviceLabel = []
+      this.templatesLabel = []
+      for (let i = 0; i < this.device.length; i++) {
+        let label = {text: this.device[i].deviceIp, value: this.device[i].id}
+        this.deviceLabel.push(label)
+      }
+      for (let i = 0; i < this.templates.length; i++) {
+        let label = {text: this.templates[i].description, value: this.templates[i].id}
+        this.templatesLabel.push(label)
+      }
+    },
+    getInfoList () {
+      this.device = this.$cache.fetch('deviceInfo') || []
+      this.templates = this.$cache.fetch('templates') || []
+    },
+    uploadClick (index) {
+      this.index = index
+      console.log(index)
+    },
+    addCounters () {   // 新增专柜信息
+      this.displayCount += 1
+      let length = this.displayList.length - 1
+      if (this.displayList[length].temId !== '' && this.displayList[length].timeSpan !== '' && this.displayList[length].begin !== '' && this.displayList[length].end !== '') {
+        this.displayData = {deviceId: '', temId: '', timeSpan: 0, begin: 0, end: 0}
+        this.displayList.push(this.displayData)
+      } else {
+        this.$notify({
+          title: '警告',
+          message: '请先填充完所有的表单再进行新增!',
+          type: 'warning'
+        })
+      }
+    },
+    show () {
+      this.uploadSuccess = true
+      this.getInfoList()
+      this.setData()
+      this.displayList = []
+      this.displayData = {deviceId: '', temId: '', timeSpan: 0, begin: 0, end: 0}
+      this.displayList.push(this.displayData)
+      this.visible = true
+    },
+    removeCounters (index) {  // 删除专柜x信息
+      if (this.displayList.length <= 1) {
+        this.$notify({
+          title: '警告',
+          message: '请至少保留一项',
+          type: 'warning'
+        })
+      } else {
+        this.displayList.splice(index, 1)
+      }
+    }
+  }
+}
+</script>
+
+<style>
+.maxWidth {
+    width: 100% !important;
+}
+</style>

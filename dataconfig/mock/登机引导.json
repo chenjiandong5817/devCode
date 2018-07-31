@@ -1,0 +1,447 @@
+{
+  "type": "Layout",
+  "description": "登机引导",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "langs": [ "zh-cn", "en-ww"],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "extraParam": {
+    "dynaScrollText": {
+      "description": "动态滚动文本",
+      "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+      "singleData": true,
+      "columnName": "scrolltext"
+    },
+    "virtualRowSize": 10
+  },
+  "rows": [
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 24,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Grid",
+              "description": "登机引导航班列表",
+              "dataSource": "A513683DA7BF4F5EAD6F111D49E10E46",
+              "mainSource": true,
+              "mainPager": true,
+              "pageInterval": 20000,
+              "refreshInterval": 20000,
+              "bodyStyle": {
+                "defaultRowStyle": {
+                  "rowStripe": [ "#284682", "#1E2D5A" ],
+                  "fontSize": 42,
+                  "color": "#fff",
+                  "height": 89,
+                  "lineHeight": 89
+                },
+                "defaultHeaderStyle": {
+                  "fontSize": 50,
+                  "color": "#FAC35A",
+                  "backgroundColor": "#1E2D5A",
+                  "textAlign": "left",
+                  "borderBottom": "1px solid",
+                  "borderBottomColor": "#FAC35A",
+                  "lineHeight": 100,
+                  "height": 100
+                }
+              },
+              "columns": [
+                {
+                  "type": "GridColumn",
+                  "name": "carrier",
+                  "label": {},
+                  "style": {
+                    "textAlign": "center",
+                    "width": 120
+                  },
+                  "headerStyle": {
+                    "backgroundColor": "#1E2D5A"
+                  },
+                  "children": [
+                    {
+                      "type": "Image",
+                      "style": {
+                        "height": 70,
+                        "lineHeight": 70,
+                        "borderRadius": "70px"
+                      },
+                      "imgType": "flight_logo",
+                      "imgSize": "220x220",
+                      "columnName": "carrier"
+                    }
+                  ]
+                },
+                {
+                  "name": "carrier",
+                  "label": {
+                    "zh-cn": "航班号",
+                    "en-ww": "Flight"
+                  },
+                  "style": {
+                    "width": 440,
+                    "fontSize": 42,
+                    "color": "#fff"
+                  },
+                  "headerStyle": {
+                    "backgroundColor": "#1E2D5A",
+                    "textAlign": "left"
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "display": "inline-block"
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "carrier"
+                        },
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "flight"
+                        },
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "transExist": "/",
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "display": "inline-block",
+                        "width": 280
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "route",
+                  "label": {
+                    "zh-cn": "经停/目的地",
+                    "en-ww": "Via/To"
+                  },
+                  "style": {
+                    "width": 360,
+                    "minWidth": 260,
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 360
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "route"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "scheduledeparttime",
+                  "label": {
+                    "zh-cn": "计划起飞",
+                    "en-ww": "Time"
+                  },
+                  "style": {
+                    "width": 280,
+                    "textAlign": "left",
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 280
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "date": {
+                            "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                            "formatTo": "HH:mm"
+                          },
+                          "columnName": "scheduledeparttime"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "boardingtime",
+                  "label": {
+                    "zh-cn": "预计登机",
+                    "en-ww": "Boarding Time"
+                  },
+                  "style": {
+                    "minWidth": 280,
+                    "textAlign": "left",
+                    "fontSize": 42
+                  },
+                  "headerStyle": {
+                    "textAlign": "left"
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 280
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "date": {
+                            "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                            "formatTo": "HH:mm"
+                          },
+                          "columnName": "boardingtime"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "gate",
+                  "label": {
+                    "zh-cn": "登机口",
+                    "en-ww": "Gate"
+                  },
+                  "style": {
+                    "minWidth": 190,
+                    "textAlign": "left",
+                    "fontSize": 42
+                  },
+                  "headerStyle": {
+                    "textAlign": "left"
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 2000
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "gate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "waitingstatus",
+                  "label": {
+                    "zh-cn": "航班状态",
+                    "en-ww": "Status"
+                  },
+                  "style": {
+                    "minWidth": 280,
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 280
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "transColor": {
+                            "matchType": "begin",
+                            "matchSet": {
+                              "BDO": "#ff0000",
+                              "BDF": "#ff0000"
+                            }
+                          },
+                          "twinkle": {
+                            "matchType": "equals",
+                            "matchSet": {
+                              "BDF": true
+                            }
+                          },
+                          "columnName": "waitingstatus"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+
+          ]
+        }
+      ]
+
+    },
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {
+        "position": "absolute",
+        "bottom": 0,
+        "zIndex": 99,
+        "width": 1920,
+        "height": 90,
+        "lineHeight": 90,
+        "fontSize": 50,
+        "color": "#FAC35A",
+        "borderTop": "2px solid",
+        "borderTopColor": "#FAC35A",
+        "backgroundColor": "#212E5B"
+      },
+      "cols": [
+        {
+          "type": "Column",
+          "span": 4,
+          "bodyStyle": {
+            "textAlign": "center"
+          },
+          "dataSource": "$main_pager",
+          "singleData": true,
+          "children": [
+            {
+              "type": "Text",
+              "value": {
+                "zh-cn": "第  ${pageNumber}/${pageCount}  页",
+                "en-ww": "Page  ${pageNumber}/${pageCount}"
+              },
+              "replace": [
+                {
+                  "key": "pageNumber",
+                  "columnName": "pageNumber"
+                },
+                {
+                  "key": "pageCount",
+                  "columnName": "pageCount"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "span": 18,
+          "dataSource": "$current_device_info",
+          "singleData": true,
+          "children": [
+            {
+              "type": "MarqueeText",
+              "speed": 80,
+              "content": [
+                {
+                  "type": "Text",
+                  "columnName": "scrollText"
+                },
+                {
+                  "type": "Text",
+                  "tag": "span",
+                  "columnName": "dynamicScrollText"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "span": 2,
+          "children": [
+            {
+              "type": "Clock"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}                                                                                                                                                   

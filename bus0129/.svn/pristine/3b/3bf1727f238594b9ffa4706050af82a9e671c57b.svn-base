@@ -1,0 +1,641 @@
+<template>
+  <section class="tree-main" v-loading="templateListLoading" element-loading-text="正在加载模板数据...">
+    <el-col :span="24" class="toolbar">
+      <el-select v-model="selectedTempalte" style="margin: 0 10px;" filterable clearable placeholder="选择模板" @change="handleSelectTemplate">
+        <el-option v-for="item in templateList" :key="item.id" :label="item.description" :value="item.id"></el-option>
+      </el-select>
+      <el-button type="primary" @click="hanldeNewTemplate">新建</el-button>
+      <el-button type="success" @click="handleSaveTemplate" :disabled="!(list && list.length > 0)">保存</el-button>
+      <el-button type="info" :disabled="true" v-if="!(list && list.length > 0)">预览效果</el-button>
+      <el-dropdown trigger="click" @command="handleCommand" split-button type="primary" @click="handlePreviewTemplate"  style="margin-left: 10px;" v-else>
+        预览效果
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="setPreviewParams">设置参数</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <el-button type="danger" style="float: right;" :disabled="!selectedTempalte" @click="handleRemoveTemplate">删除</el-button>
+    </el-col>
+    <div>
+      <div class="tree-display" :style="{height: `${tableHeight}px`}">
+        <div class="displayTree">
+          <div v-if="!list || list.length === 0">
+            <!-- <el-button type="primary" size="mini" class="right-button" icon="plus" @click="templateSelectorVisible = true"></el-button> -->
+            <div class="tree-nodata-panel"> 暂无模板 </div>
+          </div>
+          <div v-else>
+            <drag-tree :list="list" nameLabel="typeLabel" childrenLabel="children" moveSameLevel :addable="handleNodeAddable" removable editable @insertNode="handleInsertNode" @editNode="handleEditNode" @removeNode="handleRemoveNode"></drag-tree>
+          </div>
+        </div>
+        <div class="displayCode">
+          <pre class="displayCodeContent">{{ JSON.stringify(sortTemplateTarget, null, 2) }}</pre>
+        </div>
+      </div>
+    </div>
+    <el-dialog
+      v-if="templateSelectorVisible"
+      title="选择模板"
+      :visible.sync="templateSelectorVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="5vh"
+      custom-class="select-template-dialog"
+      :before-close="handleClose">
+      <template-selector v-model="templateConf" :currentDataSource="currentClosetDataSource" :parentType="parentType"></template-selector>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="handleSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      size="tiny"
+      v-if="templateSaveVisible"
+      title="保存模板"
+      :visible="templateSaveVisible"
+      >
+      <el-form>
+        <el-form-item label="模板描述">
+          <el-input v-model="newTemplateDescription"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="templateSaveVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleSubmitSaveTemplate" :disabled="!newTemplateDescription">确 定</el-button>
+      </span>
+    </el-dialog>
+    <template-previewer ref="previewer" :conf="sortTemplateTarget" @setPreviewParams="handleSetPreviewParams"></template-previewer>
+  </section>
+</template>
+<script>
+  import DragTree from '@/components/dragTree/DragTree'
+  import TemplateSelector from './TemplateSelector'
+  import TemplatePreviewer from './TemplatePreviewer'
+  import Tools from '@/common/js/template-tools.js'
+  import { getTemplate, editTemplate, addTemplate, removeTemplate } from '@/api/fids/template.js'
+  import { templatePreviewUrl } from '@/common/config/global.js'
+  import { saveStorage } from '@/api/fids/storage.js'
+  export default {
+    data () {
+      return {
+        list: [],
+        templateSelectorVisible: false,
+        templateConf: null,
+        currentInsertParentNode: null,
+        currentEditNode: null,
+        currentClosetDataSource: null,
+        parentType: null,
+        isEditing: false,
+        tableHeight: 0,
+        selectedTempalte: '',
+        templateList: null,
+        templateSaveVisible: false,
+        newTemplateDescription: '',
+        templateListLoading: false,
+        // oldValue
+        oldValue: null,
+        // preview params
+        deviceId: '',
+        storageId: '',
+        previewData: null
+      }
+    },
+    computed: {
+      sortTemplateTarget () {
+        let sortTemplateTarget = this.moveChildren2End(this.list)
+        this.filterParams(sortTemplateTarget)
+        return sortTemplateTarget.length > 0 ? sortTemplateTarget[0] : {}
+      }
+    },
+    components: {
+      DragTree, TemplateSelector, TemplatePreviewer
+    },
+    created () {
+      this.queryTemplateList()
+    },
+    methods: {
+      // 清空正在编辑的模板配置
+      clearOperateTemplate () {
+        this.templateConf = null
+      },
+      // 设置正在编辑的模板配置
+      setOperateTemplate (val) {
+        this.templateConf = val
+      },
+      // 清空选择的模板
+      clearSelectedTemplate () {
+        this.selectedTempalte = ''
+        this.newTemplateDescription = ''
+      },
+      // 清空页面模板
+      clearPageTemplate () {
+        this.list = []
+      },
+      queryTemplateList () {
+        this.templateListLoading = true
+        getTemplate().go({pageSize: 0}).then(res => {
+          this.templateListLoading = false
+          if (res.ok) {
+            this.templateList = res.attr.data.list
+          }
+        })
+      },
+      // 新建按钮点击事件
+      hanldeNewTemplate () {
+        if (Tools.isEmptyObject(this.list)) {
+          this.handleAddTemplate()
+        } else {
+          this.$confirm('新建模板将使正在编辑的模板丢失？', '正在新建', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.handleAddTemplate()
+          }).catch(() => {})
+        }
+      },
+      // 新建按钮回调函数
+      handleAddTemplate () {
+        this.parentType = null
+        this.clearOperateTemplate()
+        this.clearSelectedTemplate()
+        this.clearPageTemplate()
+        this.templateSelectorVisible = true
+      },
+      // 选择模板回调函数
+      handleSelectTemplate () {
+        this.clearPageTemplate()
+        this.$nextTick(() => {
+          if (this.selectedTempalte) {
+            for (let item of this.templateList) {
+              if (item.id === this.selectedTempalte) {
+                let content = typeof item.content === 'string' ? JSON.parse(item.content) : item.content
+                if (content) {
+                  this.list.push(content)
+                  this.newTemplateDescription = item.description
+                  this.oldValue = Tools.deepCopy(item)
+                }
+                break
+              }
+            }
+          }
+        })
+      },
+      // 保存按钮事件
+      handleSaveTemplate () {
+        this.templateSaveVisible = true
+      },
+      // 保存窗口回调函数
+      handleSubmitSaveTemplate () {
+        // mock save
+        if (this.selectedTempalte) {
+          let newValue = Tools.deepCopy(this.oldValue)
+          newValue.description = this.newTemplateDescription
+          newValue.content = JSON.stringify(this.sortTemplateTarget, null, 2)
+          editTemplate().go({newValue, oldValue: this.oldValue}).then(res => {
+            // this.clearSelectedTemplate()
+            // this.clearPageTemplate()
+            this.queryTemplateList()
+          })
+        } else {
+          let newValue = {
+            description: this.newTemplateDescription,
+            content: JSON.stringify(this.sortTemplateTarget, null, 2)
+          }
+          addTemplate().go({newValue}).then(res => {
+            this.clearSelectedTemplate()
+            this.clearPageTemplate()
+            this.queryTemplateList()
+          })
+        }
+        this.$notify({
+          type: 'success',
+          title: '消息',
+          message: '保存成功'
+        })
+        this.$nextTick(() => {
+          if (this.storageId) {
+            !Tools.isEmptyObject(this.previewData) && (this.previewData.conf = Tools.deepCopy(this.sortTemplateTarget))
+            this.saveServerStorage()
+          }
+          this.templateSaveVisible = false
+        })
+      },
+      // 预览按钮回调事件
+      handlePreviewTemplate () {
+        if (!this.deviceId || !this.storageId) {
+          this.$notify({type: 'warning', title: '警告', message: '请先配置预览参数'})
+          return
+        }
+        top.window.open(`${templatePreviewUrl}${this.deviceId}/${this.storageId}/test`)
+      },
+      handleSetPreviewParams (deviceId, previewData) {
+        this.deviceId = deviceId
+        this.previewData = previewData
+        this.saveServerStorage()
+      },
+      saveServerStorage () {
+        saveStorage().go({id: this.storageId, obj: this.previewData}).then(res => {
+          // console.log(res)
+          this.storageId = res.attr.id
+        })
+      },
+      handleCommand (command) {
+        if (command === 'setPreviewParams') {
+          this.$refs['previewer'].show()
+        }
+      },
+      // 删除按钮回掉函数
+      handleRemoveTemplate () {
+        this.$confirm('确认删除这个模板？', '正在删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          removeTemplate().go(this.selectedTempalte).then(res => {
+            this.$notify({
+              type: res.ok ? 'success' : 'error',
+              title: '消息',
+              message: res.msg
+            })
+            this.clearSelectedTemplate()
+            this.clearPageTemplate()
+            this.queryTemplateList()
+          })
+        }).catch(() => {})
+      },
+      // 树形组件调用的方法
+      handleInsertNode (parent) {
+        this.isEditing = false
+        this.currentInsertParentNode = parent
+        this.currentClosetDataSource = this.searchDataSource(parent)
+        this.parentType = parent.type
+        this.templateSelectorVisible = true
+      },
+      // 树形组件调用的方法
+      handleEditNode (node) {
+        this.isEditing = true
+        this.currentEditNode = node
+        // this.templateConf = Tools.deepCopy(this.currentEditNode)
+        this.setOperateTemplate(Tools.deepCopy(this.currentEditNode))
+        this.currentClosetDataSource = this.searchDataSource(node)
+        this.parentType = Tools.searchNodeParent(node, {name: '', children: this.list}).type
+        this.templateSelectorVisible = true
+        // console.log('edit')
+      },
+      // 树形组件调用的方法
+      handleRemoveNode (node) {
+        // console.log('delete')
+        if (this.list.length === 0) {
+          this.clearSelectedTemplate()
+        }
+      },
+      // 模板选择完毕事件
+      handleSubmit () {
+        this.templateSelectorVisible = false
+        if (!Tools.isEmptyObject(this.templateConf)) {
+          if (this.isEditing) {
+            this.isEditing = false
+            // Object.assign(this.currentEditNode, this.templateConf)
+            // 先删除已经移除的旧属性
+            let newKeys = Object.keys(this.templateConf)
+            for (let key in this.currentEditNode) {
+              if (!newKeys.includes(key)) {
+                this.$delete(this.currentEditNode, key)
+              }
+            }
+            Object.assign(this.currentEditNode, this.templateConf)
+          } else {
+            if (this.currentInsertParentNode) {
+              // console.log(this.currentInsertParentNode)
+              this.currentInsertParentNode.children.push(this.templateConf)
+            } else {
+              this.list.push(this.templateConf)
+            }
+            this.currentInsertParentNode = null
+          }
+        }
+        // this.templateConf = null
+        this.clearOperateTemplate()
+      },
+      handleClose (done) {
+        this.$confirm('确认取消本次操作？', '正在取消', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.templateSelectorVisible = false
+          // this.templateConf = null
+          this.clearOperateTemplate()
+        }).catch(() => {})
+        // this.templateSelectorVisible = false
+        // this.clearOperateTemplate()
+      },
+      // 展示时，把children放到最后
+      moveChildren2End (target) {
+        let list = []
+        for (let item of target) {
+          let conf = {}
+          for (let key in item) {
+            if (key === 'children') {
+              continue
+            }
+            conf[key] = item[key]
+          }
+          if (item.children) {
+            conf.children = this.moveChildren2End(item.children)
+          }
+          list.push(conf)
+        }
+        return list
+      },
+      filterParams (target) {
+        let keyFilters = ['collapsed', 'placeholder']
+        for (let item of target) {
+          for (let key in item) {
+            if (item[key] instanceof Array) {
+              this.filterParams(item[key])
+            } else if (typeof item[key] === 'object') {
+              this.filterParams([item[key]])
+            } else if (keyFilters.includes(key)) {
+              delete item[key]
+            }
+          }
+        }
+      },
+      // 搜索最接近参数节点的数据源
+      searchDataSource (node) {
+        if (node.dataSource) {
+          return node.dataSource
+        } else {
+          node = Tools.searchNodeParent(node, {name: '', children: this.list})
+          if (node) {
+            return this.searchDataSource(node)
+          } else {
+            return null
+          }
+        }
+      },
+      // 判断是否显示节点添加按钮
+      handleNodeAddable (node) {
+        return node.children
+      }
+    }
+  }
+</script>
+<style lang="scss">
+.tree-main {
+  position: relative;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  .tree-display {
+    box-sizing: border-box;
+    padding: 8px 0;
+    margin: 0 8px;
+    border-top: solid 1px #ddd;
+    color: #6b6a6a;
+  }
+  .tree-nodata-panel {
+    padding: 9.5px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+  .displayTree {
+    position: absolute;
+    top: 57px;
+    left: 10px;
+    right: 560px;
+    height: 90%;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    max-height: 1700px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    overflow-x: auto;
+    background-color: #f5f5f5;
+  }
+  .displayCode {
+    position: absolute;
+    top: 57px;
+    width: 520px;
+    right: 10px;
+    height: 90%;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    overflow-y: auto;
+    overflow-x: auto;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    .displayCodeContent {
+      display: block;
+      font-size: 13px;
+      color: #333;
+      word-break: break-all;
+      word-wrap: break-word;
+      font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    }
+  }
+  .select-template-dialog {
+    width: 665px;
+  }
+}
+
+.template-selector-container {
+  width: 100%;
+}
+.template-selector-item {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  font-size: 14px;
+  margin: 8px;
+  text-align: center;
+  background: #ededed;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 30%;
+}
+.template-selector-item--label {
+  cursor: pointer;
+  padding: 23px;
+}
+.template-selector-item--enable:after:hover, .template-selector-item--label:hover {
+  background: #727272;
+  color: #fff;
+}
+.template-selector-item--mask {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background: white;
+  opacity: 0.3;
+}
+.template-selector-item--enable:after {
+  position: absolute;
+  box-sizing: border-box;
+  height: 20px;
+  width: 20px;
+  top: 0;
+  right: 0;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #13CE66;
+  content: "";
+}
+.template-selector-item--mask:after {
+  position: absolute;
+  box-sizing: border-box;
+  height: 20px;
+  width: 20px;
+  top: 0;
+  right: 0;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #ef9292;
+  content: "";
+}
+.template-selector-item--mask:hover {
+  cursor: not-allowed
+}
+.template-selector-item.checked {
+  background: #727272;
+  color: #fff;
+}
+.template-selector-item.checked::after {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  bottom: -6px;
+  left: 48%;
+  border-top-color: #727272;
+  border-bottom-width: 0;
+}
+.template-selector-icon-checked {
+  position: absolute;
+  right: 4px;
+  color: #13CE66;
+  font-size: 16px;
+  margin: auto 0;
+}
+.template-selectior-hidden-box {
+  background-color: #f2f2f2;
+  border: solid 1px #ccc;
+  margin: 0 8px;
+  padding: 15px;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 500px;
+}
+.slide-fade-enter-active {
+  transition: all .6s ease;
+}
+.slide-fade-leave-active {
+  transition: all .1s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to{
+  transform: translateY(10px);
+  opacity: 0;
+}
+.editor-change-enter-active, .editor-change-leave-active {
+  transition: all .3s ease;
+}
+.editor-change-enter, .editor-change-leave-to{
+  transform: translateY(10px);
+  opacity: 0;
+}
+.editor-fieldset {
+  border: solid 1px #ccc;
+}
+.editor-label {
+  display: block;
+  text-align: left;
+  margin: 0 auto;
+}
+.editor-label-require {
+  padding: 0 5px;
+  color: #ff0000;
+}
+.editor-select-full {
+  width: 100%;
+}
+.editor-select-options--left {
+  float: left;
+}
+.editor-select-options--right {
+  float: right;
+  color: #7c7a7a;
+  font-size: 13px;
+}
+.editor-inner-pannel {
+  position: relative;
+  border: solid 1px #7f7e7e;
+  padding: 15px;
+}
+.editor-inner-pannel>div::after, .editor-inner-pannel>div::before {
+  clear: both;
+  content: "";
+  display: table;
+}
+.editor-inner-pannel-left::before {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -6px;
+  left: 10%;
+  border-bottom-color: #7f7e7e;
+  border-top-width: 0;
+}
+.editor-inner-pannel-left::after {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -4px;
+  left: 10%;
+  border-bottom-color: #ededed;
+  border-top-width: 0;
+}
+.editor-inner-pannel-right::before {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -6px;
+  right: 20%;
+  border-bottom-color: #7f7e7e;
+  border-top-width: 0;
+}
+.editor-inner-pannel-right::after {
+  content: ' ';
+  position: absolute;
+  display: block;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  border-width: 6px;
+  top: -4px;
+  right: 20%;
+  border-bottom-color: #ededed;
+  border-top-width: 0;
+}
+.editor-preview-params {
+  display: inline-block;
+}
+</style>

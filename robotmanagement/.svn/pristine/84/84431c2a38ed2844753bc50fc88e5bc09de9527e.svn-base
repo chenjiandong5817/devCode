@@ -1,0 +1,589 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section id="sectionAnalysis" style="background-color: #f9f9f9;" class="chatlog_analysis">
+  <el-row id="bigPanelRow">
+    <el-col class="bigPanelRow_height">
+      <!-- 操作栏 -->
+      <el-row style="margin-top: 10px;" class="operate_high">
+        <el-col :span="1">
+          <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+        <el-col :span="22" class="toolbar" style="padding-bottom: 0px;" id="operateHeight">
+          <div class="operateTag">
+             <el-form :inline="true" :model="filters">
+                <el-form-item>
+                  <el-button type="primary" @click="searchChatLog">查询</el-button>
+                </el-form-item>
+                <el-form-item label="日志类别">
+                  <el-select v-model="filters.chatLogCategory" placeholder="请选择类别">
+                  <el-option
+                    v-for="item in knowledgeCategoryOptions"
+                    :key="item.value"
+                    :label="item.text"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                </el-form-item>
+                <el-form-item label="结束日期">
+                  <el-date-picker v-model="filters.opDate_end" type="date" placeholder="结束日期" clearable style="width: 120px" ></el-date-picker>
+                </el-form-item>
+                <el-form-item label="开始日期">
+                <el-date-picker v-model="filters.opDate_begin" type="date" placeholder="开始日期" clearable style="width: 120px" ></el-date-picker>
+                </el-form-item>
+              </el-form>
+          </div>
+        </el-col>
+        <el-col :span="1">
+          <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+      </el-row>
+      <!-- 图表显示 -->
+      <el-row style="padding: 0;" class="panel_high" id="chartHeight">
+        <el-col :span="1">
+          <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+        <el-col :span="7" id="pie" class="content_high" v-loading="pieLoading">
+          <!-- <div id="pie" style="width: 100%; height: 100%"></div> -->
+        </el-col>
+        <el-col :span="1">
+          <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+        <el-col :span="14" id="area" class="content_high" v-loading="areaLoading">
+          <!-- <div id="area" style="width: 100%; height: 100%"></div> -->
+        </el-col>
+        <el-col :span="1">
+           <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+      </el-row>
+      <!-- 数量显示 -->
+      <!-- <el-row class="num_high" id="numHeight">
+         <el-col :span="20">
+           <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+         <el-col :span="4" style="margin-top: 10px;">
+          <div style="display: inline-block">
+            <div>数量：</div>
+          </div>
+          <div style="display: inline-block">
+            <el-tag size="large">{{ sumTotal }}</el-tag>
+          </div>
+         </el-col>
+      </el-row> -->
+      <!-- 表格显示 -->
+      <el-row style="" class="table_high">
+        <el-col :span="1">
+          <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+        <el-col :span="22">
+          <!--列表-->
+          <el-table v-bind:data="tableData" highlight-current-row v-loading="listLoadingTable" @selection-change="selsChange" :height="90" style="width: 100%;">
+            <el-table-column prop="tulingRobot" label="图灵机器人" min-width="200" sortable show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="dayly" label="日常问讯" min-width="200" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="flight" label="航班问讯" min-width="200" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="sumTotal" label="总数" min-width="200" show-overflow-tooltip>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="1">
+          <div style="width: 5px;height: 5px;"></div>
+        </el-col>
+      </el-row>
+    </el-col>
+  </el-row>
+  </section>
+</template>
+
+<script>
+  import Highcharts from 'highcharts'
+  import Util from '../../common/js/util'
+  import API from '../../api'
+  import Pagination from '../../components/Pagination'
+
+  export default {
+    data () {
+      return {
+        pieData: [
+          ['图灵机器人(闲聊)', 2],
+          {
+            name: '日常问讯',
+            y: 1,
+            sliced: true,
+            selected: true
+          },
+          ['航班问讯', 1]
+        ],
+        areaData: [],
+        // 图灵数据
+        tulingRobotData: [],
+        // 航班数据
+        flightData: [],
+        // 日常问讯数据
+        daylyData: [],
+        // 总的数量
+        sumTotal: null,
+        startTime: null,
+        chatLogs: [],
+        pieLoading: false,
+        areaLoading: false,
+        // 时间范围搜索
+        filters: {
+          chatLogCategory: '',
+          opDate_begin: this.setDefDate(),
+          opDate_end: this.setDefDate()
+        },
+        // 表格的数据
+        chatLogsTable: [],
+        // 表格的加载
+        listLoadingTable: false,
+        // 表格的高度
+        tableHeight: null,
+        // 复选框
+        sels: [],
+        // 日志的数量
+        chatLogCounts: null,
+        // 日志类别
+        knowledgeCategoryOptions: [],
+        // 表格的数据
+        tableData: null,
+        // 面积图的全部数据
+        areaSeries: [{
+          name: '图灵机器人(闲聊)',
+          data: null
+        }, {
+          name: '日常问讯',
+          data: null
+        }, {
+          name: '航班问讯',
+            data: null
+        }],
+        API: API
+      }
+    },
+    computed: {
+      pageNumber () {
+        return this.$refs['page'].get('pageNumber')
+      },
+      pageSize () {
+        return this.$refs['page'].get('pageSize')
+      }
+    },
+    components: {
+      pagination: Pagination
+    },
+    methods: {
+      // 获取日志信息列表
+      getChatLogList: function () {
+        this.pieLoading = true
+        this.areaLoading = true
+        this.listLoadingTable = true
+        API.getChatLogListPage(1, 100000).go().then((data) => {
+          if (data.success) {
+            this.chatLogs = data.chatlogList
+            this.searchChatLog()
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      getPieData (value) {
+        var tulingRobotCount = 0
+        var daylyRequestCount = 0
+        var flightCount = 0
+        for (var i = 0; i < value.length; i++) {
+          if (value[i].chat_category === 'tulingRobot') {
+            tulingRobotCount = tulingRobotCount + 1
+          }
+          if (value[i].chat_category === '航班') {
+            flightCount = flightCount + 1
+          }
+          if (value[i].chat_category !== 'tulingRobot' && value[i].chat_category !== '航班') {
+            daylyRequestCount = daylyRequestCount + 1
+          }
+        }
+        this.pieData[0][1] = tulingRobotCount
+        this.pieData[1].y = daylyRequestCount
+        this.pieData[2][1] = flightCount
+        this.sumTotal = tulingRobotCount + daylyRequestCount + flightCount
+        this.getTableData(tulingRobotCount, daylyRequestCount, flightCount, tulingRobotCount + daylyRequestCount + flightCount)
+      },
+      getAreaData (value) {
+        var moment = require('moment')
+        // 获取开始的时间
+        this.startTime = moment(value[value.length - 1].create_time).format('YYYY-MM-DD')
+        // 定义三个数组分别是图灵机器人，日常问讯，航班信息
+        var tulingRobot = []
+        var dayly = []
+        var flight = []
+        // 根据类别来给数组赋值并且改变时间格式
+        for (var i = 0; i < value.length; i++) {
+          if (value[i].chat_category === 'tulingRobot') {
+            tulingRobot.push(value[i])
+          }
+          if (value[i].chat_category === '航班') {
+            flight.push(value[i])
+          }
+          if (value[i].chat_category !== 'tulingRobot' && value[i].chat_category !== '航班') {
+            dayly.push(value[i])
+          }
+        }
+        // 获得今天零点的时间戳
+        var TodayStartTimeStamp = Number(moment().startOf('day').format('x'))
+        // 获取今天23点59秒的时间戳
+        var TodayEndTimeStamp = Number(moment().endOf('day').format('x'))
+        // 一天的时间戳
+        var oneDayTimeStamp = 1000 * 24 * 60 * 60
+        // 定义一个开始时间戳
+        var start = TodayStartTimeStamp
+        // 定义一个结束时间
+        var end = TodayEndTimeStamp
+        // 图灵机器人
+        // 获取时间跨度
+        // 清空数据
+        this.tulingRobotData = []
+        if (tulingRobot.length !== 0) {
+          // 天的跨度
+          var dayNumTuling = Math.ceil((Number(moment(tulingRobot[0].create_time).endOf('day').format('x')) - Number(moment(tulingRobot[tulingRobot.length - 1].create_time).startOf('day').format('x'))) / oneDayTimeStamp)
+          // 组织数据
+          var startTuling = start
+          var endTuling = end
+          for (var a1 = 0; a1 < dayNumTuling; a1++) {
+            var everyDayCountTuling = []
+            for (var a2 = 0; a2 < tulingRobot.length; a2++) {
+              if (tulingRobot[a2].create_time > startTuling && tulingRobot[a2].create_time < endTuling) {
+                everyDayCountTuling.push(tulingRobot[a2])
+              }
+            }
+            var tulingRobotEveryDate = []
+            tulingRobotEveryDate[0] = Util.deepCopy(startTuling) + oneDayTimeStamp
+            tulingRobotEveryDate[1] = everyDayCountTuling.length
+            this.tulingRobotData.push(tulingRobotEveryDate)
+            startTuling = startTuling - oneDayTimeStamp
+            endTuling = endTuling - oneDayTimeStamp
+          }
+        }
+        this.areaSeries[0].data = this.tulingRobotData
+        // 日常问讯
+        // 获取时间跨度
+        // 清空数据
+        this.daylyData = []
+        if (dayly.length !== 0) {
+          // 天的跨度
+          var dayNumDayly = Math.ceil((Number(moment(dayly[0].create_time).endOf('day').format('x')) - Number(moment(dayly[dayly.length - 1].create_time).startOf('day').format('x'))) / oneDayTimeStamp)
+          // 组织数据
+          var startDayly = start
+          var endDayly = end
+          for (var b1 = 0; b1 < dayNumDayly; b1++) {
+            var everyDayDayly = []
+            for (var b2 = 0; b2 < dayly.length; b2++) {
+              if (dayly[b2].create_time > startDayly && dayly[b2].create_time < endDayly) {
+                everyDayDayly.push(dayly[b2])
+              }
+            }
+            var daylyEveryDate = []
+            daylyEveryDate[0] = startDayly + oneDayTimeStamp
+            daylyEveryDate[1] = everyDayDayly.length
+            this.daylyData.push(daylyEveryDate)
+            startDayly = startDayly - oneDayTimeStamp
+            endDayly = endDayly - oneDayTimeStamp
+          }
+        }
+        this.areaSeries[1].data = this.daylyData
+        // 航班信息
+        // 获取时间跨度
+        // 清空数据
+        this.flightData = []
+        if (flight.length !== 0) {
+          // 当数据只有一条的时候天数为1
+          var dayNumFlight = Math.ceil((Number(moment(flight[0].create_time).endOf('day').format('x')) - Number(moment(flight[flight.length - 1].create_time).startOf('day').format('x'))) / oneDayTimeStamp)
+          // 组织数据
+          var startflight = start
+          var endflight = end
+          for (var c1 = 0; c1 < dayNumFlight; c1++) {
+            var everyDayflight = []
+            for (var c2 = 0; c2 < flight.length; c2++) {
+              if (flight[c2].create_time > startflight && flight[c2].create_time < endflight) {
+                everyDayflight.push(flight[c2])
+              }
+            }
+            var flightEveryDate = []
+            flightEveryDate[0] = startflight + oneDayTimeStamp
+            flightEveryDate[1] = everyDayflight.length
+            this.flightData.push(flightEveryDate)
+            startflight = startflight - oneDayTimeStamp
+            endflight = endflight - oneDayTimeStamp
+          }
+        }
+        this.areaSeries[2].data = this.flightData
+      },
+      // 把时间转换成时间戳的函数
+      setTimeStamp (data) {
+        let moment = require('moment')
+        let timeStamp = moment(data).format('x')
+        return timeStamp
+      },
+      // 初始化时间
+      setDefDate () {
+        let moment = require('moment')
+        let nextDate = moment().format('YYYY-MM-DD')
+        return nextDate
+      },
+      // 获取标准的时间
+      getStandard (data) {
+        let moment = require('moment')
+        let standardTime = moment(data).format('YYYYMMDD')
+        return standardTime
+      },
+      // 获取时分秒
+      formatterTime (row, column, cellValue) {
+        let moment = require('moment')
+        let time = moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+        return time
+      },
+      // 分析图初始化
+      initHighChart () {
+        // 饼图
+        Highcharts.chart('pie', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '日志信息统计'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+              pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels: {
+                  enabled: true,
+                  formatter: function () {
+                    return '<span style="color: ' + this.point.color + '"> 值：' + this.y + '条' + '，占比' + this.percentage.toFixed(1) + '%</span>'
+                  },
+                  style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                  }
+                },
+                showInLegend: true
+              }
+           },
+            series: [{
+              type: 'pie',
+              name: '日志信息统计',
+              data: this.pieData
+           }]
+        })
+        this.pieLoading = false
+        // 区域图
+        Highcharts.chart('area', {
+          chart: {
+            type: 'area'
+          },
+          title: {
+            text: '日志信息统计'
+          },
+          xAxis: {
+            type: 'datetime'
+          },
+          yAxis: {
+            title: {
+               text: '各种日志类别的数量(条)'
+            },
+            labels: {
+               formatter: function () {
+                  return this.value
+               }
+            }
+          },
+          tooltip: {
+            pointFormat: '{series.name}数量： <b>{point.y:,.0f}</b><br/>'
+          },
+          plotOptions: {
+            area: {
+               pointStart: this.startTime,
+               marker: {
+                  enabled: false,
+                  symbol: 'circle',
+                  radius: 2,
+                  states: {
+                     hover: {
+                       enabled: true
+                     }
+                  }
+               }
+            }
+          },
+          series: this.areaSeries
+        })
+        this.areaLoading = false
+      },
+      // 搜索查询
+      searchChatLog () {
+        // 先根据时间过滤
+        // 定义一个结果数组时间过滤的
+        var result1 = []
+        // 定义一个结果数组日志类别的
+        var result2 = []
+        let moment = require('moment')
+        // 开始时间
+        var start = Number(moment(this.filters.opDate_begin).startOf('day').format('x'))
+        // 结束时间
+        var end = Number(moment(this.filters.opDate_end).endOf('day').format('x'))
+        // 数据过滤时间
+        for (var i = 0; i < this.chatLogs.length; i++) {
+          this.chatLogs[i].create_time = Number(this.setTimeStamp(this.chatLogs[i].create_time))
+          if (this.chatLogs[i].create_time > start && this.chatLogs[i].create_time < end) {
+            result1.push(this.chatLogs[i])
+          }
+        }
+        // 数据过滤日志类别
+        if (this.filters.chatLogCategory === '') {
+          result2 = result1
+        } else {
+          for (var j = 0; j < result1.length; j++) {
+            if (result1[j].chat_category === this.filters.chatLogCategory) {
+              result2.push(result1[j])
+            }
+          }
+        }
+        // 传递数据画图
+        this.getPieData(result2)
+        this.getAreaData(result2)
+        this.initHighChart()
+      },
+      selsChange: function (sels) {
+        this.sels = sels
+      },
+      handleCommand: function (command, self) {
+        var node = self.$vnode.data.attrs
+        /* eslint-disable */
+        eval('this.' + command).call(this, node.index, node.row)
+        /* eslint-enable */
+      },
+      getKnowledgeCategoryList () {
+        API.getKnowledgeCategoryListPage(1, 10000).go().then((data) => {
+          if (data.success) {
+            var knowledgeCategoryArray = data.knowledgeCategoryList
+            this.knowledgeCategoryOptions = []
+            this.knowledgeCategoryOptions = [ {
+              text: '全部',
+              value: ''
+            }, {
+              text: '图灵机器人',
+              value: 'tulingRobot'
+            }, {
+              text: '航班信息',
+              value: '航班'
+            } ]
+            for (var i = 0; i < knowledgeCategoryArray.length; i++) {
+              var result = {}
+              result['text'] = knowledgeCategoryArray[i].knowledgeCategoryCNName
+              result['value'] = knowledgeCategoryArray[i].knowledgeCategoryId
+              this.knowledgeCategoryOptions.push(result)
+            }
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+        })
+      },
+      formatterCategory (cellValue) {
+        var result = null
+        for (var i = 0; i < this.knowledgeCategoryOptions.length; i++) {
+          if (this.knowledgeCategoryOptions[i].value === cellValue) {
+            result = this.knowledgeCategoryOptions[i].text
+          }
+        }
+        if (result === null) {
+          result = '暂无'
+        }
+        return result
+      },
+      getTableData (a, b, c, d) {
+        this.tableData = [ { id: 1, tulingRobot: null, dayly: null, flight: null, sumTotal: null } ]
+        this.tableData[0].tulingRobot = a
+        this.tableData[0].dayly = b
+        this.tableData[0].flight = c
+        this.tableData[0].sumTotal = d
+        this.listLoadingTable = false
+      }
+    },
+    mounted () {
+      this.getChatLogList()
+      this.getKnowledgeCategoryList()
+    }
+  }
+</script>
+
+<style>
+  .chatlog_analysis .operateTag .el-form-item {
+    float: right;
+    margin-right: 30px;
+  }
+  .chatlog_analysis .percentageExport .el-progress {
+    width: 100px;
+    margin-top: 8px;
+  }
+  @media screen and (min-height: 0px) and (max-height: 767px) {
+    .chatlog_analysis .panel_high {
+      height: 340px;
+      margin-top: 30px;
+    }
+    .chatlog_analysis .table_high {
+      margin-top:20px;
+    }
+    .chatlog_analysis .content_high {
+      height: 330px;
+    }
+    .chatlog_analysis .operate_high {
+      height: 45px;
+    }
+    .chatlog_analysis .bigPanelRow_height {
+      height: 400px;
+    }
+  }
+  @media screen and (min-height: 768px) and (max-height: 1080px) {
+    .chatlog_analysis .panel_high {
+      height: 610px;
+      margin-top: 40px;
+    }
+    .chatlog_analysis .table_high {
+      margin-top:40px;
+    }
+    .chatlog_analysis .content_high {
+      height: 600px;
+    }
+    .chatlog_analysis .operate_high {
+      height: 45px;
+    }
+    .chatlog_analysis .bigPanelRow_height {
+      height: 690px;
+    }
+  }
+  .chatlog_analysis .highcharts-credits {
+    display: none;
+  }
+  .chatlog_analysis .toolbar-bottom {
+    border: 0;
+    z-index: 90;
+    background: #fff;
+    padding: 10px;
+    position: absolute;
+    /*bottom: -70px;*/
+    width: 100%!important;
+  }
+</style>

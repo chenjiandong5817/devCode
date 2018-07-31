@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_order.mappers.OrderEvaluateMapper">
+	<insert id="add" parameterType="orderEvaluateDto">
+		insert into ap_order_evaluate
+			(
+				uuid,
+				orderUuid,
+				passengerUuid,
+				passengerMobile,
+				passengerName,
+				driverUuid,
+				evaluateScore,
+				evaluateContent,
+				evaluateTag,
+				createTime,
+				creator
+			)
+		values
+			(
+				#{uuid},
+				#{orderUuid},
+				#{passengerUuid},
+				#{passengerMobile},
+				#{passengerName},
+				#{driverUuid},
+				#{evaluateScore},
+				#{evaluateContent},
+				#{evaluateTag},
+				#{createTime},
+				#{creator}
+			)	
+	</insert>
+	
+	<update id="edit" parameterType="orderEvaluateDto">
+		update ap_order_evaluate
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="orderUuid != null and '' != orderUuid"> orderUuid = #{orderUuid},</if>
+			<if test="passengerUuid != null and '' != passengerUuid"> passengerUuid = #{passengerUuid},</if>
+			<if test="passengerMobile != null and '' != passengerMobile"> passengerMobile = #{passengerMobile},</if>
+			<if test="passengerName != null and '' != passengerName"> passengerName = #{passengerName},</if>
+			<if test="driverUuid != null and '' != driverUuid"> driverUuid = #{driverUuid},</if>
+			<if test="evaluateScore != null and '' != evaluateScore"> evaluateScore = #{evaluateScore},</if>
+			<if test="evaluateContent != null and '' != evaluateContent"> evaluateContent = #{evaluateContent},</if>
+			<if test="evaluateTag != null and '' != evaluateTag"> evaluateTag = #{evaluateTag},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="orderEvaluateDto">
+		delete from
+			ap_order_evaluate
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="orderEvaluateDto">
+		select
+			*
+		from
+			ap_order_evaluate
+		where
+			uuid = #{uuid}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_order_evaluate
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="orderUuid != null and '' != orderUuid"> and orderUuid = #{orderUuid} </if>
+			<if test="passengerUuid != null and '' != passengerUuid"> and passengerUuid = #{passengerUuid} </if>
+			<if test="passengerMobile != null and '' != passengerMobile"> and passengerMobile = #{passengerMobile} </if>
+			<if test="passengerName != null and '' != passengerName"> and passengerName = #{passengerName} </if>
+			<if test="driverUuid != null and '' != driverUuid"> and driverUuid = #{driverUuid} </if>
+			<if test="evaluateScore != null and '' != evaluateScore"> and evaluateScore = #{evaluateScore} </if>
+			<if test="evaluateContent != null and '' != evaluateContent"> and evaluateContent = #{evaluateContent} </if>
+			<if test="evaluateTag != null and '' != evaluateTag"> and evaluateTag = #{evaluateTag} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+
+	<select id="myAvgScore" resultType="Double">
+		select
+		COALESCE(AVG (evaluateScore),0)
+		from
+		ap_order_evaluate
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="orderUuid != null and '' != orderUuid"> and orderUuid = #{orderUuid} </if>
+			<if test="passengerUuid != null and '' != passengerUuid"> and passengerUuid = #{passengerUuid} </if>
+			<if test="passengerMobile != null and '' != passengerMobile"> and passengerMobile = #{passengerMobile} </if>
+			<if test="passengerName != null and '' != passengerName"> and passengerName = #{passengerName} </if>
+			<if test="driverUuid != null and '' != driverUuid"> and driverUuid = #{driverUuid} </if>
+			<if test="evaluateScore != null and '' != evaluateScore"> and evaluateScore = #{evaluateScore} </if>
+			<if test="evaluateContent != null and '' != evaluateContent"> and evaluateContent = #{evaluateContent} </if>
+			<if test="evaluateTag != null and '' != evaluateTag"> and evaluateTag = #{evaluateTag} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="limit != null and '' != limit"> and ROWNUM  &lt;= #{limit} </if>
+		</where>
+
+	</select>
+
+	<select id="list" resultType="orderEvaluateDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="orderEvaluateDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,254 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item>
+      <el-button type="default" @click="Tools.addDataSource(conf)" plain v-if="!Tools.haveDataSource(conf)">添加数据源</el-button>
+      <el-button type="danger" @click="Tools.removeDataSource(conf)" plain v-else>删除数据源</el-button>
+    </el-form-item>
+    <el-form-item>
+      <span class="editor-label">描述(description)</span>
+      <el-input v-model="conf.description"></el-input>
+    </el-form-item>
+    <data-source-form-item v-model="conf"></data-source-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="11">
+              <span class="editor-label">宽度(width)</span>
+              <el-input type="number" :value="conf.bodyStyle.minWidth" @input="val => Tools.inputStr2Number(conf.bodyStyle, 'minWidth', val)"></el-input>
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <span class="editor-label">高度(height)</span>
+              <el-input type="number" :value="conf.bodyStyle.minHeight" @input="val => Tools.inputStr2Number(conf.bodyStyle, 'minHeight', val)"></el-input>
+            </el-col>
+          </el-form-item>
+          <color-picker v-model="conf.bodyStyle.backgroundColor" label="背景色(backgroundColor)" :inputScale="9" :pickerScale="3"></color-picker>
+        </div>
+      </fieldset>
+    </el-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>多语言</legend>
+        <div>
+          <el-form-item>
+            <selector v-model="conf.langs" :options="Tools.langOptions()" filterable multiple :showLabel="false" placeholder="选择语言列表"></selector>
+          </el-form-item>
+          <el-form-item>
+            <el-col :span="11">
+              <span class="editor-label">默认语言(defaultLang)</span>
+              <el-select v-model="conf.defaultLang" filterable placeholder="选择语言列表">
+                <template v-for="item in defaultLangOptions">
+                  <el-option :key="item" :label="item" :value="item">
+                  </el-option>
+                </template>
+              </el-select>
+            </el-col>
+            <el-col :span="11" :offset="1">
+              <span class="editor-label">切换时间(langTimer)</span> 
+              <el-input type="number" :value="conf.langTimer" placeholder="选择切换时间，单位毫秒" @input="val => Tools.inputStr2Number(conf, 'langTimer', val)"></el-input>
+            </el-col>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>特殊属性</legend>
+        <div>
+          <el-form-item>
+            <span class="editor-label" >
+              动态滚动文本(dynaScrollText)
+              <el-switch v-model="extraParamOptions.dynaScrollText.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            </span>
+            <div v-if="extraParamOptions.dynaScrollText.switch" class="editor-inner-pannel editor-inner-pannel-left">
+              <el-form-item>
+                <span class="editor-label">数据源(dataSource):</span>
+                <el-select v-model="conf.extraParam.dynaScrollText.dataSource" filterable placeholder="选择数据源" class="editor-select-full">
+                  <template v-for="item in dataSourceList">
+                    <el-option :key="item.value" :label="item.label" :value="item.value"></el-option>
+                  </template>
+                </el-select> 
+              </el-form-item>
+              <el-form-item>
+                <el-col :span="11">
+                  <span class="editor-label">字段名称(columnName)</span>
+                  <el-select v-model="conf.extraParam.dynaScrollText.columnName" filterable placeholder="选择语言列表">
+                    <template v-for="item in dynaScrollTextDataSourceColumns">
+                      <el-option :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </template>
+                  </el-select>
+                </el-col>
+              </el-form-item>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <span class="editor-label" >
+              虚拟行数(virtualRowSize)
+              <el-switch v-model="extraParamOptions.virtualRowSize.switch" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            </span>
+            <div v-if="extraParamOptions.virtualRowSize.switch" class="editor-inner-pannel editor-inner-pannel-left">
+              <el-form-item>
+                <el-slider v-model="conf.extraParam.virtualRowSize" :step="1" :min="0" :max="30" show-input></el-slider>
+              </el-form-item>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <span class="editor-label" >
+              <el-popover :ref="`popover-text-date`" placement="top-start" width="250" trigger="hover">
+                <div>
+                  第三语言识别参数，值为数据源字段。只能用于单行数据的数据源，多行记录数据源可能有不可预计的问题
+                </div>
+                <i 
+                  class="el-icon-warning" 
+                  slot="reference" />
+              </el-popover>
+              第三语言识别(destination)
+              <el-switch v-model="extraParamOptions.destination.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+            </span>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import DataSourceFormItem from './form-items/DataSource'
+  import ColorPicker from './form-items/ColorPicker'
+  import Selector from './form-items//Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      DataSourceFormItem, ColorPicker, Selector
+    },
+    data () {
+      return {
+        conf: {},
+        // *** 编辑时，需要根据是否有值判断更改switch状态
+        extraParamOptions: {
+          dynaScrollText: {
+            switch: false,
+            value: {
+              dataSource: '',
+              singleData: true,
+              columnName: ''
+            }
+          },
+          virtualRowSize: {
+            switch: false,
+            value: 0
+          },
+          destination: {
+            switch: false,
+            value: 'DESTINATION'
+          }
+        },
+        extraParamOptionsHistory: {},
+        Tools
+      }
+    },
+    computed: {
+      dynaScrollTextDataSourceColumns () {
+        if (!this.conf.extraParam.dynaScrollText) {
+          return []
+        }
+        // let columns = Tools.getDataSourceColumns(this.conf.extraParam.dynaScrollText.dataSource)
+        let columns = this.$parent.getDataSourceColumns(this.conf.extraParam.dynaScrollText.dataSource) || []
+        if (columns.filter(item => item.value === this.conf.extraParam.dynaScrollText.columnName).length === 0) {
+          this.conf.extraParam.dynaScrollText.columnName = ''
+        }
+        return columns
+      },
+      defaultLangOptions () {
+        if (this.conf.langs) {
+          if (!this.conf.langs.includes(this.conf.defaultLang)) {
+            this.conf.defaultLang = ''
+          }
+        }
+        return this.conf.langs
+      },
+      dataSourceList () {
+        // 用于滚动文本数据源
+        return (this.$cache.fetch('dataSources') || []).map(item => {
+          return {label: item.des, value: item.id}
+        })
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      extraParamOptions: {
+        handler (val) {
+          // this.generateExtraParam(val)
+          for (let key in val) {
+            if (this.extraParamOptionsHistory[key] && this.extraParamOptionsHistory[key].switch === val[key].switch) {
+              continue
+            }
+            if (val[key].switch) {
+              this.$set(this.conf.extraParam, key, val[key].value)
+            } else {
+              this.$delete(this.conf.extraParam, key)
+            }
+          }
+          this.createExtraParamHistory()
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'Layout',
+          typeLabel: '布局',
+          description: '',
+          bodyStyle: {},
+          langs: [],
+          defaultLang: '',
+          langTimer: 18000,
+          extraParam: {}
+        }
+        this.generateExtraParam(this.extraParamOptions, true)
+        // 为了让展示json数据的时候 children拍在最底下
+        this.$set(this.conf, 'children', [])
+      } else {
+        // 检查extraParam数据，有值就打开开关
+        for (let key in this.extraParamOptions) {
+          if (!Tools.isEmptyObject(this.value.extraParam[key])) {
+            this.$set(this.extraParamOptions[key], 'switch', true)
+            this.$set(this.extraParamOptions[key], 'value', this.value.extraParam[key])
+          }
+        }
+        // 新建extramParams历史， 用于watch时候进行对比
+        this.createExtraParamHistory()
+        // 这里绝对千万一定不要用Object.assign， 需要把value的地址指向conf
+        this.conf = this.value
+      }
+    },
+    mounted () {
+      this.generateExtraParam(this.extraParamOptions)
+    },
+    methods: {
+      generateExtraParam (val, init) {
+        let extraParam = this.conf.extraParam
+        for (let key in val) {
+          if (init || val[key].switch) {
+            this.$set(extraParam, key, val[key].value)
+          } else {
+            this.$delete(extraParam, key)
+          }
+        }
+      },
+      createExtraParamHistory () {
+        // this.extraParamOptionsHistory = Object.assign({}, this.extraParamOptions)
+        this.extraParamOptionsHistory = Tools.deepCopy(this.extraParamOptions)
+      }
+    }
+  }
+</script>

@@ -1,0 +1,640 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>第3章  资源数据管理 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="chapter2.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    第1章  系统介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="chapter2.html">
+            
+                <a href="chapter2.html">
+            
+                    
+                    第2章  基础数据管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3" data-path="chapter3.html">
+            
+                <a href="chapter3.html">
+            
+                    
+                    第3章  资源数据管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >第3章  资源数据管理</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x7B2C;3&#x7AE0;-&#x8D44;&#x6E90;&#x6570;&#x636E;&#x7BA1;&#x7406;">&#x7B2C;3&#x7AE0; &#x8D44;&#x6E90;&#x6570;&#x636E;&#x7BA1;&#x7406;</h1>
+<h2 id="31-&#x8D44;&#x6E90;&#x7BA1;&#x7406;">3.1 &#x8D44;&#x6E90;&#x7BA1;&#x7406;</h2>
+<ul>
+<li><p>&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x4E3A;&#x6574;&#x4E2A;&#x7CFB;&#x7EDF;&#x63D0;&#x4F9B;&#x8D44;&#x6E90;&#x6570;&#x636E;&#x7684;&#x5F55;&#x5165;&#xFF0C;&#x5220;&#x9664;&#xFF0C;&#x7F16;&#x8F91;&#x4E0E;&#x67E5;&#x8BE2;&#x3002;&#x8BE5;&#x6A21;&#x5757;&#x7684;&#x5B58;&#x5728;&#x652F;&#x6491;&#x4E86;&#x6574;&#x4E2A;&#x7CFB;&#x7EDF;&#x7684;&#x8FD0;&#x884C;&#x3002;</p>
+<h3 id="311-&#x767B;&#x673A;&#x53E3;">3.1.1 &#x767B;&#x673A;&#x53E3;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x4E00;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x767B;&#x673A;&#x53E3;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3111-&#x767B;&#x673A;&#x53E3;&#x7684;&#x663E;&#x793A;">3.1.1.1 &#x767B;&#x673A;&#x53E3;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x767B;&#x673A;&#x53E3;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6309;&#x7167;&#x65F6;&#x95F4;&#x6392;&#x5E8F;&#xFF0C;&#x79BB;&#x5F53;&#x524D;&#x65F6;&#x95F4;&#x8D8A;&#x8FD1;&#xFF0C;&#x6392;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x9875;&#x9762;&#x4E0A;&#x4E3B;&#x8981;&#x5C55;&#x793A;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x7684;&#x7F16;&#x7801;&#xFF0C;&#x5B9E;&#x9645;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x533A;&#x57DF;&#x4E0E;&#x72B6;&#x6001;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;50&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.1.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/109.png" alt=""><blockquote>
+<p>&#x56FE;3.1.1.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3112-&#x767B;&#x673A;&#x53E3;&#x7684;&#x67E5;&#x8BE2;">3.1.1.2 &#x767B;&#x673A;&#x53E3;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x7684;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x548C;&#x7F16;
+&#x7801;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#x4EE5;&#x83B7;&#x5F97;&#x66F4;&#x7CBE;&#x786E;&#x7684;&#x6570;&#x636E;&#x3002;&#x5728;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x6210;&#x529F;&#x540E;&#xFF0C;&#x7F16;&#x7801;
+&#x8F93;&#x5165;&#x6846;&#x91CC;&#x7684;&#x503C;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#x3002;&#x5982;&#x56FE;3.1.1.2.1&#x4E0E;3.1.1.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/110.png" alt=""><blockquote>
+<p>&#x56FE;3.1.1.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/111.png" alt="">
+&#x56FE;3.1.1.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3113-&#x767B;&#x673A;&#x53E3;&#x7684;&#x65B0;&#x589E;">3.1.1.3 &#x767B;&#x673A;&#x53E3;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#xFF0C;&#x53EF;&#x4EE5;&#x8FDB;&#x5165;&#x5230;&#x65B0;&#x589E;&#x9875;&#x9762;&#x3002;&#x7F16;&#x7801;&#xFF0C;&#x5B9E;&#x9645;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x533A;&#x57DF;&#xFF0C;&#x662F;&#x5426;&#x8FDC;&#x673A;&#x4F4D;&#xFF0C;&#x8FDB;&#x6E2F;/&#x51FA;&#x6E2F;&#x8FD9;&#x51E0;&#x9879;&#x662F;&#x5FC5;&#x987B;&#x586B;&#x5199;&#x7684;&#x3002;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x9700;&#x8981;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x5176;&#x4E2D;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x4E0E;&#x5173;&#x8054;&#x767B;&#x673A;&#x53E3;&#x548C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x662F;&#x5173;&#x8054;&#x7684;&#xFF0C;&#x5173;&#x8054;&#x767B;&#x673A;&#x53E3;&#x548C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x662F;&#x548C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7ED1;&#x5B9A;&#x5728;&#x4E00;&#x8D77;&#x7684;&#x3002;&#x5982;&#x56FE;3.1.1.2.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/112.png" alt=""><blockquote>
+<p>&#x56FE;3.1.1.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3114-&#x767B;&#x673A;&#x53E3;&#x7684;&#x7F16;&#x8F91;">3.1.1.4 &#x767B;&#x673A;&#x53E3;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x65F6;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x5C31;&#x4F1A;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x3002;&#x5176;&#x4E2D;&#x7F16;&#x7801;&#xFF0C;&#x5B9E;&#x9645;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x533A;&#x57DF;&#xFF0C;&#x662F;&#x5426;&#x8FDC;&#x673A;&#x4F4D;&#x4E0E;&#x8FDB;&#x6E2F;/&#x51FA;&#x6E2F;&#x662F;&#x4E0D;&#x53EF;&#x88AB;&#x6E05;&#x7A7A;&#x7684;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x9879;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x3002;&#x5176;&#x4E2D;&#x5173;&#x8054;&#x767B;&#x673A;&#x53E3;&#x4E0E;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x662F;&#x53D7;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7684;&#x8054;&#x52A8;&#x3002;&#x5982;&#x56FE;3.1.1.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/113.png" alt=""><blockquote>
+<p>&#x56FE;3.1.1.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3115-&#x767B;&#x673A;&#x53E3;&#x7684;&#x5220;&#x9664;">3.1.1.5 &#x767B;&#x673A;&#x53E3;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x5230;&#x5220;&#x9664;&#x754C;&#x9762;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x3002;&#x5982;&#x56FE;3.1.1.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/114.png" alt=""><blockquote>
+<p>&#x56FE;3.1.1.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="312-&#x673A;&#x4F4D;">3.1.2 &#x673A;&#x4F4D;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x4E8C;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x673A;&#x4F4D;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3121-&#x673A;&#x4F4D;&#x7684;&#x663E;&#x793A;">3.1.2.1 &#x673A;&#x4F4D;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x673A;&#x4F4D;&#x7684;&#x6BCF;&#x4E00;&#x6761;&#x6570;&#x636E;&#x662F;&#x6309;&#x7167;&#x65F6;&#x95F4;&#x987A;&#x5E8F;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x79BB;&#x5F53;&#x524D;&#x65F6;&#x95F4;&#x8D8A;&#x8FD1;&#x6392;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x9875;&#x9762;&#x4E0A;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x4E3B;&#x8981;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x533A;&#x57DF;&#x5C5E;&#x6027;&#x4E0E;&#x72B6;&#x6001;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.2.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/115.png" alt=""><blockquote>
+<p>&#x56FE;3.1.2.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3122-&#x673A;&#x4F4D;&#x7684;&#x67E5;&#x8BE2;">3.1.2.2 &#x673A;&#x4F4D;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x7684;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x8BF7;&#x9009;&#x62E9;&#x662F;&#x5426;&#x6865;&#x4F4D;&#xFF0C;&#x7F16;&#x7801;&#x6765;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#xFF0C;&#x4EE5;&#x83B7;&#x5F97;&#x66F4;&#x7CBE;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x5176;&#x4E2D;&#x8BF7;&#x9009;&#x62E9;&#x662F;&#x5426;&#x673A;&#x4F4D;&#x4E0B;&#x62C9;&#x6846;&#x4E0E;&#x7F16;&#x7801;&#x5728;&#x6210;&#x529F;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x540E;&#xFF0C;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#x3002;&#x5982;&#x56FE;3.1.2.2.1&#x4E0E;3.1.2.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/116.png" alt=""><blockquote>
+<p>&#x56FE;3.1.2.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/117.png" alt="">
+&#x56FE;3.1.2.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3123-&#x673A;&#x4F4D;&#x7684;&#x65B0;&#x589E;">3.1.2.3 &#x673A;&#x4F4D;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#xFF0C;&#x5373;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x65B0;&#x589E;&#x9875;&#x9762;&#x6267;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x7F16;&#x7801;&#x4E0E;&#x662F;&#x5426;&#x6865;&#x4F4D;&#x662F;&#x5FC5;&#x987B;&#x586B;&#x5199;&#x7684;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x9879;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x5176;&#x4E2D;&#x5DE6;&#x673A;&#x4F4D;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x5173;&#x8054;&#xFF0C;&#x800C;&#x53F3;&#x673A;&#x4F4D;&#x4E0B;&#x62C9;&#x6846;&#x7684;&#x503C;&#x4F1A;&#x81EA;&#x52A8;&#x6392;&#x9664;&#x6389;&#x5DE6;&#x673A;&#x4F4D;&#x5DF2;&#x7ECF;&#x9009;&#x7684;&#x503C;&#x3002;&#x5982;&#x56FE;3.1.2.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/118.png" alt=""><blockquote>
+<p>&#x56FE;3.1.2.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3124-&#x673A;&#x4F4D;&#x7684;&#x7F16;&#x8F91;">3.1.2.4 &#x673A;&#x4F4D;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x5373;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#x3002;&#x7F16;&#x7801;&#x4E0E;&#x662F;&#x5426;&#x6865;&#x4F4D;&#x8FD9;&#x4E24;&#x9879;&#x4E0D;&#x80FD;&#x88AB;&#x6E05;&#x7A7A;&#x3002;&#x5176;&#x4ED6;&#x9879;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x5176;&#x4E2D;&#x5DE6;&#x673A;&#x4F4D;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x5173;&#x8054;&#xFF0C;&#x53F3;&#x673A;&#x4F4D;&#x91CC;&#x4E0B;&#x62C9;&#x6846;&#x7684;&#x503C;&#x4F1A;&#x6392;&#x9664;&#x6389;&#x5DE6;&#x673A;&#x4F4D;&#x5DF2;&#x7ECF;&#x9009;&#x4E2D;&#x7684;&#x503C;&#x3002;&#x5982;&#x56FE;3.1.2.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/119.png" alt=""><blockquote>
+<p>&#x56FE;3.1.2.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3125-&#x673A;&#x4F4D;&#x7684;&#x5220;&#x9664;">3.1.2.5 &#x673A;&#x4F4D;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x5373;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x9875;&#x9762;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x3002;&#x5982;&#x56FE;3.1.2.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/120.png" alt=""><blockquote>
+<p>&#x56FE;3.1.2.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="313-&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;">3.1.3 &#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x4E09;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3131-&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x663E;&#x793A;">3.1.3.1 &#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x91CC;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6309;&#x7167;&#x65F6;&#x95F4;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x79BB;&#x5F53;&#x524D;&#x65F6;&#x95F4;&#x8D8A;&#x8FD1;&#xFF0C;&#x6392;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x5728;&#x9875;&#x9762;&#x4E0A;&#x4E3B;&#x8981;&#x5C55;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x533A;&#x57DF;&#x4E0E;&#x72B6;&#x6001;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.3.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/121.png" alt=""><blockquote>
+<p>&#x56FE;3.1.3.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3132-&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x67E5;&#x8BE2;">3.1.3.2 &#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x7684;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x884C;&#x674E;&#x8F6C;&#x76D8;&#x7C7B;&#x578B;&#x548C;&#x7F16;&#x7801;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#x4EE5;&#x83B7;&#x5F97;&#x66F4;&#x51C6;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x5728;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x6210;&#x529F;&#x540E;&#xFF0C;&#x884C;&#x674E;&#x8F6C;&#x76D8;&#x7C7B;&#x578B;&#x4E0E;&#x7F16;&#x7801;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#x3002;&#x5982;&#x56FE;3.1.3.2.1&#x4E0E;3.1.3.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/122.png" alt=""><blockquote>
+<p>&#x56FE;3.1.3.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/123.png" alt="">
+&#x56FE;3.1.3.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3133-&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x65B0;&#x589E;">3.1.3.3 &#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#x53EF;&#x4EE5;&#x8FDB;&#x5165;&#x5230;&#x65B0;&#x589E;&#x9875;&#x9762;&#x6267;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x7F16;&#x7801;&#xFF0C;&#x8F6C;&#x76D8;&#x7C7B;&#x578B;&#xFF0C;&#x533A;&#x57DF;&#x4E0E;&#x72B6;&#x6001;&#x662F;&#x5FC5;&#x987B;&#x586B;&#x5199;&#x7684;&#x3002;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x5176;&#x4E2D;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x662F;&#x548C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7ED1;&#x5B9A;&#x7684;&#x3002;&#x5982;&#x56FE;3.1.3.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/124.png" alt=""><blockquote>
+<p>&#x56FE;3.1.3.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3134-&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x7F16;&#x8F91;">3.1.3.4 &#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#x3002;&#x5176;&#x4E2D;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x7F16;&#x7801;&#xFF0C;&#x8F6C;&#x76D8;&#x7C7B;&#x578B;&#xFF0C;&#x533A;&#x57DF;&#x4E0E;&#x72B6;&#x6001;&#x662F;&#x4E0D;&#x53EF;&#x88AB;&#x6E05;&#x7A7A;&#x7684;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x9879;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x3002;&#x800C;&#x4E14;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x76F8;&#x5173;&#x8054;&#x3002;&#x5982;&#x56FE;3.1.3.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/125.png" alt=""><blockquote>
+<p>&#x56FE;3.1.3.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3135-&#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x5220;&#x9664;">3.1.3.5 &#x884C;&#x674E;&#x63D0;&#x53D6;&#x8F6C;&#x76D8;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x8981;&#x5220;&#x9664;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x754C;&#x9762;&#x81EA;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x5373;&#x53EF;&#x3002;&#x5982;&#x56FE;3.1.3.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/126.png" alt=""><blockquote>
+<p>&#x56FE;3.1.3.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="314-&#x503C;&#x673A;&#x67DC;&#x53F0;">3.1.4 &#x503C;&#x673A;&#x67DC;&#x53F0;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x56DB;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3141-&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x663E;&#x793A;">3.1.4.1 &#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6839;&#x636E;&#x65F6;&#x95F4;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x79BB;&#x5F53;&#x524D;&#x65F6;&#x95F4;&#x8D8A;&#x8FD1;&#xFF0C;&#x6392;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x4E3B;&#x8981;&#x663E;&#x793A;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#xFF0C;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x5206;&#x914D;&#x6A21;&#x5F0F;&#xFF0C;&#x670D;&#x52A1;&#x6A21;&#x5F0F;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x533A;&#x57DF;&#x5C5E;&#x6027;&#x4E0E;&#x72B6;&#x6001;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.4.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/127.png" alt=""><blockquote>
+<p>&#x56FE;3.1.4.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3142-&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x67E5;&#x8BE2;">3.1.4.2 &#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x7684;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#xFF0C;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#x6765;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#x4EE5;&#x4FBF;&#x83B7;&#x5F97;&#x66F4;&#x51C6;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x5176;&#x4E2D;&#x5728;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x6210;&#x529F;&#xFF0C;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#x4E0E;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#x3002;&#x5728;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#x4E0E;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x4F1A;&#x88AB;&#x8F6C;&#x6362;&#x6210;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5982;&#x56FE;3.1.4.2.1&#x4E0E;3.1.4.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/128.png" alt=""><blockquote>
+<p>&#x56FE;3.1.4.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/129.png" alt="">
+&#x56FE;3.1.4.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3143-&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x65B0;&#x589E;">3.1.4.3 &#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#xFF0C;&#x8FDB;&#x5165;&#x65B0;&#x589E;&#x9875;&#x9762;&#x53EF;&#x6267;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#xFF0C;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#xFF0C;&#x533A;&#x57DF;&#x5C5E;&#x6027;&#x548C;&#x72B6;&#x6001;&#x662F;&#x5FC5;&#x987B;&#x586B;&#x5199;&#x7684;&#x9879;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x548C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7ED1;&#x5B9A;&#xFF0C;&#x670D;&#x52A1;&#x6A21;&#x5F0F;&#x548C;&#x5206;&#x914D;&#x6A21;&#x5F0F;&#x7ED1;&#x5B9A;&#x3002;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#x4E0E;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x53EA;&#x8981;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x5C31;&#x4F1A;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5982;&#x56FE;3.1.4.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/130.png" alt=""><blockquote>
+<p>&#x56FE;3.1.4.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3144-&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x7F16;&#x8F91;">3.1.4.4 &#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x5373;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#x3002;&#x5176;&#x4E2D;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#xFF0C;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#xFF0C;&#x533A;&#x57DF;&#x5C5E;&#x6027;&#x548C;&#x72B6;&#x6001;&#x4E0D;&#x53EF;&#x4E3A;&#x7A7A;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7ED1;&#x5B9A;&#xFF0C;&#x670D;&#x52A1;&#x6A21;&#x5F0F;&#x4E0E;&#x5206;&#x914D;&#x6A21;&#x5F0F;&#x7ED1;&#x5B9A;&#x3002;&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7F16;&#x7801;&#x4E0E;&#x503C;&#x673A;&#x5C9B;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x53EA;&#x8981;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x5C31;&#x4F1A;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5982;&#x56FE;3.1.4.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/131.png" alt=""><blockquote>
+<p>&#x56FE;3.1.4.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3145-&#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x5220;&#x9664;">3.1.4.5 &#x503C;&#x673A;&#x67DC;&#x53F0;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5220;&#x9664;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x754C;&#x9762;&#x5373;&#x53EF;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x3002;&#x5982;&#x56FE;3.1.4.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/132.png" alt=""><blockquote>
+<p>&#x56FE;3.1.4.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="315-&#x5019;&#x673A;&#x5385;">3.1.5 &#x5019;&#x673A;&#x5385;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x4E94;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x5019;&#x673A;&#x5385;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3151-&#x5019;&#x673A;&#x5385;&#x7684;&#x663E;&#x793A;">3.1.5.1 &#x5019;&#x673A;&#x5385;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x5019;&#x673A;&#x5385;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6839;&#x636E;&#x63D2;&#x5165;&#x987A;&#x5E8F;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x65B0;&#x589E;&#x63D2;&#x5165;&#x7684;&#x65F6;&#x95F4;&#x8D8A;&#x65E9;&#x6392;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x9875;&#x9762;&#x4E0A;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x4E3B;&#x8981;&#x663E;&#x793A;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x5BA2;&#x5BB9;&#x91CF;&#x4E0E;&#x63CF;&#x8FF0;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x4E0A;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.5.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/133.png" alt=""><blockquote>
+<p>&#x56FE;3.1.5.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3152-&#x5019;&#x673A;&#x5385;&#x7684;&#x67E5;&#x8BE2;">3.1.5.2 &#x5019;&#x673A;&#x5385;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x4E0E;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#x4EE5;&#x83B7;&#x5F97;&#x66F4;&#x51C6;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x5728;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5728;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x6210;&#x529F;&#x540E;&#xFF0C;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x7684;&#x503C;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#x3002;&#x5982;&#x56FE;3.1.5.2.1&#x4E0E;3.1.5.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/134.png" alt=""><blockquote>
+<p>&#x56FE;3.1.5.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/135.png" alt="">
+&#x56FE;3.1.5.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3153-&#x5019;&#x673A;&#x5385;&#x7684;&#x65B0;&#x589E;">3.1.5.3 &#x5019;&#x673A;&#x5385;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#xFF0C;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x4E0D;&#x80FD;&#x4E3A;&#x7A7A;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x76F8;&#x7ED1;&#x5B9A;&#xFF0C;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x53EA;&#x8981;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#xFF0C;&#x5BA2;&#x5BB9;&#x91CF;&#x53EA;&#x80FD;&#x8F93;&#x5165;&#x6570;&#x5B57;&#xFF0C;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x5FAE;&#x8C03;&#xFF0C;&#x5E76;&#x4E14;&#x5BA2;&#x5BB9;&#x91CF;&#x5FAE;&#x8C03;&#x7684;&#x5E45;&#x5EA6;&#x4E3A;1&#x3002;&#x5982;&#x56FE;3.1.5.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/136.png" alt=""><blockquote>
+<p>&#x56FE;3.1.5.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3154-&#x5019;&#x673A;&#x5385;&#x7684;&#x7F16;&#x8F91;">3.1.5.4 &#x5019;&#x673A;&#x5385;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x4E0D;&#x80FD;&#x88AB;&#x6E05;&#x7A7A;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x3002;&#x5176;&#x4E2D;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x5173;&#x8054;&#xFF0C;&#x5019;&#x673A;&#x5BA4;&#x7F16;&#x7801;&#x53EA;&#x8981;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x5C31;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#xFF0C;&#x5BA2;&#x5BB9;&#x91CF;&#x53EA;&#x80FD;&#x586B;&#x5199;&#x6570;&#x5B57;&#xFF0C;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x5FAE;&#x8C03;&#xFF0C;&#x5FAE;&#x8C03;&#x7684;&#x5E45;&#x5EA6;&#x4E3A;1&#x3002;&#x5982;&#x56FE;3.1.5.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/137.png" alt=""><blockquote>
+<p>&#x56FE;3.1.5.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3155-&#x5019;&#x673A;&#x5385;&#x7684;&#x5220;&#x9664;">3.1.5.5 &#x5019;&#x673A;&#x5385;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x8981;&#x5220;&#x9664;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x9875;&#x9762;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x3002;&#x5982;&#x56FE;3.1.5.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/138.png" alt=""><blockquote>
+<p>&#x56FE;3.1.5.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="316-&#x5019;&#x673A;&#x697C;">3.1.6 &#x5019;&#x673A;&#x697C;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x516D;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x5019;&#x673A;&#x697C;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3161-&#x5019;&#x673A;&#x697C;&#x7684;&#x663E;&#x793A;">3.1.6.1 &#x5019;&#x673A;&#x697C;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x5019;&#x673A;&#x697C;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6309;&#x7167;&#x65F6;&#x95F4;&#x987A;&#x5E8F;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x79BB;&#x5F53;&#x524D;&#x65F6;&#x95F4;&#x8D8A;&#x8FD1;&#x6392;&#x5E8F;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x9875;&#x9762;&#x4E0A;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x8FD0;&#x8425;&#x673A;&#x573A;&#xFF0C;&#x63CF;&#x8FF0;&#xFF0C;&#x5907;&#x6CE8;&#x4E0E;&#x6700;&#x540E;&#x66F4;&#x65B0;&#x65F6;&#x95F4;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.6.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/139.png" alt=""><blockquote>
+<p>&#x56FE;3.1.6.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3162-&#x5019;&#x673A;&#x697C;&#x7684;&#x67E5;&#x8BE2;">3.1.6.2 &#x5019;&#x673A;&#x697C;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x8FD0;&#x8425;&#x673A;&#x573A;&#x4E0E;&#x7F16;&#x7801;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4EE5;&#x83B7;&#x5F97;&#x66F4;&#x51C6;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x4F1A;&#x81EA;&#x52A8;&#x628A;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#xFF0C;&#x5E76;&#x4E14;&#x5728;&#x6210;&#x529F;&#x67E5;&#x8BE2;&#x540E;&#x4F1A;&#x6E05;&#x7A7A;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.6.2.1&#x4E0E;3.1.6.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/140.png" alt=""><blockquote>
+<p>&#x56FE;3.1.6.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/141.png" alt="">
+&#x56FE;3.1.6.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3163-&#x5019;&#x673A;&#x697C;&#x7684;&#x65B0;&#x589E;">3.1.6.3 &#x5019;&#x673A;&#x697C;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x65B0;&#x589E;&#x9875;&#x9762;&#x6267;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x5176;&#x4E2D;&#x8FD0;&#x8425;&#x673A;&#x573A;&#x4E0E;&#x7F16;&#x7801;&#x662F;&#x5FC5;&#x987B;&#x586B;&#x5199;&#x7684;&#x3002;&#x63CF;&#x8FF0;&#x4E0E;&#x5907;&#x6CE8;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5982;&#x56FE;3.1.6.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/142.png" alt=""><blockquote>
+<p>&#x56FE;3.1.6.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3164-&#x5019;&#x673A;&#x697C;&#x7684;&#x7F16;&#x8F91;">3.1.6.4 &#x5019;&#x673A;&#x697C;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x8981;&#x7F16;&#x8F91;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x9875;&#x9762;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#xFF0C;&#x5176;&#x4E2D;&#x8FD0;&#x8425;&#x673A;&#x573A;&#x4E0E;&#x7F16;&#x7801;&#x4E0D;&#x80FD;&#x88AB;&#x6E05;&#x7A7A;&#xFF0C;&#x63CF;&#x8FF0;&#x4E0E;&#x5907;&#x6CE8;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5982;&#x56FE;3.1.6.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/143.png" alt=""><blockquote>
+<p>&#x56FE;3.1.6.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3165-&#x5019;&#x673A;&#x697C;&#x7684;&#x5220;&#x9664;">3.1.6.5 &#x5019;&#x673A;&#x697C;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x8981;&#x5220;&#x9664;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x754C;&#x9762;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x5373;&#x53EF;&#x3002;&#x5982;&#x56FE;3.1.6.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/144.png" alt=""><blockquote>
+<p>&#x56FE;3.1.6.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="317-&#x5019;&#x673A;&#x6865;">3.1.7 &#x5019;&#x673A;&#x6865;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x4E03;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x5019;&#x673A;&#x6865;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3171-&#x5019;&#x673A;&#x6865;&#x7684;&#x663E;&#x793A;">3.1.7.1 &#x5019;&#x673A;&#x6865;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x9875;&#x9762;&#x4E0A;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6839;&#x636E;&#x63D2;&#x5165;&#x987A;&#x5E8F;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x8D8A;&#x8FDF;&#x63D2;&#x5165;&#x6392;&#x5217;&#x7684;&#x8D8A;&#x9760;&#x524D;&#x3002;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x5728;&#x9875;&#x9762;&#x4E0A;&#x4E3B;&#x8981;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x5BF9;&#x5E94;&#x673A;&#x4F4D;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x533A;&#x57DF;&#x4E0E;&#x72B6;&#x6001;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.7.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/145.png" alt=""><blockquote>
+<p>&#x56FE;3.1.7.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3172-&#x5019;&#x673A;&#x6865;&#x7684;&#x67E5;&#x8BE2;">3.1.7.2 &#x5019;&#x673A;&#x6865;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x7684;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x4E0E;&#x7F16;&#x7801;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#xFF0C;&#x4EE5;&#x4FBF;&#x83B7;&#x5F97;&#x66F4;&#x7CBE;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x5728;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#xFF0C;&#x5E76;&#x4E14;&#x5728;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x6210;&#x529F;&#x540E;&#x4F1A;&#x6E05;&#x7A7A;&#x6389;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.7.2.1&#x4E0E;3.1.7.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/146.png" alt=""><blockquote>
+<p>&#x56FE;3.1.7.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/147.png" alt="">
+&#x56FE;3.1.7.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3173-&#x5019;&#x673A;&#x6865;&#x7684;&#x65B0;&#x589E;">3.1.7.3 &#x5019;&#x673A;&#x6865;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#xFF0C;&#x53EF;&#x4EE5;&#x8FDB;&#x5165;&#x5230;&#x65B0;&#x589E;&#x9875;&#x9762;&#x8FDB;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x5176;
+&#x4E2D;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x7F16;&#x7801;&#xFF0C;&#x5BF9;&#x5E94;&#x673A;&#x4F4D;&#xFF0C;&#x72B6;&#x6001;&#x4E0E;&#x533A;&#x57DF;&#x662F;&#x5FC5;&#x586B;&#x7684;&#x3002;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;
+&#x8FDB;&#x884C;&#x586B;&#x5199;&#x3002;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x5BF9;&#x5E94;&#x673A;&#x4F4D;
+&#x662F;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7ED1;&#x5B9A;&#x3002;&#x5982;&#x56FE;3.1.7.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/148.png" alt=""><blockquote>
+<p>&#x56FE;3.1.7.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3174-&#x5019;&#x673A;&#x6865;&#x7684;&#x7F16;&#x8F91;">3.1.7.4 &#x5019;&#x673A;&#x6865;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x5373;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#xFF0C;&#x7F16;&#x7801;&#xFF0C;&#x5BF9;&#x5E94;&#x673A;&#x4F4D;&#xFF0C;&#x72B6;&#x6001;&#x4E0E;&#x533A;&#x57DF;&#x4E0D;&#x53EF;&#x6E05;&#x7A7A;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x7F16;&#x5199;&#x3002;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#xFF0C;&#x5BF9;&#x5E94;&#x673A;&#x4F4D;&#x4E0E;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x662F;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x7ED1;&#x5B9A;&#x7684;&#x3002;&#x5982;&#x56FE;3.1.7.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/149.png" alt=""><blockquote>
+<p>&#x56FE;3.1.7.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3175-&#x5019;&#x673A;&#x6865;&#x7684;&#x5220;&#x9664;">3.1.7.5 &#x5019;&#x673A;&#x6865;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x8981;&#x5220;&#x9664;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#xFF0C;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x9875;&#x9762;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x5373;&#x53EF;&#x3002;&#x5982;&#x56FE;3.1.7.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/150.png" alt=""><blockquote>
+<p>&#x56FE;3.1.7.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="318-&#x673A;&#x576A;&#x533A;&#x57DF;">3.1.8 &#x673A;&#x576A;&#x533A;&#x57DF;</h3>
+<ul>
+<li><p>&#x70B9;&#x51FB;&#x5DE6;&#x8FB9;&#x5BFC;&#x822A;&#x83DC;&#x5355;&#x91CC;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E0B;&#x9762;&#x7684;&#x7B2C;&#x516B;&#x9879;&#xFF0C;&#x8FDB;&#x5165;&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x9875;&#x9762;</p>
+<h4 id="3181-&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x663E;&#x793A;">3.1.8.1 &#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x663E;&#x793A;</h4>
+<ul>
+<li>&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x662F;&#x6839;&#x636E;&#x63D2;&#x5165;&#x987A;&#x5E8F;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x7684;&#xFF0C;&#x8D8A;&#x540E;&#x9762;&#x63D2;&#x5165;&#x7684;&#x6570;&#x636E;&#x6392;&#x7684;&#x8D8A;&#x9760;&#x540E;&#x3002;&#x9875;&#x9762;&#x4E0A;&#x7684;&#x6BCF;&#x6761;&#x6570;&#x636E;&#x4E3B;&#x8981;&#x663E;&#x793A;&#x7F16;&#x7801;&#xFF0C;&#x6240;&#x5C5E;&#x673A;&#x573A;&#xFF0C;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x63CF;&#x8FF0;&#x7B49;&#x7B49;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x663E;&#x793A;&#x4E94;&#x5341;&#x6761;&#x6570;&#x636E;&#x3002;&#x5982;&#x56FE;3.1.8.1.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/151.png" alt=""><blockquote>
+<p>&#x56FE;3.1.8.1.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3182-&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x67E5;&#x8BE2;">3.1.8.2 &#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x67E5;&#x8BE2;</h4>
+<ul>
+<li>&#x5728;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x522B;&#x6309;&#x7167;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x4E0E;&#x7F16;&#x7801;&#x8FDB;&#x884C;&#x67E5;&#x8BE2;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7EC4;&#x5408;&#x67E5;&#x8BE2;&#x4EE5;&#x83B7;&#x5F97;&#x66F4;&#x51C6;&#x786E;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x5728;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#xFF0C;&#x5728;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;&#x6210;&#x529F;&#x540E;&#xFF0C;&#x8F93;&#x5165;&#x6846;&#x7684;&#x503C;&#x4F1A;&#x6E05;&#x7A7A;&#x3002;&#x5982;&#x56FE;3.1.8.2.1&#x4E0E;3.1.8.2.2&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/152.png" alt=""><blockquote>
+<p>&#x56FE;3.1.8.2.1
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/153.png" alt="">
+&#x56FE;3.1.8.2.2</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3183-&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x65B0;&#x589E;">3.1.8.3 &#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x65B0;&#x589E;</h4>
+<ul>
+<li>&#x70B9;&#x51FB;&#x9875;&#x9762;&#x5DE6;&#x4E0A;&#x65B9;&#x5DE5;&#x5177;&#x680F;&#x91CC;&#x7684;&#x65B0;&#x589E;&#x6309;&#x94AE;&#x53EF;&#x8FDB;&#x5165;&#x5230;&#x65B0;&#x589E;&#x9875;&#x9762;&#xFF0C;&#x6267;&#x884C;&#x65B0;&#x589E;&#x64CD;&#x4F5C;&#x3002;&#x5176;&#x4E2D;&#x7F16;&#x7801;&#x662F;&#x5FC5;&#x586B;&#x5199;&#x7684;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x7F16;&#x5199;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x662F;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x76F8;&#x5173;&#x8054;&#x7684;&#xFF0C;&#x7F16;&#x7801;&#x8F93;&#x5165;&#x6846;&#x91CC;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x6BCD;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x5927;&#x5199;&#x5B57;&#x6BCD;&#x3002;&#x5982;&#x56FE;3.1.8.3.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/154.png" alt=""><blockquote>
+<p>&#x56FE;3.1.8.3.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3184-&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x7F16;&#x8F91;">3.1.8.4 &#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x7F16;&#x8F91;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x7F16;&#x8F91;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x7F16;&#x8F91;&#x9875;&#x9762;&#x6267;&#x884C;&#x7F16;&#x8F91;&#x64CD;&#x4F5C;&#x3002;&#x5176;&#x4E2D;&#x7F16;&#x7801;&#x4E0D;&#x80FD;&#x6E05;&#x7A7A;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x8FDB;&#x884C;&#x7F16;&#x8F91;&#x3002;&#x6240;&#x5C5E;&#x822A;&#x7AD9;&#x697C;&#x4E0E;&#x6240;&#x5C5E;&#x673A;&#x573A;&#x76F8;&#x5173;&#x8054;&#x3002;&#x5982;&#x56FE;3.1.8.4.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/155.png" alt=""><blockquote>
+<p>&#x56FE;3.1.8.4.1</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3185-&#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x5220;&#x9664;">3.1.8.5 &#x673A;&#x576A;&#x533A;&#x57DF;&#x7684;&#x5220;&#x9664;</h4>
+<ul>
+<li>&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5BF9;&#x67D0;&#x4E00;&#x6761;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5220;&#x9664;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x70B9;&#x51FB;&#x8BE5;&#x6761;&#x6570;&#x636E;&#x53F3;&#x8FB9;&#x7684;&#x5220;&#x9664;&#x6309;&#x94AE;&#x8FDB;&#x5165;&#x5230;&#x5220;&#x9664;&#x754C;&#x9762;&#x6267;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x5373;&#x53EF;&#x3002;&#x5982;&#x56FE;3.1.8.5.1&#x6240;&#x793A;&#x3002;
+<img src="https://raw.githubusercontent.com/chenjiandong5817/firstbranch/second/156.png" alt=""><blockquote>
+<p>&#x56FE;3.1.8.5.1</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="chapter2.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 第2章  基础数据管理">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第3章  资源数据管理","level":"1.3","depth":1,"previous":{"title":"第2章  基础数据管理","level":"1.2","depth":1,"path":"chapter2.md","ref":"chapter2.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"chapter3.md","mtime":"2017-12-18T01:17:24.390Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-12-18T01:18:36.769Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

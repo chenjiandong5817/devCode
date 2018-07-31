@@ -1,0 +1,51 @@
+{
+  "5907A40F85EC4A1A9362E7BB2802BAC5": {
+    "list": [
+      {
+          "flightid": "2253730",
+          "id": "32872509",
+          "linkedflightid": "2253684",
+          "carrier": "MF",
+          "flight": "8295",
+          "origin": {
+              "key": "XMN",
+              "zh-cn": "厦门",
+              "en-ww": "Xiamen",
+              "ja-jp": "厦門"
+          },
+          "destination": {
+              "key": "KHN",
+              "zh-cn": "南昌",
+              "en-ww": "Nanchang",
+              "ja-jp": "南昌"
+          },
+          "flightstatus": {
+              "key": "dep",
+              "zh-cn": "起飞, 后面这段字是为了测试begin",
+              "en-ww": "Departure",
+              "ja-jp": "Departure"
+          },
+          "scheduledeparttime": "2017-09-19 12:55:00",
+          "schedulearrivetime": "2017-09-19 14:20:00",
+          "estimatedeparttime": null,
+          "estimatearrivetime": null,
+          "actualdeparttime": null,
+          "actualarrivetime": null,
+          "scheduleopen": "2017-09-19 12:25:00",
+          "scheduleclose": "2017-09-19 12:40:00",
+          "gate": "18",
+          "gatecode": "18",
+          "shareflight": "AA1234/BB5678/AA1234/BB5678/BB5678",
+          "route": "KHN-LHW",
+          "sortvalue": 1,
+          "rn": 1,
+          "mastershareflight": [
+              "MF8295"
+          ],
+          "logo": [
+              " /raiis/flight/logo/MF"
+          ]
+      }
+  ]
+  }
+}

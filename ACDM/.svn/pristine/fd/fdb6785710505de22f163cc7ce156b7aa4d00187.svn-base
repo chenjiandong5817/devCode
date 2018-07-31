@@ -1,0 +1,83 @@
+.v-contextmenu {
+  position: absolute;
+  padding: $contextmenu-padding-vertical 0;
+  margin: 0;
+  background-color: $contextmenu-background-color;
+  border: 1px solid $contextmenu-border-color;
+  border-radius: 4px;
+  box-shadow: 2px 2px 8px 0px $contextmenu-shadow-color;
+  list-style: none;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  z-index: 2800;
+  -webkit-tap-highlight-color: transparent;
+  .v-contextmenu-item {
+    padding: $contextmenu-padding-vertical $contextmenu-item-padding-horizonal;
+    line-height: 1;
+    color: $contextmenu-text-color;
+    &.v-contextmenu-item--hover {
+      color: #fff
+    }
+    &.v-contextmenu-item--disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+  .v-contextmenu-divider {
+    height: 0;
+    margin: $contextmenu-padding-vertical 0;
+    border-bottom: 1px solid $contextmenu-border-color;
+  }
+
+  .v-contextmenu-group__menus {
+    padding: 0 5px;
+    margin: 0;
+    list-style: none;
+    .v-contextmenu-item {
+      display: inline-block;
+      padding: $contextmenu-padding-vertical ($contextmenu-item-padding-horizonal - 5);
+    }
+  }
+  .v-contextmenu-submenu {
+    position: relative;
+    & > .v-contextmenu {
+      position: absolute;
+      &.left {
+        left: 0;
+        transform: translateX(-100%);
+      }
+      &.right {
+        right: 0;
+        transform: translateX(100%);
+      }
+      &.top {
+        top: -($contextmenu-padding-vertical) - 1;
+      }
+      &.bottom {
+        bottom: -($contextmenu-padding-vertical) - 1
+      }
+    }
+    .v-contextmenu-submenu__title {
+      margin-right: $contextmenu-padding-vertical * 2
+    }
+    .v-contextmenu-submenu__icon {
+      position: absolute;
+      right: $contextmenu-padding-vertical;
+      &::before {
+        content: "\003e";
+      }
+    }
+  }
+}
+.v-contextmenu--default {
+  .v-contextmenu-item--hover {
+    background-color: $contextmenu-active-color;
+  }
+
+}
+.v-contextmenu--bright {
+  .v-contextmenu-item--hover {
+    background-color: $contextmenu-active-color-bright;
+  }
+}

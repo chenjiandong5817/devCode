@@ -1,0 +1,58 @@
+{
+  "3CCD44C17FB9456E97F74D27E416CB1D": {
+    "list": [
+      {
+        "id": "32898745",
+        "flightid": "2254133",
+        "linkedflightid": "2254055",
+        "flighttask": "W/Z",
+        "carrier": "MU",
+        "flight": "27221",
+        "destination": {
+            "key": "XMN",
+            "zh-cn": "厦门",
+            "en-ww": "XiamenXiamenXiamenXi",
+            "ja-jp": "厦門"
+        },
+        "direction": {
+            "key": "A",
+            "zh-cn": "进港",
+            "en-ww": "Arrival",
+            "ja-jp": "入港"
+        },
+        "scheduledeparttime": "2017-09-20 11:30:00",
+        "estimatedeparttime": "2017-09-20 16:30:00",
+        "actualdeparttime": null,
+        "schedulearrivetime": "2017-09-20 13:10:00",
+        "estimatearrivetime": null,
+        "actualarrivetime": null,
+        "flightstatus": {
+          "key": "ENR",
+          "zh-cn": "途中",
+          "en-ww": "On the way"
+        },
+        "flightnature": {
+            "key": "D",
+            "zh-cn": "国内",
+            "en-ww": "home",
+            "ja-jp": "国内"
+        },
+        "terminal": "T4",
+        "shareflight": "CZ5223/NS8319",
+        "route": {
+            "key": "KMG-LZH",
+            "zh-cn": "昆明昆明 - 昆明柳州",
+            "en-ww": "beijing",
+            "ja-jp": "beijing"
+        },
+        "actualopen": "123",
+        "actualclose": "",
+        "rn": 1,
+        "mastershareflight": ["EU2721"],
+        "logo": [" /raiis/flight/logo/EU"]
+      }
+
+    ]
+  }
+
+}

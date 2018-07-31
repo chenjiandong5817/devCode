@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_order.mappers.OrderMapper">
+    <!--添加记录到数据-->
+    <insert id="add" parameterType="orderDto">
+		insert into ap_order
+			(
+				uuid,
+				passengeUuid,
+				driverUuid,
+				orderType,
+				acceptType,
+				orderSource,
+				actualPassengeName,
+				actualPassengeMobile,
+				levelType,
+				serviceNames,
+				servicePrice,
+				mainStatus,
+				subStatus,
+				planTrip,
+				actualTrip,
+				planFare,
+				payFare,
+				deparTime,
+				deparTimeDiff,
+				originLng,
+				originLat,
+				originCity,
+				originAddress,
+				destLng,
+				destLat,
+				destCity,
+				destAddress,
+				flightNum,
+				remark,
+				cancelReason,
+				closeReason,
+				isBilled,
+				tripPic,
+				createTime,
+				creator,
+				updateTime,
+				serviceTimeStart,
+				serviceTimeEnd,
+				driverSetOutTime,
+				originDetailAddress,
+				destDetailAddress,
+				actualDriverUuid,
+				allowAssignOtherDriver,
+				driverArriveTime,
+				nightSubsidyMileageStart,
+				nightSubsidyMileageEnd,
+				planTripPic,
+				tripTotalFare,
+				beyondWaitTime,
+				beyondWaitFee,
+				payType,
+				prepayType,
+				assignDriverFare,
+				valetCall,
+				reassignmentRemark,
+				entUuid,
+				orderNumber,
+				groupUuid,
+				tip,
+				cancelFee,
+				totalFee,
+				partnerOrderNumber,
+				sqDriverId,
+				sqDriverName,
+				sqDriverMobile,
+				preChoiceUserCouponUuid,
+				waitPayFee,
+				areaUuid,
+				vipCounts,
+				vipFlag,
+				vipEffTime,
+				payToObject,
+				prepaidFee,
+				prepaidStatus,
+				billingWay,
+				distributeTime
+			)
+		values
+			(
+				#{uuid},
+				#{passengeUuid},
+				#{driverUuid},
+				#{orderType},
+				#{acceptType},
+				#{orderSource},
+				#{actualPassengeName},
+				#{actualPassengeMobile},
+				#{levelType},
+				#{serviceNames},
+				#{servicePrice},
+				#{mainStatus},
+				#{subStatus},
+				#{planTrip},
+				#{actualTrip},
+				#{planFare},
+				#{payFare},
+				#{deparTime},
+				#{deparTimeDiff},
+				#{originLng},
+				#{originLat},
+				#{originCity},
+				#{originAddress},
+				#{destLng},
+				#{destLat},
+				#{destCity},
+				#{destAddress},
+				#{flightNum},
+				#{remark},
+				#{cancelReason},
+				#{closeReason},
+				#{isBilled},
+				#{tripPic},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{serviceTimeStart},
+				#{serviceTimeEnd},
+				#{driverSetOutTime},
+				#{originDetailAddress},
+				#{destDetailAddress},
+				#{actualDriverUuid},
+				#{allowAssignOtherDriver},
+				#{driverArriveTime},
+				#{nightSubsidyMileageStart},
+				#{nightSubsidyMileageEnd},
+				#{planTripPic},
+				#{tripTotalFare},
+				#{beyondWaitTime},
+				#{beyondWaitFee},
+				#{payType},
+				#{prepayType},
+				#{assignDriverFare},
+				#{valetCall},
+				#{reassignmentRemark},
+				#{entUuid},
+				#{orderNumber},
+				#{groupUuid},
+				#{tip},
+				#{cancelFee},
+				#{totalFee},
+				#{partnerOrderNumber},
+				#{sqDriverId},
+				#{sqDriverName},
+				#{sqDriverMobile},
+				#{preChoiceUserCouponUuid},
+				#{waitPayFee},
+				#{areaUuid},
+				#{vipCounts},
+				#{vipFlag},
+				#{vipEffTime},
+				#{payToObject},
+				#{prepaidFee},
+				#{prepaidStatus},
+				#{billingWay},
+				#{distributeTime}
+			)
+	</insert>
+
+    <!--修改记录-->
+    <update id="edit" parameterType="orderDto">
+        update ap_order
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="passengeUuid != null and '' != passengeUuid">passengeUuid = #{passengeUuid},</if>
+            <if test="driverUuid != null and '' != driverUuid">driverUuid = #{driverUuid},</if>
+            <if test="orderType != null and '' != orderType">orderType = #{orderType},</if>
+            <if test="acceptType != null and '' != acceptType">acceptType = #{acceptType},</if>
+            <if test="orderSource != null and '' != orderSource">orderSource = #{orderSource},</if>
+            <if test="levelType != null and '' != levelType">levelType = #{levelType},</if>
+            <if test="serviceNames != null and '' != serviceNames">serviceNames = #{serviceNames},</if>
+            <if test="servicePrice != null and '' != servicePrice">servicePrice = #{servicePrice},</if>
+            <if test="mainStatus != null and '' != mainStatus">mainStatus = #{mainStatus},</if>
+            <if test="subStatus != null and '' != subStatus">subStatus = #{subStatus},</if>
+            <if test="planTrip != null and '' != planTrip">planTrip = #{planTrip},</if>
+            <if test="actualTrip != null and '' != actualTrip">actualTrip = #{actualTrip},</if>
+            <if test="planFare != null and '' != planFare">planFare = #{planFare},</if>
+            <if test="payFare != null and '' != payFare">payFare = #{payFare},</if>
+            <if test="insPayFare != null and '' != insPayFare">payFare = payFare + #{insPayFare},</if>
+            <if test="deparTime != null and '' != deparTime">deparTime = #{deparTime},</if>
+            <if test="originLng != null and '' != originLng">originLng = #{originLng},</if>
+            <if test="originLat != null and '' != originLat">originLat = #{originLat},</if>
+            <if test="destLng != null and '' != destLng">destLng = #{destLng},</if>
+            <if test="destLat != null and '' != destLat">destLat = #{destLat},</if>
+            <if test="flightNum != null and '' != flightNum">flightNum = #{flightNum},</if>
+            <if test="remark != null and '' != remark">remark = #{remark},</if>
+            <if test="cancelReason != null and '' != cancelReason">cancelReason = #{cancelReason},</if>
+            <if test="closeReason != null and '' != closeReason">closeReason = #{closeReason},</if>
+            <if test="isBilled != null and '' != isBilled">isBilled = #{isBilled},</if>
+            <if test="tripPic != null and '' != tripPic">tripPic = #{tripPic},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="serviceTimeStart != null and '' != serviceTimeStart">serviceTimeStart = #{serviceTimeStart},</if>
+            <if test="serviceTimeEnd != null and '' != serviceTimeEnd">serviceTimeEnd = #{serviceTimeEnd},</if>
+            <if test="driverSetOutTime != null and '' != driverSetOutTime">driverSetOutTime = #{driverSetOutTime},</if>
+            <if test="originDetailAddress != null and '' != originDetailAddress">originDetailAddress =
+                #{originDetailAddress},
+            </if>
+            <if test="destDetailAddress != null and '' != destDetailAddress">destDetailAddress = #{destDetailAddress},
+            </if>
+            <if test="actualDriverUuid != null and '' != actualDriverUuid and '-1' != actualDriverUuid">actualDriverUuid
+                = #{actualDriverUuid},
+            </if>
+            <if test="actualDriverUuid != null and '-1' == actualDriverUuid">actualDriverUuid = null,</if>
+            <if test="allowAssignOtherDriver != null and ''!=allowAssignOtherDriver">allowAssignOtherDriver =
+                #{allowAssignOtherDriver},
+            </if>
+            <if test="driverArriveTime != null">driverArriveTime = #{driverArriveTime},</if>
+            <if test="nightSubsidyMileageStart != null">nightSubsidyMileageStart = #{nightSubsidyMileageStart},</if>
+            <if test="nightSubsidyMileageEnd != null">nightSubsidyMileageEnd = #{nightSubsidyMileageEnd},</if>
+            <if test="planTripPic != null and ''!=planTripPic">planTripPic = #{planTripPic},</if>
+            <if test="tripTotalFare != null and ''!= tripTotalFare">tripTotalFare = #{tripTotalFare},</if>
+            <if test="beyondWaitTime != null and '' != beyondWaitTime">beyondWaitTime = #{beyondWaitTime},</if>
+            <if test="beyondWaitFee != null and '' != beyondWaitFee">beyondWaitFee = #{beyondWaitFee},</if>
+            <if test="payType != null and '' != payType">payType = #{payType},</if>
+            <if test="prepayType != null and '' != prepayType">prepayType = #{prepayType},</if>
+            <if test="assignDriverFare != null and '' != assignDriverFare">assignDriverFare = #{assignDriverFare},</if>
+            <if test="entUuid != null and '' != entUuid">entUuid = #{entUuid},</if>
+            <if test="tip != null">tip = #{tip},</if>
+            <if test="cancelFee != null ">cancelFee = #{cancelFee},</if>
+            <if test="totalFee != null ">totalFee = #{totalFee},</if>
+            <if test="partnerOrderNumber != null ">partnerOrderNumber = #{partnerOrderNumber},</if>
+            <if test="sqDriverId != null ">sqDriverId = #{sqDriverId},</if>
+            <if test="sqDriverName != null ">sqDriverName = #{sqDriverName},</if>
+            <if test="sqDriverMobile != null ">sqDriverMobile = #{sqDriverMobile},</if>
+            <if test="isCarLevelUp != null ">isCarLevelUp = #{isCarLevelUp},</if>
+            <if test="preChoiceUserCouponUuid != null and ''!=preChoiceUserCouponUuid">preChoiceUserCouponUuid =
+                #{preChoiceUserCouponUuid},
+            </if>
+            <if test="waitPayFee != null and ''!=waitPayFee">waitPayFee = #{waitPayFee},</if>
+            <if test="decWaitPayFee != null and ''!=decWaitPayFee">waitPayFee = waitPayFee - #{decWaitPayFee},</if>
+            <if test="vipCounts != null and ''!=vipCounts">vipCounts = #{vipCounts},</if>
+            <if test="vipFlag != null and ''!=vipFlag">vipFlag = #{vipFlag},</if>
+            <if test="vipEffTime != null and ''!=vipEffTime">vipEffTime = #{vipEffTime},</if>
+            <if test="areaUuid != null and ''!=areaUuid">areaUuid = #{areaUuid},</if>
+            <if test="distributeTime != null and ''!=distributeTime">distributeTime = #{distributeTime},</if>
+            <if test="payTime != null and ''!=payTime">payTime = #{payTime},</if>
+            <if test="payToObject != null and ''!=payToObject">payToObject = #{payToObject},</if>
+            <if test="prepaidFee != null and ''!=prepaidFee">prepaidFee = #{prepaidFee},</if>
+            <if test="prepaidStatus != null and ''!=prepaidStatus">prepaidStatus = #{prepaidStatus},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+
+    <!--取消一个订单组-->
+    <update id="cancelBatchByGroupUuid" parameterType="map">
+        update ap_order
+        set
+        mainStatus = #{mainStatus},
+        subStatus = #{subStatus},
+        updateTime = #{updateTime}
+        where
+        groupUuid = #{groupUuid}
+    </update>
+
+
+    <!--删除-->
+    <delete id="del" parameterType="orderDto">
+        delete from
+        ap_order
+        where
+        uuid = #{uuid}
+    </delete>
+
+    <!--根据UUID查找详情-->
+    <select id="selInfo" resultType="orderDto">
+        select
+        *
+        from
+        ap_order
+        where
+        uuid = #{uuid}
+    </select>
+
+    <!--通用SQL-->
+    <sql id="sqlForList">
+        from
+        ap_order
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="passengeUuid != null and '' != passengeUuid">and passengeUuid = #{passengeUuid}</if>
+            <if test="driverUuid != null and '' != driverUuid">and driverUuid = #{driverUuid}</if>
+            <if test="orderType != null and '' != orderType">and orderType = #{orderType}</if>
+            <if test="withoutOrderType != null and '' != withoutOrderType">and orderType != #{withoutOrderType}</if>
+            <if test="acceptType != null and '' != acceptType">and acceptType = #{acceptType}</if>
+            <if test="orderSource != null and '' != orderSource">and orderSource = #{orderSource}</if>
+            <if test="levelType != null and '' != levelType">and levelType = #{levelType}</if>
+            <if test="serviceNames != null and '' != serviceNames">and serviceNames = #{serviceNames}</if>
+            <if test="servicePrice != null and '' != servicePrice">and servicePrice = #{servicePrice}</if>
+            <if test="mainStatus != null and '' != mainStatus">and mainStatus = #{mainStatus}</if>
+            <if test="subStatus != null and '' != subStatus">and subStatus = #{subStatus}</if>
+            <if test="planTrip != null and '' != planTrip">and planTrip = #{planTrip}</if>
+            <if test="actualTrip != null and '' != actualTrip">and actualTrip = #{actualTrip}</if>
+            <if test="tripTotalFare != null and '' != tripTotalFare">and tripTotalFare = #{tripTotalFare}</if>
+            <if test="planFare != null and '' != planFare">and planFare = #{planFare}</if>
+            <if test="payFare != null and '' != payFare">and payFare = #{payFare}</if>
+            <if test="deparTime != null and '' != deparTime">and deparTime = #{deparTime}</if>
+            <if test="originLng != null and '' != originLng">and originLng = #{originLng}</if>
+            <if test="originLat != null and '' != originLat">and originLat = #{originLat}</if>
+            <if test="destLng != null and '' != destLng">and destLng = #{destLng}</if>
+            <if test="destLat != null and '' != destLat">and destLat = #{destLat}</if>
+            <if test="flightNum != null and '' != flightNum">and flightNum = #{flightNum}</if>
+            <if test="remark != null and '' != remark">and remark = #{remark}</if>
+            <if test="cancelReason != null and '' != cancelReason">and cancelReason = #{cancelReason}</if>
+            <if test="closeReason != null and '' != closeReason">and closeReason = #{closeReason}</if>
+            <if test="isBilled != null">and isBilled = #{isBilled}</if>
+            <if test="tripPic != null and '' != tripPic">and tripPic = #{tripPic}</if>
+            <if test="createTime != null and '' != createTime">and createTime = #{createTime}</if>
+            <if test="creator != null and '' != creator">and creator = #{creator}</if>
+            <if test="updateTime != null and '' != updateTime">and updateTime = #{updateTime}</if>
+            <if test="serviceTimeStart != null and '' != serviceTimeStart">and serviceTimeStart = #{serviceTimeStart} </if>
+            <if test="serviceTimeEnd != null and '' != serviceTimeEnd">and serviceTimeEnd = #{serviceTimeEnd}</if>
+            <if test="driverSetOutTime != null and '' != driverSetOutTime">and driverSetOutTime = #{driverSetOutTime} </if>
+            <if test="driverArriveTime != null and '' != driverArriveTime">and driverArriveTime = #{driverArriveTime} </if>
+            <if test="searchBeginTime != null">and createTime &gt;= #{searchBeginTime}</if>
+            <if test="searchEndTime != null">and createTime &lt;= #{searchEndTime}</if>
+            <if test="originDetailAddress != null">and originDetailAddress = #{originDetailAddress}</if>
+            <if test="destDetailAddress != null">and destDetailAddress = #{destDetailAddress}</if>
+            <if test="actualDriverUuid != null">and actualDriverUuid = #{actualDriverUuid}</if>
+            <if test="allowAssignOtherDriver != null">and allowAssignOtherDriver = #{allowAssignOtherDriver}</if>
+            <if test="excludeMainStatus != null">and mainStatus != #{excludeMainStatus}</if>
+            <if test="excludeSubStatus != null">and subStatus != #{excludeSubStatus}</if>
+            <if test="countToday != null">and trunc(sysdate) = trunc(createTime)</if>
+            <if test="countTodayDeparTime != null">and trunc(sysdate) = trunc(deparTime)</if>
+            <if test="mainStatusUnService != null and 1==mainStatusUnService">and mainStatus in(2,3)</if>
+            <if test="serviceDriverUuid != null and ''!=serviceDriverUuid">and (driverUuid=#{serviceDriverUuid} or actualDriverUuid=#{serviceDriverUuid}) </if>
+            <if test="nightSubsidyMileageStart != null">and nightSubsidyMileageStart != #{nightSubsidyMileageStart}</if>
+            <if test="nightSubsidyMileageEnd != null">and nightSubsidyMileageEnd != #{nightSubsidyMileageEnd}</if>
+            <if test="planTripPic != null">and planTripPic != #{planTripPic}</if>
+            <if test="driverUuidIsNull != null and 1==driverUuidIsNull">and driverUuid IS NULL</if>
+            <if test="actualDriverUuidIsNotNull != null and 1==actualDriverUuidIsNotNull">and actualDriverUuid IS NOT NULL </if>
+            <if test="unFinishedOrder != null and 1==unFinishedOrder">and mainStatus in(1,2,3,4)</if>
+            <if test="mainStatusInGoing != null and 1==mainStatusInGoing">and mainStatus in(2,3)</if>
+            <if test="subStatusInGoing != null and 1==subStatusInGoing">and subStatus in(200,201,202,300,301)</if>
+            <if test="mainStatusIn56 != null and 1==mainStatusInGoing">and mainStatus in(5,6)</if>
+            <if test="mainStatusIn23456 != null and 1==mainStatusIn23456">and mainStatus in(2,3,4,5,6)</if>
+            <if test="beyondWaitTime != null and '' != beyondWaitTime">and beyondWaitTime = #{beyondWaitTime},</if>
+            <if test="beyondWaitFee != null and '' != beyondWaitFee">and beyondWaitFare = #{beyondWaitFee},</if>
+            <if test="payType != null and '' != payType">and payType = #{payType}</if>
+            <if test="prepayType != null and '' != prepayType">and prepayType = #{prepayType}</if>
+            <if test="lessDeparTime  != null and '' != lessDeparTime">and(orderType=5 or orderType!=5 and trunc(sysdate) &lt;= trunc(deparTime)) </if>
+            <if test="eqDeparTime  != null and '' != eqDeparTime">and trunc(deparTime) = trunc(to_date(#{eqDeparTime},'yyyy-mm-dd'))</if>
+            <if test="notValetCall">and (valetCall!=1 or valetCall is null)</if>
+            <if test="entUuid != null and '' != entUuid">and entUuid = #{entUuid}</if>
+            <if test="beginCrtTime != null">and createTime &gt;= #{beginCrtTime}</if>
+            <if test="endCrtTime != null">and createTime &lt;= #{endCrtTime}</if>
+            <if test="orderNumber != null and ''!=orderNumber">and orderNumber = #{orderNumber}</if>
+            <if test="groupUuid != null and ''!=groupUuid">and groupUuid = #{groupUuid}</if>
+            <if test="partnerOrderNumber != null and ''!=partnerOrderNumber">and partnerOrderNumber = #{partnerOrderNumber}</if>
+            <if test="sqDriverId != null and ''!=sqDriverId">and sqDriverId = #{sqDriverId}</if>
+            <if test="sqDriverName != null and ''!=sqDriverName">and sqDriverName = #{sqDriverName}</if>
+            <if test="sqDriverMobile != null and ''!=sqDriverMobile">and sqDriverMobile = #{sqDriverMobile}</if>
+            <if test="isCarLevelUp != null and ''!=isCarLevelUp">and isCarLevelUp = #{isCarLevelUp}</if>
+            <if test="preChoiceUserCouponUuid != null and ''!=preChoiceUserCouponUuid">and preChoiceUserCouponUuid = #{preChoiceUserCouponUuid} </if>
+            <if test="waitPayFee != null and ''!=waitPayFee">and waitPayFee = #{waitPayFee}</if>
+            <if test="areaUuid != null and ''!=areaUuid">and areaUuid = #{areaUuid}</if>
+        </where>
+        <if test="sortField != null and '' != sortField">ORDER BY ${sortField} ${sortOrder},createTime desc</if>
+    </sql>
+
+    <!--统计-->
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+
+    <select id="list" resultType="orderDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <!--根据条件获取分页列表-->
+    <select id="queryPage" resultType="orderDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+    <select id="waitServiceOrder" resultType="map">
+        select
+        ao.uuid as "uuid",
+        ao.deparTime as "deparTime",
+        ao.originAddress as "originAddress",
+        ao.destAddress as "destAddress",
+        ad.uuid as "driverUuid",
+        ad.mobile as "driverMobile"
+        from ap_order ao,ap_driver ad
+        where
+        ao.actualDriverUuid = ad.uuid
+        and ao.mainStatus = 2
+        and ao.subStatus = 200
+        and to_number((ao.deparTime - sysdate)* 24 * 60 * 60) &gt;= #{timeBefore}
+        and to_number((ao.deparTime - sysdate)* 24 * 60 * 60) &lt;= #{timeAfter}
+    </select>
+
+    <!--根据UUID数组批量修改-->
+    <update id="batchEdit">
+        update ap_order
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="passengeUuid != null and '' != passengeUuid">passengeUuid = #{passengeUuid},</if>
+            <if test="driverUuid != null and '' != driverUuid">driverUuid = #{driverUuid},</if>
+            <if test="orderType != null and '' != orderType">orderType = #{orderType},</if>
+            <if test="acceptType != null and '' != acceptType">acceptType = #{acceptType},</if>
+            <if test="orderSource != null and '' != orderSource">orderSource = #{orderSource},</if>
+            <if test="levelType != null and '' != levelType">levelType = #{levelType},</if>
+            <if test="serviceNames != null and '' != serviceNames">serviceNames = #{serviceNames},</if>
+            <if test="servicePrice != null and '' != servicePrice">servicePrice = #{servicePrice},</if>
+            <if test="mainStatus != null and '' != mainStatus">mainStatus = #{mainStatus},</if>
+            <if test="subStatus != null and '' != subStatus">subStatus = #{subStatus},</if>
+            <if test="planTrip != null and '' != planTrip">planTrip = #{planTrip},</if>
+            <if test="actualTrip != null and '' != actualTrip">actualTrip = #{actualTrip},</if>
+            <if test="planFare != null and '' != planFare">planFare = #{planFare},</if>
+            <if test="payFare != null and '' != payFare">payFare = #{payFare},</if>
+            <if test="deparTime != null and '' != deparTime">deparTime = #{deparTime},</if>
+            <if test="originLng != null and '' != originLng">originLng = #{originLng},</if>
+            <if test="originLat != null and '' != originLat">originLat = #{originLat},</if>
+            <if test="destLng != null and '' != destLng">destLng = #{destLng},</if>
+            <if test="destLat != null and '' != destLat">destLat = #{destLat},</if>
+            <if test="flightNum != null and '' != flightNum">flightNum = #{flightNum},</if>
+            <if test="remark != null and '' != remark">remark = #{remark},</if>
+            <if test="cancelReason != null and '' != cancelReason">cancelReason = #{cancelReason},</if>
+            <if test="closeReason != null and '' != closeReason">closeReason = #{closeReason},</if>
+            <if test="isBilled != null">isBilled = #{isBilled},</if>
+            <if test="tripPic != null and '' != tripPic">tripPic = #{tripPic},</if>
+            <if test="createTime != null and '' != createTime">createTime = #{createTime},</if>
+            <if test="creator != null and '' != creator">creator = #{creator},</if>
+            <if test="updateTime != null and '' != updateTime">updateTime = #{updateTime},</if>
+            <if test="serviceTimeStart != null and '' != serviceTimeStart">serviceTimeStart = #{serviceTimeStart},</if>
+            <if test="serviceTimeEnd != null and '' != serviceTimeEnd">serviceTimeEnd = #{serviceTimeEnd},</if>
+            <if test="driverSetOutTime != null and '' != driverSetOutTime">driverSetOutTime = #{driverSetOutTime},</if>
+            <if test="originDetailAddress != null and '' != originDetailAddress">originDetailAddress =
+                #{originDetailAddress},
+            </if>
+            <if test="destDetailAddress != null and '' != destDetailAddress">destDetailAddress = #{destDetailAddress},
+            </if>
+            <if test="actualDriverUuid != null and '' != actualDriverUuid">actualDriverUuid = #{actualDriverUuid},</if>
+            <if test="driverArriveTime != null">driverArriveTime = #{driverArriveTime},</if>
+            <if test="nightSubsidyMileageStart != null">nightSubsidyMileageStart = #{nightSubsidyMileageStart},</if>
+            <if test="nightSubsidyMileageEnd != null">nightSubsidyMileageEnd = #{nightSubsidyMileageEnd},</if>
+            <if test="planTripPic != null">planTripPic = #{planTripPic},</if>
+            <if test="tripTotalFare != null and ''!=tripTotalFare">tripTotalFare = #{tripTotalFare},</if>
+            <if test="beyondWaitTime != null and '' != beyondWaitTime">beyondWaitTime = #{beyondWaitTime},</if>
+            <if test="beyondWaitFee != null and '' != beyondWaitFee">beyondWaitFare = #{beyondWaitFee},</if>
+            <if test="payType != null and '' != payType">payType = #{payType}</if>
+            <if test="prepayType != null and '' != prepayType">prepayType = #{prepayType},</if>
+            <if test="assignDriverFare != null and '' != assignDriverFare">assignDriverFare = #{assignDriverFare},</if>
+            <if test="entUuid != null and '' != entUuid">entUuid = #{entUuid},</if>
+            <if test="areaUuid != null and '' != areaUuid">areaUuid = #{areaUuid},</if>
+            <if test="partnerOrderNumber != null and '' != partnerOrderNumber">partnerOrderNumber =
+                #{partnerOrderNumber},
+            </if>
+            <if test="sqDriverId != null and '' != sqDriverId">sqDriverId = #{sqDriverId},</if>
+            <if test="sqDriverName != null and '' != sqDriverName">sqDriverName = #{sqDriverName},</if>
+            <if test="sqDriverMobile != null and '' != sqDriverMobile">sqDriverMobile = #{sqDriverMobile},</if>
+            <if test="distributeTime != null and ''!=distributeTime">distributeTime = #{distributeTime},</if>
+            <if test="depLongitude != null and ''!=depLongitude">depLongitude = #{depLongitude},</if>
+            <if test="depLatitude != null and ''!=depLatitude">depLatitude = #{depLatitude},</if>
+            <if test="waitMile != null and ''!=waitMile">waitMile = #{waitMile},</if>
+            <if test="destLongitude != null and ''!=destLongitude">destLongitude = #{destLongitude},</if>
+            <if test="destLatitude != null and ''!=destLatitude">destLatitude = #{destLatitude},</if>
+            <if test="payTime != null and ''!=payTime">payTime = #{payTime},</if>
+            <if test="flightUpdateTime != null and ''!=flightUpdateTime">flightUpdateTime = #{flightUpdateTime},</if>
+            <if test="prepaidFee != null and ''!=prepaidFee">prepaidFee = #{prepaidFee},</if>
+            <if test="prepaidStatus != null and ''!=prepaidStatus">prepaidStatus = #{prepaidStatus},</if>
+            <if test="fenceUuid != null and ''!=fenceUuid">fenceUuid = #{fenceUuid},</if>
+        </set>
+        where
+        uuid IN
+        <foreach item="item" index="index" collection="orderUuids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+</mapper>

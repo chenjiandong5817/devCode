@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ SummerSoft  YueYue-Travel Platform
+  ~ <p>
+  ~ Copyright (c) 2017-2018  SummerSoft Technology (Xiamen) Co.,LTD
+  ~ All rights reserved.
+  ~ <p>
+  ~ This software is the confidential and proprietary information of SummerSoft
+  ~ ("Confidential Information"). You shall not disclose such Confidential
+  ~ Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with SummerSoft.
+  ~ <p>
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_order.mappers.OrderExpandMapper">
+	<insert id="add" parameterType="orderExpandDto">
+		insert into ap_order_expand
+			(
+				uuid,
+				orderUuid,
+				driverUuid,
+				areaUuid,
+				carTeamUuid,
+				driverName,
+				driverPhone,
+				vehicleNo,
+				vehicleType,
+				areaName,
+				carTeamName,
+				status,
+				createTime
+			)
+		values
+			(
+				#{uuid},
+				#{orderUuid},
+				#{driverUuid},
+				#{areaUuid},
+				#{carTeamUuid},
+				#{driverName},
+				#{driverPhone},
+				#{vehicleNo},
+				#{vehicleType},
+				#{areaName},
+				#{carTeamName},
+				#{status},
+				#{createTime}
+			)
+	</insert>
+	
+	<update id="edit" parameterType="orderExpandDto">
+		update ap_order_expand
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="orderUuid != null and '' != orderUuid"> orderUuid = #{orderUuid},</if>
+			<if test="driverUuid != null and '' != driverUuid"> driverUuid = #{driverUuid},</if>
+			<if test="areaUuid != null and '' != areaUuid"> areaUuid = #{areaUuid},</if>
+			<if test="carTeamUuid != null and '' != carTeamUuid"> carTeamUuid = #{carTeamUuid},</if>
+			<if test="driverName != null and '' != driverName"> driverName = #{driverName},</if>
+			<if test="driverPhone != null and '' != driverPhone"> driverPhone = #{driverPhone},</if>
+			<if test="vehicleNo != null and '' != vehicleNo"> vehicleNo = #{vehicleNo},</if>
+			<if test="vehicleType != null and '' != vehicleType"> vehicleType = #{vehicleType},</if>
+			<if test="areaName != null and '' != areaName"> areaName = #{areaName},</if>
+			<if test="carTeamName != null and '' != carTeamName"> carTeamName = #{carTeamName},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+		</set>
+		where
+		1 = 1
+		<if test="uuid != null and '' != uuid"> and uuid = #{uuid}</if>
+		<if test="orderUuid != null and '' != orderUuid"> and orderUuid = #{orderUuid}</if>
+	</update>
+	
+	<delete id="del" parameterType="orderExpandDto">
+		delete from
+			ap_order_expand
+		where
+	</delete>
+	
+	<select id="selInfo" resultType="orderExpandDto">
+		select
+			*
+		<include refid="sqlForList"/>
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_order_expand
+		<where>
+			1 = 1
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid}</if>
+			<if test="orderUuid != null and '' != orderUuid"> and orderUuid = #{orderUuid}</if>
+			<if test="driverUuid != null and '' != driverUuid"> and driverUuid = #{driverUuid}</if>
+			<if test="areaUuid != null and '' != areaUuid"> and areaUuid = #{areaUuid}</if>
+			<if test="carTeamUuid != null and '' != carTeamUuid"> and carTeamUuid = #{carTeamUuid}</if>
+			<if test="driverName != null and '' != driverName"> and driverName = #{driverName}</if>
+			<if test="driverPhone != null and '' != driverPhone"> and driverPhone = #{driverPhone}</if>
+			<if test="vehicleNo != null and '' != vehicleNo"> and vehicleNo = #{vehicleNo}</if>
+			<if test="vehicleType != null and '' != vehicleType"> and vehicleType = #{vehicleType}</if>
+			<if test="areaName != null and '' != areaName"> and areaName = #{areaName}</if>
+			<if test="carTeamName != null and '' != carTeamName"> and carTeamName = #{carTeamName}</if>
+			<if test="status != null and '' != status"> and status = #{status}</if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime}</if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+
+	<!--根据条件统计某个字段的值-->
+	<select id="sum" resultType="java.lang.Double">
+		SELECT COALESCE (SUM (${sumField}),0)
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="orderExpandDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="orderExpandDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+	<select id="queryDriverInfo" resultType="map" parameterType="java.lang.String">
+		select ad.username as driverName,ad.mobile as driverPhone,asct.uuid as carTeamUuid,asct.teamname as carTeamName,
+		asa.uuid as areaUuid,asa.areaname as areaName,sc.carno as vehicleNo,sc.leveltype as vehicleType from ap_driver ad
+		join ap_sys_car_team asct on ad.carteamuuid = asct.uuid
+		join ap_sys_area asa on ad.areauuid = asa.uuid
+		join ap_sys_car sc on ad.caruuid = sc.uuid
+		where ad.uuid = #{_parameter}
+	</select>
+
+	<select id="queryAreaInfo" resultType="map" parameterType="java.lang.String">
+		select asa.uuid as areaUuid,asa.areaname as areaName from ap_sys_area asa
+    	join ap_order ao on ao.areauuid = asa.uuid and ao.uuid = #{_parameter}
+	</select>
+
+
+</mapper>

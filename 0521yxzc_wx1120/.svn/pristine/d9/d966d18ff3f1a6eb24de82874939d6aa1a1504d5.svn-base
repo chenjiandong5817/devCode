@@ -1,0 +1,127 @@
+<template>
+    <div class="nav">
+      <div class="navContent" ref="navContent">
+        <ul class="wrapper" ref="wrapper">
+              <li class="nav-item" @click="changeOrderType(2)">
+                <router-link to="/pickup"><span>{{currentCity.city==='厦门市'?'接机(站点)':'接机'}}</span></router-link>
+              </li>
+              <li class="nav-item" @click="changeOrderType(3)">                
+                <router-link to="/dropoff"><span>送机</span></router-link>
+              </li>
+        </ul>
+    </div>
+  </div>
+</template>
+<script>
+import BScroll from 'better-scroll'
+import api from './../../store/index/api'
+import { mapState } from 'vuex'
+export default{
+  name: 'navSlide',
+  mounted () {
+    this.$nextTick(() => {
+      // 必须提前计算容器宽度
+      let slideWidth = 0
+      for (let i = document.getElementsByClassName('nav-item').length - 1; i >= 0; i--) {
+        slideWidth += document.getElementsByClassName('nav-item')[i].clientWidth
+      }
+      if (slideWidth >= this.$refs.navContent.clientWidth) {
+      // 对dom进行width赋值操作
+        this.$refs.wrapper.style.width = slideWidth + 30 + 'px'
+        this.scroll = new BScroll(this.$refs.navContent, {
+          click: true,
+          scrollX: true
+        })
+      } else {
+        this.$refs.wrapper.style.width = slideWidth + 5 + 'px'
+        this.$refs.wrapper.style.margin = '0 auto'
+      }
+    })
+  },
+  computed: mapState({
+    ...mapState([
+      'currentCity'
+    ]),
+    currentAreaUuid (state) {
+      return state.currentCity.areaUuid
+    },
+    state (state) {
+      return state
+    }
+  }),
+  methods: {
+    changeOrderType (type) {
+      console.log('主菜单变化后的state', this.state)
+      // 订单状态变化
+      this.$store.dispatch('changeOrderType', type)
+      // 计价复原
+      this.$store.dispatch('changeOriginAreaUuid', this.state.currentCity.areaUuid)
+      // 车型复原
+      api.setLocalStorage('OPENED_ARPORT_UUID', this.currentAreaUuid)
+      this.$store.dispatch('changeCarType')
+      // 转换
+      this.$store.dispatch('switch_order', {name: 'orderType', val: type})
+    }
+  }
+}
+</script>
+<style lang="less">
+@import "../../assets/css/less/variable.less";
+.nav {
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin-bottom: 10px;
+  line-height: 50px;
+  color: @fc_gray;
+  font-size: 16px;
+  background: #fff;
+  box-shadow: 4px 4px 6px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  .navContent {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    &:before {
+      z-index: 1;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 15px;
+      background: linear-gradient(left, #fff, hsla(0, 0%, 100%, 0));
+    }
+    &:after {
+      z-index: 1;
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 15px;
+      background: linear-gradient(right, #fff, hsla(0, 0%, 100%, 0));
+    }
+    .wrapper {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap; //处理块元素中的空白符和换行
+    }
+    .nav-item {
+      display: inline-block;
+      a {
+        display: block;
+        height: 100%;
+        width: 100%;
+      }
+      span {
+        padding: 0 15px;
+      }
+      a.router-link-active {
+        color: @fc_active;
+      }
+    }
+  }
+}
+
+</style>

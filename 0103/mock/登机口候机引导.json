@@ -1,0 +1,595 @@
+{
+  "type": "Layout",
+  "description": "登机口候机引导",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "langs": [ "zh-cn", "en-ww" ],
+  "defaultLang": "zh-cn",
+  "langTimer": 10000,
+  "extraParam": {
+    "dynaScrollText": {
+      "description": "动态滚动文本",
+      "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+      "singleData": true,
+      "columnName": "scrolltext"
+    }
+  },
+  "rows": [
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {
+        "height": 380,
+        "lineHeight": 380
+      },
+      "cols": [
+        {
+          "type": "Column",
+          "span": 24,
+          "bodyStyle": {},
+          "children": [
+            {
+              "type": "Grid",
+              "description": "登机口候机引导",
+              "dataSource": "183C21B0FEF64603974625D5CBA2279D",
+              "mainSource": true,
+              "mainPager": true,
+              "pageInterval": 20000,
+              "refreshInterval": 20000,
+              "bodyStyle": {
+                "defaultRowStyle": {
+                  "rowStripe": [ "#284682", "#1E2D5A" ],
+                  "fontSize": 42,
+                  "color": "#fff",
+                  "height": 89,
+                  "lineHeight": 89
+                },
+                "defaultHeaderStyle": {
+                  "fontSize": 50,
+                  "color": "#FAC35A",
+                  "backgroundColor": "#1E2D5A",
+                  "textAlign": "left",
+                  "borderBottom": "1px solid",
+                  "borderBottomColor": "#FAC35A",
+                  "lineHeight": 100,
+                  "height": 100
+                }
+              },
+              "columns": [
+                {
+                  "name": "carrier",
+                  "label": {
+                    "zh-cn": "航班号",
+                    "en-ww": "Flight"
+                  },
+                  "style": {
+                    "width": 484,
+                    "fontSize": 42,
+                    "color": "#fff"
+                  },
+                  "headerStyle": {
+                    "backgroundColor": "#1E2D5A",
+                    "textAlign": "left"
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "display": "inline-block"
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "carrier"
+                        },
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "flight"
+                        },
+                        {
+                          "type": "Text",
+                          "tag": "span",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "transExist": "/",
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "display": "inline-block",
+                        "width": 280
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "shareflight"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "route",
+                  "label": {
+                    "zh-cn": "经停/目的地",
+                    "en-ww": "Via/To"
+                  },
+                  "style": {
+                    "width": 484,
+                    "minWidth": 260,
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 484
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "route"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "destination-weather",
+                  "label": {
+                    "zh-cn": "目的地天气",
+                    "en-ww": "Dest.Weather"
+                  },
+                  "style": {
+                    "minWidth": 294,
+                    "textAlign": "left",
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 484
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "columnName": "destination-weather"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "estimatedeparttime",
+                  "label": {
+                    "zh-cn": "预计时间",
+                    "en-ww": "ETD"
+                  },
+                  "style": {
+                    "minWidth": 294,
+                    "textAlign": "left",
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 280
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "date": {
+                            "formatFrom": "yyyy-MM-dd HH:mm:ss",
+                            "formatTo": "HH:mm"
+                          },
+                          "emptyReplace": ["scheduledeparttime"],
+                          "columnName": "estimatedeparttime"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "flightstatus",
+                  "label": {
+                    "zh-cn": "航班状态",
+                    "en-ww": "Status"
+                  },
+                  "style": {
+                    "minWidth": 324,
+                    "fontSize": 42
+                  },
+                  "children": [
+                    {
+                      "type": "MarqueeText",
+                      "speed": 80,
+                      "style": {
+                        "width": 324
+                      },
+                      "content": [
+                        {
+                          "type": "Text",
+                          "style": {
+                            "height": 89,
+                            "lineHeight": 89,
+                            "color": "#fff",
+                            "fontSize": 42
+                          },
+                          "transColor": {
+                            "matchType": "begin",
+                            "matchSet": {
+                              "ARR": "#ff0000"
+                            }
+                          },
+                          "twinkle": {
+                            "matchType": "equals",
+                            "matchSet": {
+                              "ARR": true
+                            }
+                          },
+                          "columnName": "flightstatus"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+
+          ]
+        }
+      ]
+
+    },
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "center",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 18,
+          "bodyStyle": {
+            "paddingTop": 30
+          },
+          "dataSource": "2E821193437E475190AEECDD83F56F09",
+          "refreshInterval": 20000,
+          "children": [
+
+            {
+              "type": "Flop",
+              "interval": 8000,
+              "style": {
+                "height": 550,
+                "lineHeight": 550
+              },
+              "item": {
+                "type": "Row",
+                "align": "top",
+                "justify": "center",
+                "bodyStyle": {
+                  "position": "relative"
+                },
+                "cols": [
+                  {
+                    "type": "Column",
+                    "span": 24,
+                    "children": [
+                      {
+                        "type": "Row",
+                        "align": "top",
+                        "justify": "end",
+                        "cols": [
+                          {
+                            "type": "Column",
+                            "span": 13,
+                            "bodyStyle": {
+                              "width": 450,
+                              "height": 89,
+                              "lineHeight": 89,
+                              "fontSize": 60,
+                              "fontWeight": "lighter",
+                              "textAlign": "center",
+                              "background": "#FAC35A"
+                            },
+                            "children": [
+                              {
+                                "type": "Text",
+                                "style": {
+                                  "width": 65,
+                                  "height": 65,
+                                  "lineHeight": 65,
+                                  "fontSize": 60,
+                                  "fontWeight": 500,
+                                  "color": "#FAC35A",
+                                  "display": "inline-block",
+                                  "borderRadius": "75px",
+                                  "background": "#1E2D5A",
+                                  "margin": "0 5px"
+                                },
+                                "value": "!"
+                              },
+                              {
+                                "type": "Text",
+                                "tag": "span",
+                                "value": "登机口变更"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Row",
+                        "align": "top",
+                        "justify": "center",
+                        "cols": [
+                          {
+                            "type": "Column",
+                            "span": 24,
+                            "bodyStyle": {
+                              "fontSize": 70,
+                              "textAlign": "center",
+                              "background": "#FAC35A",
+                              "padding": 30,
+                              "paddingBottom": 60
+                            },
+                            "children": [
+                              {
+                                "type": "Column",
+                                "span": 18,
+                                "bodyStyle": {
+                                  "background": "#1E2D5A",
+                                  "paddingLeft": 30,
+                                  "paddingRight": 30,
+                                  "color": "#FAC35A"
+                                },
+                                "children": [6666666666666666666
+                                  {
+                                    "type": "DoubleLayerText",
+                                    "content": {
+                                      "topStyle": {
+                                        "height": 130,
+                                        "lineHeight": 130,
+                                        "fontSize": 70,
+                                        "borderBottom": "5px solid",
+                                        "paddingLeft": 60
+                                      },
+                                      "bottomStyle": {
+                                        "height": 170,
+                                        "lineHeight": 170,
+                                        "fontSize": 99,
+                                        "paddingLeft": 30
+                                      },
+                                      "topContent": [
+                                        {
+                                          "type": "Text",
+                                          "tag": "span",
+                                          "columnName": "carrier"
+                                        },
+                                        {
+                                          "type": "Text",
+                                          "tag": "span",
+                                          "columnName": "flight"
+                                        }
+                                      ],
+                                      "bottomContent": [
+                                        {
+                                          "type": "DoubleLayerText",
+                                          "content": {
+                                            "topStyle": {
+                                              "height": 50,
+                                              "lineHeight": 50,
+                                              "fontSize": 45,
+                                              "paddingLeft": 30
+                                            },
+                                            "bottomStyle": {
+                                              "height": 90,
+                                              "lineHeight": 90,
+                                              "fontSize": 80,
+                                              "paddingLeft": 30,
+                                              "fontWeight": 600
+                                            },
+                                            "topContent": [
+                                              {
+                                                "type": "Text",
+                                                "tag": "span",
+                                                "langExcept": ["zh-cn"],
+                                                "columnName": "route"
+                                              }
+                                            ],
+                                            "bottomContent": [
+                                              {
+                                                "type": "MarqueeText",
+                                                "speed": 80,
+                                                "content": [
+                                                  {
+                                                    "type": "Text",
+                                                    "langLock": "zh-cn",
+                                                    "columnName": "route"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "Column",
+                                "span": 4,
+                                "bodyStyle": {
+                                  "minWidth": 345,
+                                  "height": 340,
+                                  "lineHeight": 340,
+                                  "background": "#1E2D5A",
+                                  "paddingLeft": 30,
+                                  "paddingRight": 30,
+                                  "color": "#FAC35A"
+                                },
+                                "children": [
+                                  {
+                                    "type": "Text",
+                                    "style": {
+                                      "display": "inline-block",
+                                      "fontSize": 230,
+                                      "fontWeight": "bold"
+                                    },
+                                    "columnName": "gatecode"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Row",
+      "align": "top",
+      "justify": "start",
+      "bodyStyle": {
+        "position": "absolute",
+        "bottom": 0,
+        "zIndex": 99,
+        "width": 1920,
+        "height": 90,
+        "lineHeight": 90,
+        "fontSize": 50,
+        "color": "#FAC35A",
+        "borderTop": "2px solid",
+        "borderTopColor": "#FAC35A",
+        "backgroundColor": "#212E5B"
+      },
+      "cols": [
+        {
+          "type": "Column",
+          "span": 4,
+          "bodyStyle": {
+            "textAlign": "center"
+          },
+          "dataSource": "$main_pager",
+          "singleData": true,
+          "children": [
+            {
+              "type": "Text",
+              "value": {
+                "zh-cn": "第  ${pageNumber}/${pageCount}  页",
+                "en-ww": "Page  ${pageNumber}/${pageCount}"
+              },
+              "replace": [
+                {
+                  "key": "pageNumber",
+                  "columnName": "pageNumber"
+                },
+                {
+                  "key": "pageCount",
+                  "columnName": "pageCount"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "span": 18,
+          "dataSource": "$current_device_info",
+          "singleData": true,
+          "children": [
+            {
+              "type": "MarqueeText",
+              "speed": 80,
+              "content": [
+                {
+                  "type": "Text",
+                  "tag": "span",
+                  "columnName": "scrollText"
+                },
+                {
+                  "type": "Text",
+                  "tag": "span",
+                  "columnName": "dynamicScrollText"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "span": 2,
+          "children": [
+            {
+              "type": "Clock"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}                                                                                                                                                                   

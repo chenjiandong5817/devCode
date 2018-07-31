@@ -1,0 +1,147 @@
+
+{
+           "type": "Layout",
+           "typeLabel": "布局",
+           "description": "登机口候机引导",
+           "bodyStyle": {
+              "backgroundColor": "#212E5B",
+              "minWidth": 1920,
+              "minHeight": 1080
+           },
+           "langs": ["zh-cn", "en-ww"],
+           "defaultLang": "zh-cn",
+           "langTimer": 10000,
+           "extraParam": {
+              "dynaScrollText": {
+                 "dataSource": "C4C872B83CB84D13B12A55C48656FFC7",
+                 "singleData": true,
+                 "columnName": "scrolltext"
+              },
+              "virtualRowSize": 1
+           },
+           "children": [{
+              "type": "Row",
+              "typeLabel": "行",
+              "align": "top",
+              "justify": "center",
+              "bodyStyle": {
+              },
+              "children": [{
+                 "type": "Column",
+                 "typeLabel": "列",
+                 "span": 18,
+                 "bodyStyle": {
+                 },
+                 "dataSource": "2E821193437E475190AEECDD83F56F09",
+                 "singleData": true,
+                 "mainPager": false,
+                 "mainSource": false,
+                 "refreshInterval": 20000,
+                 "children": [{
+                    "type": "Flop",
+                    "typeLabel": "翻牌",
+                    "interval": 30000,
+                    "style": {
+                       "height": 550,
+                       "lineHeight": 550
+                    },
+                    "columnName": "",
+                    "children": [{
+                       "type": "Row",
+                       "typeLabel": "行",
+                       "align": "middle",
+                       "justify": "start",
+                       "bodyStyle": {
+                       },
+                       "children": [{
+                          "type": "Column",
+                          "typeLabel": "列",
+                          "span": 24,
+                          "bodyStyle": {
+                          },
+                          "children": [{
+                             "type": "Row",
+                             "typeLabel": "行",
+                             "align": "top",
+                             "justify": "end",
+                             "bodyStyle": {
+                             },
+                             "children": [{
+                                "type": "Column",
+                                "typeLabel": "列",
+                                "span": 24,
+                                "bodyStyle": {
+                                   "textAlign": "center",
+                                   "backgroundColor": "#FAC35A",
+                                   "height": 89
+                                },
+                                "children": [{
+                                   "type": "Text",
+                                   "typeLabel": "文本",
+                                   "tag": "span",
+                                   "style": {
+                                      "fontWeight": 500,
+                                      "width": 65,
+                                      "height": 58,
+                                      "lineHeight": 58,
+                                      "fontSize": 60,
+                                      "color": "#FAC35A"
+                                   },
+                                   "langLock": "",
+                                   "langExcept": [],
+                                   "value": "！"
+                                }, {
+                                   "type": "Text",
+                                   "typeLabel": "文本",
+                                   "tag": "span",
+                                   "style": {
+                                   },
+                                   "langLock": "",
+                                   "langExcept": [],
+                                   "value": "登机口变更"
+                                }]
+                             }]
+                          }]
+                       }]
+                    }]
+                 }]
+              }]
+           }]
+        },
+        "data": {
+           "2E821193437E475190AEECDD83F56F09": {
+              "list": [{
+                 "carrier": "MF",
+                 "flight": "1234",
+                 "flightid": "1234",
+                 "flightstatus": "ARR",
+                 "gatecode": "01",
+                 "route": "XXX"
+              }],
+              "pager": {
+                 "pageSize": 10,
+                 "pageNumber": 1,
+                 "pageCount": 2,
+                 "recordCount": 1
+              }
+           },
+           "183C21B0FEF64603974625D5CBA2279D": {
+              "list": [{
+                 "actualarrivetime": "2017-01-01 12:00:00",
+                 "actualdeparttime": "2017-01-01 12:00:00",
+                 "boardingtime": "2017-01-01 12:00:00",
+                 "carrier": "MF",
+                 "destination": "XMN",
+                 "estimatearrivetime": "2017-01-01 12:00:00",
+                 "flight": "1234",
+                 "gate": "01",
+                 "gatecode": "01"
+              }],
+              "pager": {
+                 "pageSize": 10,
+                 "pageNumber": 1,
+                 "pageCount": 2,
+                 "recordCount": 1
+              }
+           }
+        }

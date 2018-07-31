@@ -1,0 +1,95 @@
+.container-fluid {
+    background-color: #fff;
+}
+
+.login-form {
+    padding: 10px 30px;
+
+    text-align: center;
+}
+
+.login-form .img {
+    width: 15px;
+    height: 15px;
+}
+
+.login-form .form-controller {
+    width: 80%;
+    height: 45px;
+    padding-left: 15px;
+
+    border: none;
+}
+
+.login-form .form-li {
+    line-height: 45px;
+
+    position: relative;
+
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.login-form .validate {
+    font-size: 18px;
+
+    position: absolute;
+    top: 5px;
+    right: 0;
+
+    text-decoration: none;
+
+    /*color: #f99359;*/
+}
+
+.login-form .btn-ok {
+    font-size: 18px;
+    line-height: 50px;
+
+    display: block;
+
+    height: 50px;
+    margin-top: 10px;
+    margin-bottom: 35px;
+
+    color: #fff;
+    border-radius: 4px;
+
+}
+
+.login-form .btn-ok-able {
+    background-color: #00b5e6;
+}
+
+.login-form .btn-ok-disable {
+    background-color: #d0d5d9;
+}
+
+.checkedBox,
+.checkedBox:link,
+.checkedBox:visited,
+.checkedBox:hover,
+.checkedBox:active {
+    color: #00b5e6;
+    text-decoration: none;
+    position: relative;
+}
+
+.check-icon {
+    position: absolute;
+    top: 0px;
+    left: -30px;
+}
+
+.login-checked {
+    width: 20px;
+    height: 20px;
+    background-image: url("/pub/images/wx/login_checked.png");
+    display: inline-block;
+}
+
+.login-unchecked {
+    width: 20px;
+    height: 20px;
+    background-image: url("/pub/images/wx/login_unchecked.png");
+    display: inline-block;
+}

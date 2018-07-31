@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Expires" content="-1">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC默认竖屏 ，UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <meta name="browsermode" content="application">
+    <!-- QQ强制竖屏 QQ强制全屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-page-mode" content="app">
+
+    <title>kuCity</title>
+    <link rel="stylesheet" href="citysearch.css">
+    <style>
+    .search {
+        padding: 0 10px;
+        border: 1px solid rgb(207, 222, 229);
+        border-radius: 2px;
+        width: 100%;
+        height: 45px;
+        line-height: 45px;
+    }
+    </style>
+</head>
+
+<body>
+    <input type="text" class="search" placeholder="城市中文名或者拼音">
+    
+</body>
+<script src="http://www.jq22.com/jquery/jquery-1.9.1.js"></script>
+<script src="citysearch.js"></script>
+<script>
+    $('.search').kuCity();
+</script>
+</html>

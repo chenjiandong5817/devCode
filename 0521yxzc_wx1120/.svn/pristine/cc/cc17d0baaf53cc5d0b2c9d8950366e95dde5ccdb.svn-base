@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_driver.mappers.DriverRushOrderMapper">
+    <insert id="add" parameterType="driverRushOrderDto">
+		insert into ap_driver_rush_order
+			(
+				uuid,
+				orderUuid,
+				driverUuid,
+				rushTime
+			)
+		values
+			(
+				#{uuid},
+				#{orderUuid},
+				#{driverUuid},
+				#{rushTime}
+			)	
+	</insert>
+
+    <update id="edit" parameterType="driverRushOrderDto">
+        update ap_driver_rush_order
+        <set>
+            <if test="uuid != null and '' != uuid">uuid = #{uuid},</if>
+            <if test="orderUuid != null and '' != orderUuid">orderUuid = #{orderUuid},</if>
+            <if test="driverUuid != null and '' != driverUuid">driverUuid = #{driverUuid},</if>
+            <if test="rushTime != null and '' != rushTime">rushTime = #{rushTime},</if>
+        </set>
+        where
+        uuid = #{uuid}
+    </update>
+
+    <delete id="del" parameterType="driverRushOrderDto">
+		delete from
+			ap_driver_rush_order
+		where
+			uuid = #{uuid}
+	</delete>
+
+    <select id="selInfo" resultType="driverRushOrderDto">
+		select
+			*
+		from
+			ap_driver_rush_order
+		where
+			uuid = #{uuid}
+	</select>
+
+    <sql id="sqlForList">
+        from
+        ap_driver_rush_order
+        <where>
+            <if test="uuid != null and '' != uuid">and uuid = #{uuid}</if>
+            <if test="orderUuid != null and '' != orderUuid">and orderUuid = #{orderUuid}</if>
+            <if test="driverUuid != null and '' != driverUuid">and driverUuid = #{driverUuid}</if>
+            <if test="rushTime != null and '' != rushTime">and rushTime = #{rushTime}</if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        select
+        count(*)
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="list" resultType="driverRushOrderDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+    <select id="queryPage" resultType="driverRushOrderDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+</mapper>

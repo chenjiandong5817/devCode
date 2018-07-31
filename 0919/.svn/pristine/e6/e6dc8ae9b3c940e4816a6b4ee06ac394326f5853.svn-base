@@ -1,0 +1,322 @@
+<template>
+  <el-form :model="conf" label-width="80px" label-position="top">
+    <el-form-item style="margin-bottom: 10px;">
+      <el-col :span="11">
+        <span class="editor-label">滚动速度(speed)</span>
+        <el-input type="number" :value="conf.speed" @input="val => Tools.inputStr2Number(conf, 'speed', val)"></el-input>
+      </el-col>
+      <el-col :span="11" :offset="1">
+        <br />
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-hiddenBy`" placement="top-start" width="250" trigger="hover">
+            <div>
+              选择字段，当该字段的值为空时，判断是否隐藏
+            </div>
+            <i 
+              class="el-icon-warning" 
+              slot="reference" />
+          </el-popover>
+          隐藏触发(hiddenBy)
+          <el-switch v-model="switchOptions.hiddenBy.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+        </span>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <div v-show="switchOptions.hiddenBy.switch" class="editor-inner-pannel editor-inner-pannel-right">
+        <el-form-item v-show="switchOptions.hiddenBy.value.length < 1">
+          <el-button type="primary" size="mini" icon="plus" @click="handleAddHiddenColumn"></el-button>
+        </el-form-item>
+        <el-form-item v-show="switchOptions.hiddenBy.value.length > 0">
+          <el-col :span="10">
+            <span class="editor-label">
+              <el-popover :ref="`popover-text-otherColumnName`" placement="top-start" width="250" trigger="hover">
+                <div>
+                  如果没有选项可供选择，请检查父级节点是否正确配置数据源
+                </div>
+                <i class="el-icon-warning" slot="reference" />
+              </el-popover>
+               字段名称(otherColumnName)
+            </span>
+          </el-col>
+          <el-col :span="10" :offset="1">
+            <span class="editor-label">
+              <el-popover :ref="`popover-text-otherColumnName`" placement="top-start" width="250" trigger="hover">
+                <div>
+                  默认为【正常】，当所选字段为空时隐藏，不为空显示。<br />
+                  选择【反转】，当所选字段为空显示，不为空隐藏。<br />
+                </div>
+                <i class="el-icon-warning" slot="reference" />
+              </el-popover>
+              触发模式(emptyTriggerHidden)
+            </span>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-for="(item, index) in switchOptions.hiddenBy.value" :key="index">
+          <el-col :span="10">
+            <selector v-model="item.columnName" :options="columnNameOptions" filterable :showLabel="false" :showValue="false" placeholder="选择字段"></selector>
+          </el-col>
+          <el-col :span="10" :offset="1">
+            <el-select v-model="item.hidden">
+              <el-option label="正常" :value="true"></el-option>
+              <el-option label="反转" :value="false"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="1">
+            <el-button type="default" icon="close" @click="handleRemoveHiddenColumn(index)"></el-button>
+          </el-col>
+        </el-form-item>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <el-col :span="11">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-seamless`" placement="top-start" width="250" trigger="hover">
+            <div>
+              无缝滚动，即头尾相接的滚动
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          <span style="display: inline-block; width: 130px;">无缝滚动(seamless)</span>
+          <el-radio-group v-model="conf.seamless">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </span>
+      </el-col>
+      <el-col :span="11" :offset="1">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-always`" placement="top-start" width="250" trigger="hover">
+            <div>
+              始终滚动，即使内容不超过限宽也进行滚动
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          <span style="display: inline-block; width: 130px;">始终滚动(always)</span>
+          <el-radio-group v-model="conf.always">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </span>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <el-col :span="11">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-seamless`" placement="top-start" width="250" trigger="hover">
+            <div>
+              垂直滚动，顾名思义就在垂直方向上滚动
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          <span style="display: inline-block; width: 130px;">垂直滚动(vertical)</span>
+          <el-radio-group v-model="conf.seamless">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </span>
+      </el-col>
+      <el-col :span="11" :offset="1">
+        <span class="editor-label">
+          <el-popover :ref="`popover-text-always`" placement="top-start" width="250" trigger="hover">
+            <div>
+              重置滚动，即滚动完毕之后是否回到初始位置， 只有【有缝滚动】和【始终滚动】下有效
+            </div>
+            <i class="el-icon-warning" slot="reference" />
+          </el-popover>
+          <span style="display: inline-block; width: 130px;">重置滚动(backZero)</span>
+          <el-radio-group v-model="conf.always">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </span>
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <fieldset class="editor-fieldset">
+        <legend>样式</legend>
+        <div>
+          <el-form-item>
+            <el-col :span="7">
+              <span class="editor-label">
+                宽度(width)
+                <el-switch v-model="switchOptions.width.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.width.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <el-input type="number" :value="switchOptions.width.value" @input="val => Tools.inputStr2Number(switchOptions.width, 'value', val)"></el-input>
+              </div>
+            </el-col>
+            <el-col :span="7" :offset="1">
+              <span class="editor-label">
+                高度(height)
+                <el-switch v-model="switchOptions.height.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.height.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <el-input type="number" :value="switchOptions.height.value" @input="val => Tools.inputStr2Number(switchOptions.height, 'value', val)"></el-input>
+              </div>
+            </el-col>
+            <el-col :span="8" :offset="1">
+              <span class="editor-label">
+                <el-popover :ref="`popover-text-display`" placement="top-start" width="250" trigger="hover">
+                  <div>
+                    需要让滚动文本与其他同级元素在同一行显示的话，请选择【同行显示】
+                  </div>
+                  <i class="el-icon-warning" slot="reference" />
+                </el-popover>
+                展示(display)
+                <el-switch v-model="switchOptions.display.switch" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
+              </span>
+              <div v-show="switchOptions.display.switch" class="editor-inner-pannel editor-inner-pannel-left">
+                <selector v-model="switchOptions.display.value" :options="[{label: '换行显示', value: 'block'}, {label: '同行显示', value: 'inline-block'}]" filterable :showLabel="false" :showValue="false" placeholder="展示方式"></selector>
+              </div>
+            </el-col>
+          </el-form-item>
+        </div>
+      </fieldset>
+    </el-form-item>
+  </el-form>
+</template>
+<script>
+  import Tools from '@/common/js/template-tools.js'
+  import Selector from './form-items/Selector'
+  export default {
+    props: {
+      value: Object
+    },
+    components: {
+      Selector
+    },
+    data () {
+      return {
+        conf: {},
+        Tools,
+        switchOptions: {
+          hiddenBy: {
+            switch: false,
+            value: []
+          },
+          width: {
+            switch: false,
+            value: 0
+          },
+          height: {
+            switch: false,
+            value: 0
+          },
+          display: {
+            switch: false,
+            value: 'block'
+          }
+        }
+      }
+    },
+    computed: {
+      columnNameOptions () {
+        // return Tools.getDataSourceColumns(this.$parent.currentDataSource)
+        return this.$parent.dataSourceColumns
+      }
+    },
+    watch: {
+      conf: {
+        handler (val) {
+          this.$emit('input', val)
+        },
+        deep: true
+      },
+      'switchOptions.hiddenBy': {
+        handler (val) {
+          this.conf.hiddenBy = []
+          if (val.switch) {
+            for (let item of val.value) {
+              this.conf.hiddenBy.push({[item.columnName]: item.hidden})
+            }
+          }
+        },
+        deep: true
+      },
+      'switchOptions.width': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'width', val.value)
+          } else {
+            delete this.conf.style.width
+          }
+        },
+        deep: true
+      },
+      'switchOptions.height': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'height', val.value)
+            this.$set(this.conf.style, 'lineHeight', val.value)
+          } else {
+            delete this.conf.style.height
+            delete this.conf.style.lineHeight
+          }
+        },
+        deep: true
+      },
+      'switchOptions.display': {
+        handler (val) {
+          if (val.switch) {
+            this.$set(this.conf.style, 'display', val.value)
+          } else {
+            delete this.conf.style.display
+          }
+        },
+        deep: true
+      }
+    },
+    created () {
+      if (Tools.isEmptyObject(this.value)) {
+        this.conf = {
+          type: 'MarqueeText',
+          typeLabel: '滚动文本',
+          speed: 80,
+          hiddenBy: [],
+          seamless: false,
+          always: false,
+          vertical: false,
+          backZero: false,
+          style: {},
+          children: []
+        }
+      } else {
+        this.conf = this.value
+        this.initSwitch()
+      }
+    },
+    methods: {
+      handleAddHiddenColumn () {
+        this.switchOptions.hiddenBy.value.push({columnName: '', hidden: true})
+      },
+      handleRemoveHiddenColumn (index) {
+        this.switchOptions.hiddenBy.value.splice(index, 1)
+      },
+      initSwitch () {
+        // hiddenBy
+        if (this.conf.hiddenBy && this.conf.hiddenBy.length > 0) {
+          this.$set(this.switchOptions.hiddenBy, 'value', this.conf.hiddenBy.map(item => {
+            let key = Object.keys(item)[0]
+            return {columnName: key, hidden: item[key]}
+          }))
+          this.$set(this.switchOptions.hiddenBy, 'switch', true)
+        }
+        // width
+        if (this.conf.style && this.conf.style.width > -1) {
+          this.$set(this.switchOptions.width, 'value', this.conf.style.width)
+          this.$set(this.switchOptions.width, 'switch', true)
+        }
+        // hegiht 和 lineheight
+        if (this.conf.style && this.conf.style.height > -1) {
+          this.$set(this.switchOptions.height, 'value', this.conf.style.height)
+          this.$set(this.switchOptions.height, 'switch', true)
+        }
+        // display
+        if (this.conf.style && this.conf.style.display) {
+          this.$set(this.switchOptions.display, 'value', this.conf.style.display)
+          this.$set(this.switchOptions.display, 'switch', true)
+        }
+      }
+    }
+  }
+</script>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plugs.module_system.mappers.SysCouponMapper">
+	<insert id="add" parameterType="sysCouponDto">
+		insert into ap_sys_coupon
+			(
+				uuid,
+				name,
+				type,
+				money,
+				discount,
+				useCarType,
+				status,
+				instruction,
+				useCondition,
+				astrict,
+				grantNumber,
+				remainNumber,
+				sendMode,
+				getMode,
+				useMode,
+				userRankLower,
+				sendStartTime,
+				sendEndTime,
+				useStartTime,
+				useEndTime,
+				regStartTime,
+				regEndTime,
+				userMobiles,
+				useExpireTime,
+				createTime,
+				creator,
+				updateTime,
+				updator,
+				highestMoney,
+				termType
+			)
+		values
+			(
+				#{uuid},
+				#{name},
+				#{type},
+				#{money},
+				#{discount},
+				#{useCarType},
+				#{status},
+				#{instruction},
+				#{useCondition},
+				#{astrict},
+				#{grantNumber},
+				#{remainNumber},
+				#{sendMode},
+				#{getMode},
+				#{useMode},
+				#{userRankLower},
+				#{sendStartTime},
+				#{sendEndTime},
+				#{useStartTime},
+				#{useEndTime},
+				#{regStartTime},
+				#{regEndTime},
+				#{userMobiles},
+				#{useExpireTime},
+				#{createTime},
+				#{creator},
+				#{updateTime},
+				#{updator},
+				#{highestMoney},
+				#{termType}
+			)
+	</insert>
+	
+	<update id="edit" parameterType="sysCouponDto">
+		update ap_sys_coupon
+		<set>
+			<if test="uuid != null and '' != uuid"> uuid = #{uuid},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="money != null and '' != money"> money = #{money},</if>
+			<if test="discount != null and '' != discount"> discount = #{discount},</if>
+			<if test="useCarType != null and '' != useCarType"> useCarType = #{useCarType},</if>
+			<if test="status != null"> status = #{status},</if>
+			<if test="instruction != null and '' != instruction"> instruction = #{instruction},</if>
+			<if test="useCondition != null and '' != useCondition"> useCondition = #{useCondition},</if>
+			<if test="astrict != null and '' != astrict"> astrict = #{astrict},</if>
+			<if test="grantNumber != null and '' != grantNumber"> grantNumber = #{grantNumber},</if>
+			<if test="remainNumber != null and '' != remainNumber"> remainNumber = #{remainNumber},</if>
+			<if test="sendMode != null and '' != sendMode"> sendMode = #{sendMode},</if>
+			<if test="getMode != null and '' != getMode"> getMode = #{getMode},</if>
+			<if test="useMode != null and '' != useMode"> useMode = #{useMode},</if>
+			<if test="userRankLower != null and '' != userRankLower"> userRankLower = #{userRankLower},</if>
+			<if test="sendStartTime != null and '' != sendStartTime"> sendStartTime = #{sendStartTime},</if>
+			<if test="sendEndTime != null and '' != sendEndTime"> sendEndTime = #{sendEndTime},</if>
+			<if test="useStartTime != null and '' != useStartTime"> useStartTime = #{useStartTime},</if>
+			<if test="useEndTime != null and '' != useEndTime"> useEndTime = #{useEndTime},</if>
+			<if test="regStartTime != null and '' != regStartTime"> regStartTime = #{regStartTime},</if>
+			<if test="regEndTime != null and '' != regEndTime"> regEndTime = #{regEndTime},</if>
+			<if test="useExpireTime != null and '' != useExpireTime"> useExpireTime = #{useExpireTime},</if>
+			<if test="createTime != null and '' != createTime"> createTime = #{createTime},</if>
+			<if test="creator != null and '' != creator"> creator = #{creator},</if>
+			<if test="updateTime != null and '' != updateTime"> updateTime = #{updateTime},</if>
+			<if test="updator != null and '' != updator"> updator = #{updator},</if>
+			<if test="decRemainNumber != null and '' != decRemainNumber"> remainNumber = remainNumber -  #{decRemainNumber},</if>
+			<if test="highestMoney != null and '' != highestMoney"> highestMoney = #{highestMoney},</if>
+			<if test="termType != null and '' != termType"> termType = #{termType},</if>
+		</set>
+		where
+			uuid = #{uuid}
+	</update>
+	
+	<delete id="del" parameterType="sysCouponDto">
+		delete from
+			ap_sys_coupon
+		where
+			uuid = #{uuid}
+	</delete>
+	
+	<select id="selInfo" resultType="sysCouponDto">
+		select
+			*
+		from
+			ap_sys_coupon
+		where
+			uuid = #{uuid}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			ap_sys_coupon
+		<where>
+			<if test="uuid != null and '' != uuid"> and uuid = #{uuid} </if>
+			<if test="name != null and '' != name"> and name = #{name} </if>
+			<if test="type != null and '' != type"> and type = #{type} </if>
+			<if test="money != null and '' != money"> and money = #{money} </if>
+			<if test="discount != null and '' != discount"> and discount = #{discount} </if>
+			<if test="useCarType != null and '' != useCarType"> and useCarType = #{useCarType} </if>
+			<if test="status != null and '' != status"> and status = #{status} </if>
+			<if test="instruction != null and '' != instruction"> and instruction = #{instruction} </if>
+			<if test="useCondition != null and '' != useCondition"> and useCondition = #{useCondition} </if>
+			<if test="astrict != null and '' != astrict"> and astrict = #{astrict} </if>
+			<if test="grantNumber != null and '' != grantNumber"> and grantNumber = #{grantNumber} </if>
+			<if test="remainNumber != null and '' != remainNumber"> and remainNumber = #{remainNumber} </if>
+			<if test="sendMode != null and '' != sendMode"> and sendMode = #{sendMode} </if>
+			<if test="getMode != null and '' != getMode"> and getMode = #{getMode} </if>
+			<if test="useMode != null and '' != useMode"> and useMode = #{useMode} </if>
+			<if test="userRankLower != null and '' != userRankLower"> and userRankLower = #{userRankLower} </if>
+			<if test="sendStartTime != null and '' != sendStartTime"> and sendStartTime = #{sendStartTime} </if>
+			<if test="sendEndTime != null and '' != sendEndTime"> and sendEndTime = #{sendEndTime} </if>
+			<if test="useStartTime != null and '' != useStartTime"> and useStartTime = #{useStartTime} </if>
+			<if test="useEndTime != null and '' != useEndTime"> and useEndTime = #{useEndTime} </if>
+			<if test="regStartTime != null and '' != regStartTime"> and regStartTime = #{regStartTime} </if>
+			<if test="regEndTime != null and '' != regEndTime"> and regEndTime = #{regEndTime} </if>
+			<if test="useExpireTime != null and '' != useExpireTime"> and useExpireTime = #{useExpireTime} </if>
+			<if test="createTime != null and '' != createTime"> and createTime = #{createTime} </if>
+			<if test="creator != null and '' != creator"> and creator = #{creator} </if>
+			<if test="updateTime != null and '' != updateTime"> and updateTime = #{updateTime} </if>
+			<if test="updator != null and '' != updator"> and updator = #{updator} </if>
+			<if test="couponName != null and '' != couponName"> and name LIKE '%${couponName}%' </if>
+			<if test="regTime != null and '' != regTime">
+				and ((regStartTime&lt;=#{regTime} and regEndTime &gt;=#{regTime})
+				or (regStartTime is null and regEndTime &gt;=#{regTime}) or(regStartTime&lt;=#{regTime} and regEndTime is null) )
+			</if>
+			<if test="startTime != null and '' != startTime">and createTime &gt;= to_date(#{startTime},'yyyy-mm-dd,hh24:mi:ss') </if>
+			<if test="endTime != null and '' != endTime">and createTime &lt;= to_date(#{endTime},'yyyy-mm-dd,hh24:mi:ss')</if>
+		</where>
+		<if test="sortField != null and sortOrder != null">order by ${sortField} ${sortOrder}</if>
+	</sql>
+	
+	<select id="count" resultType="int">
+		select 
+			count(*) 
+		<include refid="sqlForList"/>
+	</select>
+	
+	<select id="list" resultType="sysCouponDto">
+		select 
+			 *
+		<include refid="sqlForList"/>
+	</select>
+
+    <select id="queryPage" resultType="sysCouponDto">
+        select
+        *
+        <include refid="sqlForList"/>
+    </select>
+
+
+</mapper>

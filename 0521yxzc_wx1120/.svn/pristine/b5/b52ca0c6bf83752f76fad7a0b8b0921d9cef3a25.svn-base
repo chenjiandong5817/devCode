@@ -1,0 +1,689 @@
+package com.plugs.module_wechat.api;
+
+import com.exception.ValidateException;
+import com.plugs.base.AjaxList;
+import com.plugs.base.BaseExtendApi;
+import com.plugs.constants.ConfigConstants;
+import com.plugs.constants.ReturnCodeConstants;
+import com.plugs.module_driver.dtos.DriverAccountDetailDto;
+import com.plugs.module_driver.dtos.DriverDto;
+import com.plugs.module_driver.services.DriverAccountDetailService;
+import com.plugs.module_driver.services.DriverService;
+import com.plugs.module_enterprise.dtos.EntAccountDetailDto;
+import com.plugs.module_enterprise.services.EntAccountDetailService;
+import com.plugs.module_enterprise.services.EntAccountRoleService;
+import com.plugs.module_order.dtos.OrderCostDetailDto;
+import com.plugs.module_order.dtos.OrderDto;
+import com.plugs.module_order.dtos.OrderEvaluateDto;
+import com.plugs.module_order.dtos.OrderPrepaidDto;
+import com.plugs.module_order.pojo.OrderCostItem;
+import com.plugs.module_order.services.OrderCostDetailService;
+import com.plugs.module_order.services.OrderEvaluateService;
+import com.plugs.module_order.services.OrderHandler;
+import com.plugs.module_order.services.OrderService;
+import com.plugs.module_system.dtos.SysCarBillingWayDto;
+import com.plugs.module_system.dtos.SysCouponDto;
+import com.plugs.module_system.services.SysCarBillingWayService;
+import com.plugs.module_system.services.SysCouponService;
+import com.plugs.module_user.dtos.UserAccountDetailDto;
+import com.plugs.module_user.dtos.UserCouponDto;
+import com.plugs.module_user.dtos.UserPassengerDto;
+import com.plugs.module_user.services.UserAccountDetailService;
+import com.plugs.module_user.services.UserCouponService;
+import com.plugs.module_wechat.services.WechatOrderService;
+import com.plugs.thread.CyclePushOrderWithCarLevelUpThread;
+import com.plugs.thread.ImmediateOrderWithCarLevelUpThread;
+import com.plugs.thread.ThreadHelper;
+import com.plugs.utils.BizValidate;
+import com.plugs.utils.DateUtils;
+import com.plugs.utils.NumberFormatUtil;
+import com.plugs.utils.SysConfigHelper;
+import com.util.MD5Util;
+import com.util.MapUtil;
+import com.util.StringUtil;
+import com.util.Validate;
+import com.utils.log4j.QxLog;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by Administrator on 2017/5/19.
+ */
+@Controller
+@RequestMapping("/wechat/order")
+@Api(value = "微信订单", description = "微信订单")
+public class WechatOrderApi extends BaseExtendApi {
+    private static final Logger qxLogger = Logger.getLogger(WechatOrderApi.class);
+
+    @Autowired
+    private DriverService driverService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private WechatOrderService wechatOrderService;
+    @Autowired
+    private OrderEvaluateService orderEvaluateService;
+    @Autowired
+    private OrderHandler orderHandler;
+    @Autowired
+    private SysCarBillingWayService billingWayService;
+    @Autowired
+    private OrderCostDetailService orderCostDetailService;
+    @Autowired
+    private UserAccountDetailService userAccountDetailService;
+    @Autowired
+    private UserCouponService userCouponService;
+    @Autowired
+    private SysCouponService sysCouponService;
+    @Autowired
+    private EntAccountDetailService entAccountDetailService;
+    @Autowired
+    private DriverAccountDetailService driverAccountDetailService;
+    @Autowired
+    private EntAccountRoleService roleService;
+
+
+    @RequestMapping(value = "/jugStatus")
+    @ResponseBody
+    @ApiOperation(value = "首页状态判断", notes = "首页状态判断", response = AjaxList.class, httpMethod = "POST")
+    public AjaxList jugStatus(@ApiParam(value = "用户UUID", name = "passengerUuid") @RequestParam(required = true) String passengerUuid,
+                              HttpServletRequest request) {
+        if (StringUtils.isEmpty(passengerUuid)) {
+            return AjaxList.createError("获取用户信息错误");
+        }
+        return this.wechatOrderService.getStatus(passengerUuid);
+    }
+
+
+    @RequestMapping(value = "/myTrip", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "我的行程", notes = "我的行程接口信息", httpMethod = "GET")
+    public AjaxList myTrip(HttpServletRequest request,
+                           @ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                           @ApiParam(name = "pageNum", value = "页码(默认1)") @RequestParam(required = false) Integer pageNum) throws Exception {
+        pageNum = dealPageNum(pageNum);
+        UserPassengerDto userPassengerDto = super.getUserByOpenId(request, openId);
+        Map<String, Object> params = MapUtil.buildMap();
+        params.put("passengeUuid", userPassengerDto.getUuid());
+        params.put("excludeSubStatus", OrderDto.ORDER_SUB_STATUS_CANCEL_BEFORE_BEFORE_ANSWER);
+        params.put("excludeMainStatus", OrderDto.ORDER_MAIN_STATUS_DEFAULT);
+        params.put("actualDriverUuidIsNotNull", 1);
+        params.put("orderSource", 3); //todo:20171016来源，微信订单
+//        params.put("appointDefault", 1); //预约单，预约时间与下单时间差两小时，白天订单
+        params.put("sortField", "deparTime");
+        params.put("sortOrder", "DESC");
+        List<OrderDto> orders = this.orderService.queryPage(params, pageNum, ConfigConstants.PAGESIZE_10);
+        return AjaxList.createSuccess(orders.size(), "获取成功", orders);
+    }
+
+
+    @RequestMapping(value = "/orderResponse", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "等待订单响应", httpMethod = "POST", notes = "waitOrderResponse")
+    public AjaxList orderResponse(HttpServletRequest request,
+                                  @ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                                  @ApiParam(name = "uuid", required = true, value = "uuid") @RequestParam String uuid){
+        if (StringUtils.isEmpty(openId) || StringUtils.isEmpty(uuid)) {
+            return AjaxList.createError("获取参数失败");
+        }
+        Map<String,Object> params = MapUtil.buildMap();
+        params.put("uuid",uuid);
+        OrderDto orderDto = this.wechatOrderService.selInfo(params);
+        if (null == orderDto) {
+            BizValidate.bizErr("该订单不存在", ReturnCodeConstants.ERR_10006_LOGIC_ERR);
+        }
+        Map<String,Object> map = MapUtil.buildMap();
+        map.put("uuid",orderDto.getUuid());
+        map.put("mainStatus",orderDto.getMainStatus());
+        map.put("subStatus",orderDto.getSubStatus());
+        return AjaxList.createSuccess("订单响应状态",map);
+    }
+
+
+    @RequestMapping(value = "/tripDetail", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "行程详情", notes = "行程详情的接口信息", httpMethod = "POST")
+    public AjaxList tripDetail(HttpServletRequest request,
+                               @ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                               @ApiParam(name = "orderUuid", required = true, value = "订单(行程)UUID") @RequestParam String orderUuid) throws Exception {
+        Map<String, Object> result = MapUtil.buildMap();
+
+        UserPassengerDto userPassengerDto = super.getUserByOpenId(request, openId);
+        Validate.notNull(userPassengerDto, "未获取到用户信息");
+        Map<String, Object> params = MapUtil.buildMap();
+        params.put("uuid", orderUuid);
+        OrderDto order = orderService.selInfo(params);
+        if (null == order) {
+            BizValidate.bizErr("未获取到行程", ReturnCodeConstants.ERR_ORDER_NOT_EXIST);
+        }
+        result.put("order", order);
+        result.put("sysTime", new Date());
+        //增加日租半日租的订单总数和成单总数
+        if (order.getOrderType() == OrderDto.ORDER_TYPE_RENT_DAY || order.getOrderType() == OrderDto.ORDER_TYPE_RENT_HALF_DAY) {
+            params.clear();
+            params.put("groupUuid", order.getGroupUuid());
+            int totalNum = orderService.count(params);
+
+            params.clear();
+            params.put("groupUuid", order.getGroupUuid());
+            params.put("mainStatusIn23456", 1);
+            int successNum = orderService.count(params);
+
+            result.put("totalNum", totalNum);
+            result.put("successNum", successNum);
+        }
+        //被预定的司机
+        if (StringUtil.isNotEmpty(order.getDriverUuid())) {
+            params.clear();
+            params.put("uuid", order.getDriverUuid());
+            DriverDto driver = driverService.selInfo(params);
+            if (null != driver) {
+                result.put("driverName", driver.getUserName());
+            }
+        }
+        //实际接单司机信息
+        if (StringUtil.isNotEmpty(order.getActualDriverUuid())) {
+            params.clear();
+            params.put("uuid", order.getActualDriverUuid());
+            DriverDto actualDriver = driverService.findDriver(params);
+
+            SysCarBillingWayDto billingWay = billingWayService.findByLevelTypeAndOrderType(order.getLevelType(), order.getOrderType(), order.getAreaUuid());//计费方式
+
+            //计费方式
+            if (billingWay != null) {
+                actualDriver.setFreeWaitTime(billingWay.getFreeWaitTime());//免费等待时长
+                actualDriver.setBeyondWaitFee(billingWay.getBeyondWaitTime());//超过等待时长费 元/分钟
+
+            }
+            Map<String, Object> driverInfo = actualDriver.toMap4WebSocket(orderUuid);
+            driverInfo.remove("tokenId");
+            result.put("actualDriver", driverInfo);
+        }
+        //评价信息
+        params.clear();
+        params.put("orderUuid", orderUuid);
+        params.put("passengerUuid", userPassengerDto.getUuid());
+        List<OrderEvaluateDto> evaluates = orderEvaluateService.list(params);
+        if (evaluates != null && evaluates.size() > 0) {
+            result.put("evaluate", evaluates.get(0));
+        }
+
+        params.clear();
+        params.put("orderUuid", order.getUuid());
+        OrderCostDetailDto detail = orderCostDetailService.selInfo(params);
+        if (null != detail) {
+            //result.put("costDetail", detail.toMap4Socket(order.getPrepayType() == OrderDto.PREPAY_TYPE_ENT));
+            List<OrderCostItem> costItems = detail.transfToItems(order.getAssignDriverFare(), order.getTip(), order.getCancelFee());
+            //个人支付
+            params.clear();
+            params.put("orderUuid", order.getUuid());
+            params.put("status", UserAccountDetailDto.STATUS_SUCCESS);
+            List<UserAccountDetailDto> userAccountDetails = this.userAccountDetailService.list(params);
+            if (userAccountDetails != null && userAccountDetails.size() > 0) {
+                for (UserAccountDetailDto userAccountDetailDto : userAccountDetails) {
+                    String item = UserAccountDetailDto.getItemByCode(userAccountDetailDto.getPayType());
+                    if (userAccountDetailDto.getMoney() > 0d) {
+                        costItems.add(new OrderCostItem(item, NumberFormatUtil.roundAndFormat2TwoDecimal(userAccountDetailDto.getMoney()), 100));
+                    }
+                }
+            }
+            //企业支付
+            params.clear();
+            params.put("orderUuid", order.getUuid());
+            params.put("status", 1);
+            List<EntAccountDetailDto> entAccountDetailDtos = this.entAccountDetailService.list(params);
+            if (entAccountDetailDtos != null && entAccountDetailDtos.size() > 0) {
+                for (EntAccountDetailDto entAccountDetailDto : entAccountDetailDtos) {
+                    String item = "企业支付";
+                    if (entAccountDetailDto.getMoney() > 0d) {
+                        costItems.add(new OrderCostItem(item, NumberFormatUtil.roundAndFormat2TwoDecimal(entAccountDetailDto.getMoney()), 100));
+                    }
+                }
+            }
+            //司机代付
+            params.clear();
+            params.put("payOrderUuid", order.getUuid());
+            params.put("type", 100);
+            params.put("status", 1);
+            List<DriverAccountDetailDto> driverAccountDetails = this.driverAccountDetailService.list(params);
+            if (driverAccountDetails != null && driverAccountDetails.size() > 0) {
+                for (DriverAccountDetailDto driverAccountDetail : driverAccountDetails) {
+                    String item = "司机代付";
+                    if (driverAccountDetail.getMoney() > 0d) {
+                        costItems.add(new OrderCostItem(item, NumberFormatUtil.roundAndFormat2TwoDecimal(driverAccountDetail.getMoney()), 100));
+                    }
+                }
+            }
+            result.put("costItems", costItems);
+        }
+        //查询电子券抵扣费用
+        params.clear();
+        params.put("userUuid", userPassengerDto.getUuid());
+        params.put("orderUuid", orderUuid);
+        params.put("status", UserCouponDto.STATUS_USED);
+        List<UserCouponDto> userCouponDtos = userCouponService.list(params);
+        if (userCouponDtos != null && userCouponDtos.size() > 0) {
+            UserCouponDto userCoupon = userCouponDtos.get(0);
+            params.clear();
+            params.put("uuid", userCoupon.getSysCouponUuid());
+            SysCouponDto sysCoupon = sysCouponService.selInfo(params);
+            if (null != sysCoupon) {
+                result.put("couponName", sysCoupon.getName());
+            }
+            result.put("userCouponUuid", userCoupon.getUuid());
+            result.put("couponMoney", userCoupon.getMoney());
+        } else {
+            result.put("couponMoney", 0);
+            result.put("userCouponUuid", "");
+            result.put("couponName", "");
+        }
+        result.put("areaUuid", order.getAreaUuid());
+        return AjaxList.createSuccess("获取成功", result);
+    }
+
+    @RequestMapping(value = "/advance", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "预约用车/立即用车", httpMethod = "POST", notes = "advance")
+    public AjaxList advance(HttpServletRequest request,
+                            @ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                            @ApiParam(name = "orderType", required = true, value = "订单类型（1.预约  2.接机,3送机，4、机场叫车，5立即用车）") @RequestParam Integer orderType,
+                            @ApiParam(name = "levelType", required = true, value = "车型级别") @RequestParam Integer levelType,
+                            @ApiParam(name = "planTrip", required = true, value = "预估里程") @RequestParam double planTrip,
+                            @ApiParam(name = "planFare", required = true, value = "预估车费") @RequestParam double planFare,
+                            @ApiParam(name = "deparTime", required = false, value = "预约时间") @RequestParam(required = false) String deparTime,
+                            @ApiParam(name = "originLng", required = true, value = "起点经度") @RequestParam double originLng,
+                            @ApiParam(name = "originLat", required = true, value = "起点纬度") @RequestParam double originLat,
+                            @ApiParam(name = "originCity", required = true, value = "起点城市") @RequestParam String originCity,
+                            @ApiParam(name = "originAddress", required = true, value = "起点地址") @RequestParam String originAddress,
+                            @ApiParam(name = "destLng", required = true, value = "终点经度") @RequestParam double destLng,
+                            @ApiParam(name = "destLat", required = true, value = "终点纬度") @RequestParam double destLat,
+                            @ApiParam(name = "destCity", required = true, value = "终点城市") @RequestParam String destCity,
+                            @ApiParam(name = "destAddress", required = true, value = "终点地址") @RequestParam String destAddress,
+                            @ApiParam(name = "prepayType", required = true, value = "预支付方式（1企业支付，2个人支付）") @RequestParam Integer prepayType,
+                            @ApiParam(name = "remark", required = false, value = "备注") @RequestParam(required = false) String remark,
+                            @ApiParam(name = "vipCount", required = false, value = "vip快速通道数") @RequestParam(required = false) Integer vipCount,
+                            @ApiParam(name = "originDetailAddress", required = true, value = "起点详细地址") @RequestParam String originDetailAddress,
+                            @ApiParam(name = "destDetailAddress", required = true, value = "终点详细地址") @RequestParam String destDetailAddress,
+                            @ApiParam(name = "preChoiceUserCouponUuid", required = false, value = "预选优惠券UUID") @RequestParam(required = false) String preChoiceUserCouponUuid,
+                            @ApiParam(name = "prepaidFee", required = false, value = "预支付金额【默认为0】") @RequestParam(required = false) Double prepaidFee,
+                            @ApiParam(name = "areaUuid", required = false, value = "区域UUID") @RequestParam(required = false) String areaUuid,
+                            @ApiParam(name = "actualPassengeName", required = false, value = "实际乘车人姓名（代人叫车）") @RequestParam(required = false) String actualPassengeName,
+                            @ApiParam(name = "actualPassengeMobile", required = true, value = "实际乘车人电话（代人叫车）") @RequestParam String actualPassengeMobile,
+                            @ApiParam(name = "flightNum", required = false, value = "航班号") @RequestParam(required = false) String flightNum,
+                            @ApiParam(name = "flightTime", required = false, value = "航班起飞时间") @RequestParam(required = false) String flightTime,
+                            @ApiParam(name = "payToObject", required = false, value = "支付对象【1：乘车人支付】") @RequestParam(required = false) Integer payToObject
+                            ) throws Exception {
+
+        //判断参数
+        Validate.notEmpty(openId, "缺少请求参数[openId]");
+        Validate.notNull(orderType, "缺少请求参数[orderType]");
+        Validate.notNull(levelType, "缺少请求参数[levelType]");
+        Validate.notNull(planTrip, "缺少请求参数[planTrip]");
+        Validate.notNull(planFare, "缺少请求参数[planFare]");
+        //非立即订单，需要有预约时间参数
+        if (orderType != OrderDto.ORDER_TYPE_IMMED) {
+            Validate.notNull(deparTime, "缺少请求参数[deparTime]");
+        }
+        Validate.notNull(originLng, "缺少请求参数[originLng]");
+        Validate.notNull(originLat, "缺少请求参数[originLat]");
+        Validate.notNull(originCity, "缺少请求参数[originCity]");
+        Validate.notNull(originAddress, "缺少请求参数[originAddress]");
+        Validate.notNull(destLng, "缺少请求参数[destLng]");
+        Validate.notNull(destLat, "缺少请求参数[destLat]");
+        Validate.notNull(destCity, "缺少请求参数[destCity]");
+        Validate.notNull(destAddress, "缺少请求参数[destAddress]");
+        Validate.notNull(originDetailAddress, "缺少请求参数[originDetailAddress]");
+        Validate.notNull(destDetailAddress, "缺少请求参数[destDetailAddress]");
+
+        //起点限制
+        if (com.plugs.utils.StringUtils.isNotEmpty(areaUuid)) {
+            boolean flag = orderHandler.checkOrgCity(areaUuid);
+            if (flag) {
+                return AjaxList.createError("起点所在区域暂未开通服务，敬请期待");
+            }
+        } else {
+            if (!originCity.startsWith("福建省厦门市") && !originCity.startsWith("福建省福州市")) {
+                return AjaxList.createError("起点所在区域暂未开通服务，敬请期待");
+            }
+        }
+
+        //预估费用异常
+        if (planFare <= 1) {
+            return AjaxList.createError("预估费用异常，请重试");
+        }
+
+        //根据openId获取乘客信息
+        UserPassengerDto userPassenger = super.getUserByOpenId(request, openId);
+
+        //反射生成订单实体
+        OrderDto orderDto = getModel(request, OrderDto.class);
+        //是否立即叫车
+        if (orderType == OrderDto.ORDER_TYPE_IMMED) {
+            orderDto.setDeparTime(new Date());
+        }
+
+        //设置订单必需信息
+        orderDto.setUuid(StringUtil.buildUUID());
+        orderDto.setOrderSource(3); //微信叫车
+        //todo：20171130：立即用车，非预约用车，接送机 系统包含区域接送机预约时间 小于 系统当前时间 的时间差[分钟]
+        if (orderDto.getDeparTime().getTime() - System.currentTimeMillis() <= SysConfigHelper.getTimeDifferenceLimit() * 60 * 1000) {
+            orderDto.setAcceptType(OrderDto.ACCEPT_TYPE_DIS);//派单
+        } else {
+            orderDto.setAcceptType(OrderDto.ACCEPT_TYPE_RUSH);//默认抢单
+        }
+
+        if (actualPassengeMobile.equals(userPassenger.getMobile())) {
+            orderDto.setValetCall(-1);//不是代客叫车
+            orderDto.setActualPassengeName(userPassenger.getNickname());
+        } else {
+            orderDto.setValetCall(1);//代客叫车
+            if (prepayType == OrderDto.PREPAY_TYPE_ENT) {
+                //判断是否叫车负责人
+                if (StringUtil.isEmpty(roleService.isEntResponsiblePerson(userPassenger.getUuid()))) {
+                    return AjaxList.createError("您没有权限使用企业支付代客叫车", ReturnCodeConstants.ERR_10006_LOGIC_ERR);
+                }
+            } else {
+                if (userPassenger.getBalance() < SysConfigHelper.getCalledCarBalanceLimit()) { //个人支付待客叫车
+                    return AjaxList.createError("代人叫车功能需账户余额满" + SysConfigHelper.getCalledCarBalanceLimit() + "元以上即可使用", ReturnCodeConstants.ERR_10006_LOGIC_ERR);
+                }
+            }
+        }
+
+        //初始化订单相关状态
+        orderDto.setMainStatus(OrderDto.ORDER_MAIN_STATUS_DEFAULT);//订单状态-初始化
+        orderDto.setSubStatus(OrderDto.ORDER_SUB_STATUS_DEFAULT);//子状态-初始化
+        orderDto.setIsBilled(OrderDto.ORDER_BILL_DEFAULT_UNBILL);//开票状态-未开票
+        orderDto.setCreateTime(new Date());//创建时间
+
+
+        orderDto.setPrepayType(prepayType);//预支付方式
+
+        orderDto.setPassengeUuid(userPassenger.getUuid());//乘客UUID
+        orderDto.setCreator(userPassenger.getUuid());//创建者
+
+        //去除起终点地址的前后空格
+        orderDto.setOriginAddress(orderDto.getOriginAddress().trim());
+        orderDto.setOriginDetailAddress(orderDto.getOriginDetailAddress().trim());
+        orderDto.setDestAddress(orderDto.getDestAddress().trim());
+        orderDto.setDestDetailAddress(orderDto.getDestDetailAddress().trim());
+
+        //vip通道卷 TODO:20180129 福州的也送
+//        if (orderDto.getDestAddress().startsWith("厦门高崎机场T3航站楼")
+//                || orderDto.getDestAddress().startsWith("厦门高崎机场T4航站楼")) {
+            orderDto.setVipCounts(vipCount);
+//        }
+
+        //区域设置
+        orderDto.setAreaUuid(areaUuid);
+        //todo:20180403 微信福州区域计价方式由一口价改为实时计价
+        if (!StringUtils.isEmpty(areaUuid) && "cb33bbcc0e8c400f992c4d1acff274cb".equals(areaUuid)) {
+            orderDto.setBillingWay(1);
+        }
+
+        //添加预选优惠券
+        orderDto.setPreChoiceUserCouponUuid(preChoiceUserCouponUuid);
+        orderDto.setPrepaidStatus(OrderPrepaidDto.PAY_STATUS_INIT); //20171220添加预支付初始化
+        qxLogger.log(QxLog.LEVEL, "微信乘客创建订单，类型[" + orderDto.getOrderType() + "]，订单ID[" + orderDto.getUuid() + "]");
+
+        AjaxList ajaxList = this.wechatOrderService.createOrder(orderDto);
+        boolean executePushThread = (Boolean) ((HashMap) ajaxList.getData()).get("executePushThread");
+        if (ajaxList.isSuccess() && executePushThread) {
+            if (orderDto.getAcceptType() == OrderDto.ACCEPT_TYPE_DIS) {
+                //即时订单派单
+                ThreadHelper.executeOrderTask(new ImmediateOrderWithCarLevelUpThread(orderDto.getUuid()));
+            } else {
+                //预约订单推单
+                ThreadHelper.executeOrderTask(new CyclePushOrderWithCarLevelUpThread(orderDto.getUuid()));
+            }
+        }
+        ajaxList.setData(((HashMap) ajaxList.getData()).get("orderUuid"));
+        return ajaxList;
+    }
+
+
+
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "取消订单", httpMethod = "POST", notes = "取消订单")
+    public AjaxList cancel(HttpServletRequest request,
+                           @ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                           @ApiParam(name = "orderUuid", required = true, value = "orderUuid") @RequestParam String orderUuid
+    )throws Exception {
+        if (StringUtils.isEmpty(openId) || StringUtils.isEmpty(orderUuid)) {
+            return AjaxList.createError("获取参数失败");
+        }
+        Map<String, Object> params = MapUtil.buildMap();
+        params.put("openId", openId);
+        UserPassengerDto user = super.getUserByOpenId(request, openId);
+        if (StringUtil.isNull(user)) {
+            return AjaxList.createError("获取不到用户信息");
+        }
+        return this.wechatOrderService.cancel(user, orderUuid);
+    }
+
+    @RequestMapping(value = "/preCancel", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "计算订单取消费", httpMethod = "POST", notes = "计算订单取消费")
+    public AjaxList preCancel(HttpServletRequest request,
+                              @ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                              @ApiParam(name = "orderUuid", required = true, value = "orderUuid") @RequestParam String orderUuid
+    )throws Exception {
+        if (StringUtils.isEmpty(openId) || StringUtils.isEmpty(orderUuid)) {
+            return AjaxList.createError("获取参数失败");
+        }
+        Map<String, Object> params = MapUtil.buildMap();
+        params.put("openId", openId);
+        UserPassengerDto user = super.getUserByOpenId(request, openId);
+        if (StringUtil.isNull(user)) {
+            return AjaxList.createError("获取不到用户信息");
+        }
+        return this.wechatOrderService.preCancel(user, orderUuid);
+    }
+
+
+    @RequestMapping(value = "/pay", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "订单支付", notes = "订单支付接口", httpMethod = "POST")
+    public AjaxList tradeUrl(@ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                             @ApiParam(name = "money", required = true, value = "金额") @RequestParam String money,
+                             @ApiParam(name = "orderUuid", required = true, value = "订单Uuid") @RequestParam String orderUuid,
+                             @ApiParam(name = "userCouponUuid", value = "优惠券UUID") @RequestParam(required = false) String userCouponUuid,
+                             @ApiParam(name = "type", required = true, value = "类型（1：企业余额，2：账户余额，4：微信）") @RequestParam Integer type,
+                             @ApiParam(name = "sign", required = true, value = "签名[将参数按字母表顺序排序拼接成key=value&key2=value2,最后加上&key=secretKey，进行MD5加密，空参数不参与]") @RequestParam String sign,
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws Exception {
+        Validate.notEmpty(openId, "参数错误[登录令牌]");
+        Validate.notNull(money, "参数错误[金额]");
+        Validate.notNull(orderUuid, "参数错误[订单UUID]");
+        Validate.notNull(type, "参数错误[类型]");
+        Validate.notEmpty(sign, "参数错误[签名]");
+
+        if (!type.equals(1) && !type.equals(2) && !type.equals(4)) {
+            throw new ValidateException("参数错误[类型]");
+        }
+        String signParams = "money=" + money + "&openId=" + openId + "&orderUuid=" + orderUuid  + "&type=" + type;
+
+        signParams += "&key=" + ConfigConstants.SECRET_KEY;
+        qxLogger.log(QxLog.LEVEL, "签名参数[" + signParams + "]");
+        signParams = MD5Util.MD5Encode(signParams);
+        if (!sign.equals(signParams)) {
+            return AjaxList.createError("签名错误", ReturnCodeConstants.ERR_10014_SIGN_ERR);//签名错误
+        }
+
+        UserPassengerDto userPassengerDto = super.getUserByOpenId(request, openId);
+
+        return this.wechatOrderService.orderPay(userPassengerDto, Double.parseDouble(money), orderUuid, type, request, response, userCouponUuid);
+    }
+
+
+    /**
+     * 送机评价界面获取vip通道信息
+     *
+     * @param openId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/getVipStatusInfo")
+    @ResponseBody
+    @ApiOperation(value = "送机评价界面获取vip通道信息", httpMethod = "GET", response = AjaxList.class, notes = "送机评价界面获取vip通道信息")
+    public AjaxList getVipStatusInfo(@ApiParam(name = "openId", required = true, value = "openId") @RequestParam String openId,
+                                     @ApiParam(name = "orderUuid", required = true, value = "订单Uuid") @RequestParam String orderUuid,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) throws Exception {
+        Validate.notEmpty(openId, "参数错误[登录令牌]");
+        Map<String, Object> params = MapUtil.buildMap(1);
+        Map<String, Object> resultMap = MapUtil.buildMap(1);
+        params.put("uuid", orderUuid);
+        OrderDto order = this.orderService.selInfo(params);
+        if (null == order) {
+            Validate.notNull(orderUuid, "参数错误[订单UUID]");
+        }
+        if (null != order.getVipCounts() && order.getVipCounts() > 0 && order.getVipFlag() > 0) {
+            resultMap.put("orderuuid", order.getUuid());
+            resultMap.put("vipCounts", order.getVipCounts());
+            resultMap.put("vipFlag", true);
+            resultMap.put("vipEffTime", !(System.currentTimeMillis() - order.getVipEffTime().getTime() > 1000 * 60 * 30));
+            return AjaxList.createSuccess("", resultMap);
+        }
+        resultMap.put("orderuuid", order.getUuid());
+        resultMap.put("vipCounts", 0);
+        resultMap.put("vipFlag", false);
+        resultMap.put("vipEffTime", false);
+        return AjaxList.createSuccess("", resultMap);
+    }
+
+
+
+    @RequestMapping("{view}/{openId}/{orderUuid}/{timeZone}")
+    public String complete(HttpServletRequest request,
+                           @PathVariable("timeZone") String timeZone,
+                           @PathVariable("view") String viewPage,
+                           @PathVariable("openId") String openId,
+                           @PathVariable("orderUuid") String orderUuid,
+                           Model model) {
+        this.dealViewModel(orderUuid,model,timeZone);
+        return "wxPage/"+viewPage;
+    }
+
+
+
+    private void dealViewModel(String orderUuid, Model model,String timeZone) {
+        Map<String, Object> params = MapUtil.buildMap();
+        params.put("uuid", orderUuid);
+        OrderDto orderDto = this.orderService.selInfo(params);
+        if (null != orderDto) {
+            DriverDto driverDto = null;
+            if (orderDto.getActualDriverUuid() != null) {
+                params.clear();
+                params.put("uuid", orderDto.getActualDriverUuid());
+                driverDto = this.driverService.findDriver(params);
+                if (driverDto != null) {
+                    params.clear();
+                    params.put("driverUuid", orderDto.getActualDriverUuid());
+                    Double avgScore = this.orderEvaluateService.myAvgScore(params);
+                    driverDto.setAvgScore(avgScore);
+                }
+            }
+            //详细放入model map
+            this.setOrderInfoMap(driverDto, orderDto, model, timeZone);
+        }
+    }
+
+
+    private void setOrderInfoMap(DriverDto driverDto, OrderDto orderDto, Model model, String timeZone) {
+        qxLogger.log(QxLog.LEVEL,"timezone:"+ timeZone);
+        Map<String, Object> driverMap = MapUtil.buildMap();
+        Map<String, Object> orderMap = MapUtil.buildMap();
+
+        DriverDto driverBean = driverDto == null ? new DriverDto() : driverDto;
+
+        driverMap.put("driverUuid", driverBean.getUuid());
+        driverMap.put("driverName", driverBean.getUserName());
+        driverMap.put("driverFace", driverBean.getFace());
+        driverMap.put("driverMobile", driverBean.getMobile());
+        driverMap.put("driverScore", driverBean.getAvgScore());
+        driverMap.put("driverCarNo", driverBean.getCarNo());
+        driverMap.put("driverCarColor", driverBean.getCarColor());
+        driverMap.put("driverBrandName", driverBean.getBrandName());
+        driverMap.put("driverCurrentLng", driverBean.getCurrentLng());
+        driverMap.put("driverCurrentLat", driverBean.getCurrentLat());
+
+        driverMap.put("driverDeparTime", DateUtils.format(orderDto.getDeparTime(), "MM-dd HH:mm"));
+
+        orderMap.put("orderUuid", orderDto.getUuid());
+        orderMap.put("orderNumber", orderDto.getOrderNumber());
+        orderMap.put("orderOriAddress", orderDto.getOriginAddress());
+        orderMap.put("orderOriAddress", orderDto.getOriginAddress());
+        orderMap.put("orderDestAddress", orderDto.getDestAddress());
+        orderMap.put("subStatus", orderDto.getSubStatus());
+
+        double fare = orderDto.getMainStatus() == 4 ? orderDto.getWaitPayFee() : orderDto.getPlanFare();
+        orderMap.put("orderPlanFare", fare);
+        orderMap.put("orderCancelFare", orderDto.getCancelFee() == null ? "" : orderDto.getCancelFee());
+        orderMap.put("orderTotalFare", orderDto.getTotalFee());
+        orderMap.put("orderDestLng", orderDto.getDestLng());
+        orderMap.put("orderDestLat", orderDto.getDestLat());
+        if ("0".equals(timeZone)){
+            String dateStr=convertToUTCTime(orderDto.getDeparTime());
+            orderMap.put("orderDeparTime", dateStr);
+            qxLogger.log(QxLog.LEVEL,"timezone是0 日期:"+dateStr);
+            qxLogger.log(QxLog.LEVEL,"数据库时间："+ DateUtils.format(orderDto.getDeparTime(), "MM-dd HH:mm"));
+        }else{
+            driverMap.put("driverDeparTime", DateUtils.format(orderDto.getDeparTime(), "MM-dd HH:mm"));
+            qxLogger.log(QxLog.LEVEL,"timezone bu 是0 日期:"+DateUtils.format(orderDto.getDeparTime(), "MM-dd HH:mm"));
+        }
+
+        orderMap.put("prepaidFee", orderDto.getPrepaidFee());//预估金额
+        orderMap.put("prepaidStatus", orderDto.getPrepaidStatus());//预估订单状态
+        orderMap.put("payTimeLimit",SysConfigHelper.getPrepaidOrderPayTimeLimit());
+        //20180102
+        if (orderDto.getPrepaidFee() > 0 && orderDto.getDistributeTime() != null) {
+            orderMap.put("timeDifference", System.currentTimeMillis() - orderDto.getDistributeTime().getTime());
+        } else {
+            orderMap.put("timeDifference", 0);
+        }
+
+        model.addAttribute("driverMap", driverMap);
+        model.addAttribute("orderMap", orderMap);
+    }
+
+    private String getTimeStrByTimeZone(Date date,String timeZone){
+        SimpleDateFormat timeZoneFormat = new SimpleDateFormat("MM-dd HH:mm");     // 北京
+        timeZoneFormat.setTimeZone(TimeZone.getTimeZone(timeZone));  // 设置时区
+        return timeZoneFormat.format(date);
+    }
+
+
+    // 取得本地时间：
+    private Calendar cal = Calendar.getInstance();
+    // 取得时间偏移量：
+    private int zoneOffset = cal.get(java.util.Calendar.ZONE_OFFSET);
+    // 取得夏令时差：
+    private int dstOffset = cal.get(java.util.Calendar.DST_OFFSET);
+    public String convertToUTCTime(Date date) {
+        cal.setTimeInMillis(date.getTime());
+        cal.add(java.util.Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+        long mills = cal.getTimeInMillis();
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");     // 北京
+        return sdf.format(cal.getTime());
+    }
+
+
+
+
+
+}

@@ -1,0 +1,187 @@
+[
+  {
+    "logo": [
+      "./../../static/logo/220x220/MF.jpg"
+    ],
+    "carrier": "mf",
+    "flight": "mf8019",
+    "destination": "BKI",
+    "passby": "BKI",
+    "scheduletime": "2017/3/23 14:00:00",
+    "checkincounter": "21,22,23,24,33,34,35,40,41,42,43",
+    "flightstatus": "bdc",
+    "flightid": "1751797",
+    "actualcheckinclose": "11:00-13:00",
+    "estimatetime": "2017/3/23 14:00:00",
+    "lang1": "沙巴",
+    "lang2": "kota kinabalu",
+    "lang3": "コタキナバル",
+    "lang4": "コタキナバル"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/MF.jpg",
+      "./../../static/logo/220x220/CZ.jpg",
+      "./../../static/logo/220x220/MH.jpg"
+    ],
+    "carrier": "mf/cz/mh",
+    "flight": "mf877/cz7411/mh5713",
+    "destination": "KUL",
+    "passby": "KUL",
+    "scheduletime": "2017/3/23 18:45:00",
+    "checkincounter": "21,22,23,24,41",
+    "flightid": "1751794",
+    "actualcheckinclose": "15:45-17:45",
+    "estimatetime": "2017/3/23 18:45:00",
+    "lang1": "吉隆坡",
+    "lang2": "kuala lumpur",
+    "lang3": "クアラルンプール",
+    "lang4": "クアラルンプール"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/MF.jpg"
+    ],
+    "carrier": "mf",
+    "flight": "mf807",
+    "destination": "SYD",
+    "passby": "SYD",
+    "scheduletime": "2017/3/23 21:30:00",
+    "checkincounter": "25,26",
+    "flightid": "1751763",
+    "actualcheckinclose": "18:30-20:30",
+    "estimatetime": "2017/3/23 21:30:00",
+    "lang1": "悉尼",
+    "lang2": "sydney",
+    "lang3": "シドニー",
+    "lang4": "シドニー"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/SJ.jpg"
+    ],
+    "carrier": "sj",
+    "flight": "sj1135",
+    "destination": "DPS",
+    "passby": "DPS",
+    "scheduletime": "2017/3/23 15:30:00",
+    "checkincounter": "18,19,20",
+    "flightid": "1751994",
+    "actualcheckinclose": "12:30-14:30",
+    "estimatetime": "2017/3/23 15:30:00",
+    "lang1": "巴厘岛",
+    "lang2": "bali",
+    "lang3": "バリ島デンパサール",
+    "lang4": "バリ島デンパサール"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/AL.jpg"
+    ],
+    "carrier": "al",
+    "flight": "al404",
+    "destination": "ASW",
+    "passby": "ASW",
+    "scheduletime": "2017/3/23 23:50:00",
+    "checkincounter": "15,16,17,18",
+    "flightid": "1751860",
+    "actualcheckinclose": "20:50-22:50",
+    "estimatetime": "2017/3/23 23:50:00",
+    "lang1": "阿斯旺",
+    "lang2": "aswan",
+    "lang3": "アスワン",
+    "lang4": "アスワン"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/KA.jpg",
+      "./../../static/logo/220x220/CX.jpg"
+    ],
+    "carrier": "ka/cx",
+    "flight": "ka663/cx5663",
+    "destination": "HKG",
+    "passby": "HKG",
+    "scheduletime": "2017/3/23 20:10:00",
+    "checkincounter": "06,07,08,09,10,11,12,13,14",
+    "flightid": "1751986",
+    "actualcheckinclose": "17:10-19:10",
+    "estimatetime": "2017/3/23 20:10:00",
+    "lang1": "香港",
+    "lang2": "hong kong",
+    "lang3": "香港",
+    "lang4": "香港"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/HX.jpg"
+    ],
+    "carrier": "hx",
+    "flight": "hx146",
+    "destination": "HKG",
+    "passby": "HKG",
+    "scheduletime": "2017/3/23 19:40:00",
+    "checkincounter": "15,16,17,18",
+    "flightid": "1751918",
+    "actualcheckinclose": "16:40-18:40",
+    "estimatetime": "2017/3/23 19:40:00",
+    "lang1": "香港",
+    "lang2": "hong kong",
+    "lang3": "香港",
+    "lang4": "香港"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/MF.jpg",
+      "./../../static/logo/220x220/CZ.jpg"
+    ],
+    "carrier": "mf/cz",
+    "flight": "mf835/cz4007",
+    "destination": "KIX",
+    "passby": "KIX",
+    "scheduletime": "2017/3/23 14:50:00",
+    "checkincounter": "25,26,27",
+    "flightid": "1751809",
+    "actualcheckinclose": "11:50-13:50",
+    "estimatetime": "2017/3/23 14:50:00",
+    "lang1": "大阪",
+    "lang2": "osaka",
+    "lang3": "大阪",
+    "lang4": "大阪"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/MF.jpg"
+    ],
+    "carrier": "mf",
+    "flight": "mf883",
+    "destination": "TSA",
+    "passby": "TSA",
+    "scheduletime": "2017/3/23 18:25:00",
+    "checkincounter": "25,26,27",
+    "flightid": "1751832",
+    "actualcheckinclose": "15:25-17:25",
+    "estimatetime": "2017/3/23 18:25:00",
+    "lang1": "台北松山",
+    "lang2": "taipei songshan",
+    "lang3": "台北",
+    "lang4": "台北"
+  },
+  {
+    "logo": [
+      "./../../static/logo/220x220/MF.jpg"
+    ],
+    "carrier": "mf",
+    "flight": "mf800",
+    "destination": "TSA",
+    "passby": "TSA",
+    "scheduletime": "2017/3/23 18:25:00",
+    "checkincounter": "25,26,27",
+    "flightid": "1751832",
+    "actualcheckinclose": "15:25-17:25",
+    "estimatetime": "2017/3/23 18:25:00",
+    "lang1": "台北松山",
+    "lang2": "taipei songshan",
+    "lang3": "台北",
+    "lang4": "台北"
+  }
+]

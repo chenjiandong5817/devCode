@@ -1,0 +1,182 @@
+/*
+ * @Author: chenyang
+ * @Date: 2017-09-21 17:14:14
+ * @Last Modified by: chenyang
+ * @Last Modified time: 2017-10-17 17:21:06
+ */
+
+ <template>
+    <!--<el-form :model="deviceInfo" ref="deviceAddOrUpdateForm" class="demo-ruleForm" >-->
+    <el-form ref="staticName" v-if="visible" v-model="checkinFiled">
+      <el-card class="box-card maxWidth">
+        <el-row>
+          <el-tag type="success">上传一张图片并完善信息</el-tag>
+        </el-row>
+        </br>
+        <el-row :gutter="20">
+          <el-col :span="18">
+            <el-form-item label="文件命名">
+              <el-input v-model="checkinFiled.namedFile" placeholder="请输入文件名"></el-input>
+            </el-form-item>
+            <el-form-item label="尺寸">
+              <el-select v-model="checkinFiled.imageSize" placeholder="请选择尺寸" class="maxWidth" :filterable="true">
+                <el-option v-for="item in imageSize" :key="item.value" :label="item.text" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="格式">
+              <el-input v-model="checkinFiled.imageFormat" disabled placeholder="提交图片后系统生成"></el-input>
+            </el-form-item>
+            <el-form-item label="描述">
+              <el-input v-model="checkinFiled.imageDescribe" placeholder="添加描述,选填" type="textarea"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-upload
+              class="avatar-uploader"
+              action="/raiis/image"
+              :show-file-list="false"
+              :on-success="handleSuccess"
+              :before-upload="beforeSubmit">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+            </br>
+            <el-button type="info" @click="clearImage" icon="delete" class="buttonwidth">清空图片</el-button>
+          </el-col>
+        </el-row>
+      </el-card>
+    </el-form>
+</template>
+
+ <script>
+import GlobalConfig from '../../../common/config/global'
+export default {
+  props: {
+    title: {
+      type: String,
+      default: '新增'
+    },
+    to: {
+      type: Function,
+      default: function () { }
+    },
+    callback: {
+      type: Function,
+      default: function () { }
+    }
+  },
+  data () {
+    return {
+      imageSize: [],
+      imageUrl: '',
+      visible: false,
+      loading: false,
+      oldValue: {},
+      checkinFiled: { namedFile: '', imageSize: '', imageFormat: '', imageDescribe: '' }
+      // deviceStatusList: [ { text: '删除', value: -1 }, { text: '在线', value: 0 }, { text: '离线', value: 1 }, { text: '异常', value: 2 } ],
+      // 动态插入
+    }
+  },
+  methods: {
+    show: function () {
+        // this.setData()
+      this.initData()
+      this.visible = true
+    },
+    initData () {   // 每次show的时候初始化object
+      this.imageSize = []
+      for (let i = 0; i < GlobalConfig.imageSize.length; i++) {
+        let label = {text: GlobalConfig.imageSize[i], value: GlobalConfig.imageSize[i]}
+        this.imageSize.push(label)
+      }
+      this.checkinFiled = { namedFile: '', imageSize: '', imageFormat: '', imageDescribe: '' }
+    },
+    resetForm (formName) {
+      // console.log(formName)
+      this.$refs[formName].resetFields()
+      this.checkinFiled.namedFile = ''
+    },
+    handleSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    handleClose () {
+      this.visible = false
+    },
+    getFileFormat (fileName) {
+      let name = []
+      name = fileName.split('.')
+      return name[1]
+    },
+    clearAllImage () {
+      this.imageUrl = ''
+    },
+    beforeSubmit (file) {
+      this.checkinFiled.imageFormat = this.getFileFormat(file.name)
+      // const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!')
+      // }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      // return isJPG && isLt2M
+      return isLt2M
+    },
+    clearImage () {
+      this.imageUrl = ''
+    }
+  }
+}
+</script>
+
+<style scoped>
+  .text {
+    font-size: 14px;
+  }
+
+  .item {
+    padding: 18px 0;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both;
+  }
+
+  .box-card {
+    width: 480px;
+  }
+  .maxWidth {
+    width: 100%;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 138px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 138px;
+    display: block;
+  }
+</style>

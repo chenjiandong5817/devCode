@@ -1,0 +1,563 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<!-- 代码模块化预备 -->
+<template>
+  <section>
+    <!--工具条-->
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <div class="user_increment_operate">
+        <el-form :inline="true" :model="filters">
+          <el-form-item>
+            <el-button :type="exportExcelType" :loading="buttonLoading"  @click="exportMainData">{{ exportExcelName }}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-col>
+    <!--列表-->
+    <el-table id="mainTable" v-bind:data="userIncrements" highlight-current-row v-loading="mainListLoading" :height="tableHeight" style="width: 100%;text-align: center;">
+      <el-table-column prop="distributionName" label="分销渠道名称" header-align="center" min-width="250">
+      </el-table-column>
+      <el-table-column prop="newFans" label="新粉丝（关注/取消）" header-align="center" min-width="250">
+      </el-table-column>
+      <el-table-column prop="oldFans" label="老粉丝（关注/取消）" header-align="center" min-width="250">
+      </el-table-column>
+      <el-table-column label="粉丝数据分析" width="180" header-align="center" fixed="right" >
+        <template slot-scope="scope">
+          <el-button size="small" @click="fansDataAnalysis(scope.$index, scope.row)"><span><i class="el-icon-download"></i> 查看 </span></el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180" header-align="center" fixed="right" >
+        <template slot-scope="scope">
+          <el-button size="small" @click="handleDel(scope.$index, scope.row)"><span><i class="el-icon-delete"></i> 删除 </span></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--分页-->
+    <pagination :to="getUserIncrements" ref="mainPage"></pagination>
+    <!-- 删除 -->
+    <common-delete
+        :to="API.removeUserIncrement().go"
+        :callback="getUserIncrements"
+        :labelWidth="100"
+        ref="delConfirm"></common-delete>
+    <!-- 分析数据分析查看弹出框 -->
+    <div class="fans_data_analysis">
+      <el-dialog title="粉丝数据分析" :visible.sync="fansDataAnalysisDialogVisiable">
+        <!-- 展示表格的选择 -->
+        <el-row>
+          <el-col class="table_show_switch">
+            <div style="display: inline-block;">
+              <el-button :type="leftButtonType" :disabled="disabledLeft" @click="clickLeftButton">分销渠道数据</el-button>
+            </div>
+            <div style="display: inline-block;margin-left: -5px;">
+              <el-button :type="rightButtonType" :disabled="disabledRight" @click="clickRightButton">渠道粉丝明细</el-button>
+            </div>
+          </el-col>
+        </el-row>
+        <!-- 操作区 -->
+        <el-row style="margin-top: 15px;">
+          <!-- 日期选择 -->
+          <el-col :span="14">
+            <div style="display: inline-block;">
+              <span class="demonstration">日期</span>
+              <el-date-picker
+                v-model="startTime"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </div>
+            <div style="display: inline-block;">
+              <span class="demonstration">——</span>
+              <el-date-picker
+                v-model="endTime"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </div>
+          </el-col>
+          <!-- 填充空白 -->
+          <el-col :span="4">
+             <div style="width: 5px;height: 5px;"></div>
+          </el-col>
+          <!-- 出结果 -->
+          <el-col :span="6">
+            <el-button type="primary" @click="searchDataAnalysis">查询</el-button>
+            <el-button :type="exportExcelTypeLook" :loading="buttonLoadingLook"  @click="exportDataAnalysis">{{ exportExcelNameLook }}</el-button>
+          </el-col>
+        </el-row>
+        <!-- 表格名称区域 -->
+        <el-row style="margin-top: 10px;">
+          <el-col>
+            <div class="table_name">
+              {{ tableName }}
+            </div>
+          </el-col>
+        </el-row>
+        <!-- 表格区 -->
+        <el-row>
+          <el-col>
+          <!-- 左边表格 -->
+          <div class="left_table" v-show="leftTableVisiable">
+             <!-- 显示在页面中 -->
+             <el-table :data="leftTableData" style="width: 100%;text-align: center;" height="300">
+              <el-table-column prop="date" label="日期" min-width="180" header-align="center">
+              </el-table-column>
+              <el-table-column label="新关注" header-align="center">
+                <el-table-column prop="newNewFans" label="新粉丝" min-width="120" header-align="center">
+                </el-table-column>
+                <el-table-column prop="newCancelPeople" label="取消人数" min-width="120" header-align="center">
+                </el-table-column>
+              </el-table-column>
+              <el-table-column label="已关注" header-align="center">
+                <el-table-column prop="oldOldFans" label="老粉丝" min-width="120" header-align="center">
+                </el-table-column>
+                <el-table-column prop="oldCancelPeople" label="取消人数" min-width="120" header-align="center">
+                </el-table-column>
+              </el-table-column>
+            </el-table>
+            <!-- 打印到excel中 -->
+            <el-table id="leftTable" :data="leftTableDataExcel" style="width: 100%;text-align: center;display: none;" height="300">
+              <el-table-column prop="date" label="日期" min-width="180" header-align="center">
+              </el-table-column>
+              <el-table-column label="新关注" header-align="center">
+                <el-table-column prop="newNewFans" label="新粉丝" min-width="120" header-align="center">
+                </el-table-column>
+                <el-table-column prop="newCancelPeople" label="取消人数" min-width="120" header-align="center">
+                </el-table-column>
+              </el-table-column>
+              <el-table-column label="已关注" header-align="center">
+                <el-table-column prop="oldOldFans" label="老粉丝" min-width="120" header-align="center">
+                </el-table-column>
+                <el-table-column prop="oldCancelPeople" label="取消人数" min-width="120" header-align="center">
+                </el-table-column>
+              </el-table-column>
+            </el-table>
+            <!--分页-->
+            <pagination :to="getLeftTableData" ref="leftTablePage"></pagination>
+          </div>
+          <!-- 右边表格 -->
+          <div class="right_table" v-show="rightTableVisiable">
+            <!-- 显示在页面中 -->
+            <el-table :data="rightTableData" height="300" style="width: 100%;text-align: center;">
+              <el-table-column prop="userNickName" label="用户昵称" min-width="120" header-align="center">
+              </el-table-column>
+              <el-table-column prop="followTime" label="关注时间" min-width="120" header-align="center">
+              </el-table-column>
+              <el-table-column prop="userId" label="用户ID" min-width="120" header-align="center">
+              </el-table-column>
+              <el-table-column label="专车订单" min-width="120" header-align="center">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="getSpecialCarOrderInfo(scope.$index, scope.row)"><span><i class="el-icon-download"></i> 详情 </span></el-button>
+                </template>
+              </el-table-column>
+              <el-table-column prop="specialCarOrderMoney" label="专车订单金额" min-width="120" header-align="center">
+              </el-table-column>
+              <el-table-column label="专线订单" min-width="120" header-align="center">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="getSpecialLineOrderInfo(scope.$index, scope.row)"><span><i class="el-icon-download"></i> 详情 </span></el-button>
+                </template>
+              </el-table-column>
+              <el-table-column prop="specialLineOrderMoney" label="专线订单金额" min-width="120" header-align="center">
+              </el-table-column>
+            </el-table>
+            <!-- 打印到excel中 -->
+            <el-table id="rightTable" :data="rightTableDataExcel" height="300" style="width: 100%;text-align: center;display: none;">
+              <el-table-column prop="userNickName" label="用户昵称" min-width="120" header-align="center">
+              </el-table-column>
+              <el-table-column prop="followTime" label="关注时间" min-width="120" header-align="center">
+              </el-table-column>
+              <el-table-column prop="userId" label="用户ID" min-width="120" header-align="center">
+              </el-table-column>
+<!--               <el-table-column label="专车订单" min-width="120" header-align="center">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="getSpecialCarOrderInfo(scope.$index, scope.row)"><span><i class="el-icon-download"></i> 详情 </span></el-button>
+                </template>
+              </el-table-column> -->
+              <el-table-column prop="specialCarOrderMoney" label="专车订单金额" min-width="120" header-align="center">
+              </el-table-column>
+<!--               <el-table-column label="专线订单" min-width="120" header-align="center">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="getSpecialLineOrderInfo(scope.$index, scope.row)"><span><i class="el-icon-download"></i> 详情 </span></el-button>
+                </template>
+              </el-table-column> -->
+              <el-table-column prop="specialLineOrderMoney" label="专线订单金额" min-width="120" header-align="center">
+              </el-table-column>
+            </el-table>
+            <!--分页-->
+            <pagination :to="getRightTableData" ref="rightTablePage"></pagination>
+          </div>
+          </el-col>
+        </el-row>
+      </el-dialog>
+    </div>
+  </section>
+</template>
+
+<script>
+  import Pagination from './../../components/Pagination'
+  import commonDelete from './../../components/CommDelete'
+  import API from './../../api'
+  import util from '../../common/js/util'
+  // 更高级的表格导出
+  import FileSaver from 'file-saver'
+  import XLSX from 'xlsx'
+  export default {
+    data () {
+      return {
+        // 查询的数据
+        filters: {
+          name: null
+        },
+        // 主表格的数据
+        userIncrements: [],
+        // 弹出框左边表格的数据
+        leftTableData: [],
+        // 用于左边表格打印的数据
+        leftTableDataExcel: [],
+        // 弹出框右边表格的数据
+        rightTableData: [],
+        // 用于右边表格打印的数据
+        rightTableDataExcel: [],
+        // 主要表格的高度
+        tableHeight: 495,
+        // 弹出框左边表格的高度
+        leftTableHeight: null,
+        // 弹出框右边表格的高度
+        rightTableHeight: null,
+        // 主要表格的加载
+        mainListLoading: false,
+        // 弹出框左边表格的加载
+        leftListLoading: false,
+        // 弹出框右边表格的加载
+        rightListLoading: false,
+        // 主页面导出订单的所需数据
+        pageExportData: [],
+        // 主页面导出订单的表头
+        pageCnHeader: [],
+        // 主页面导出订单的表头代表的字段
+        pageEnHeader: [],
+        // excel表的名称
+        excelName: 'userIncrements',
+        // 以下三个公用，但是得清空
+        // 导出EXCEL按钮名称
+        exportExcelName: '导出数据',
+        // 导出EXCEL按钮类型
+        exportExcelType: 'primary',
+        // 按钮加载状态
+        buttonLoading: false,
+        // 查看的
+        // 以下三个公用，但是得清空
+        // 导出EXCEL按钮名称
+        exportExcelNameLook: '导出数据',
+        // 导出EXCEL按钮类型
+        exportExcelTypeLook: 'primary',
+        // 按钮加载状态
+        buttonLoadingLook: false,
+        // 显示粉丝数据分析的页面
+        fansDataAnalysisDialogVisiable: false,
+        // 左边的页面的表格的显示
+        leftTableVisiable: false,
+        // 右边的页面的表格的显示
+        rightTableVisiable: false,
+        // 表格切换左边按钮的样式
+        leftButtonType: null,
+        // 表格切换右边按钮的样式
+        rightButtonType: null,
+        // 是渠道数据还是粉丝明晰的标记，0为左边，1为右边，默认左边
+        leftRightTag: 0,
+        // 在操作的时候最上面的两个切换不能变，只有操作完成后才可以
+        // 左边的
+        disabledLeft: false,
+        // 右边的
+        disabledRight: false,
+        // 弹出框的开始时间共用的
+        startTime: '',
+        // 弹出框的结束时间共用的
+        endTime: '',
+        // 表格名称的变量
+        tableName: '',
+        // 标签中使用
+        API: API
+      }
+    },
+    computed: {
+    },
+    components: {
+      commonDelete: commonDelete,
+      pagination: Pagination
+    },
+    methods: {
+      // 点击左边时触发的事件
+      clickLeftButton () {
+        // 是显示左边表格的标记
+        this.leftRightTag = 0
+        // 按钮样式变化
+        this.leftButtonType = 'primary'
+        this.rightButtonType = ''
+        // 表格切换显示
+        this.leftTableVisiable = true
+        this.rightTableVisiable = false
+        this.getLeftTableData()
+      },
+      // 获取左边表格里的数据
+      getLeftTableData () {
+        // 赋值操作
+        this.leftTableData = [
+          {
+            date: '2018-05-06',
+            newNewFans: 3,
+            newCancelPeople: 4,
+            oldOldFans: 2,
+            oldCancelPeople: 5
+          },
+          {
+            date: '2018-05-09',
+            newNewFans: 4,
+            newCancelPeople: 7,
+            oldOldFans: 5,
+            oldCancelPeople: 8
+          },
+          {
+            date: '2018-06-09',
+            newNewFans: 3,
+            newCancelPeople: 6,
+            oldOldFans: 4,
+            oldCancelPeople: 7
+          }
+        ]
+        this.$nextTick(() => {
+          this.$refs['leftTablePage'].set('total', 3)
+        })
+      },
+      // 点击右边时触发的事件
+      clickRightButton () {
+        // 是显示右边表格的标记
+        this.leftRightTag = 1
+        // 按钮样式的变化
+        this.leftButtonType = ''
+        this.rightButtonType = 'primary'
+        // 表格切换显示
+        this.leftTableVisiable = false
+        this.rightTableVisiable = true
+        this.getRightTableData()
+      },
+      // 获取右边表格的数据
+      getRightTableData () {
+        // 赋值操作
+        this.rightTableData = [
+          {
+            userNickName: '太阳',
+            followTime: '2018-06-06',
+            userId: 'sajdsoji',
+            specialCarOrderMoney: 50,
+            specialLineOrderMoney: 60
+          },
+          {
+            userNickName: '月亮',
+            followTime: '2018-07-01',
+            userId: 'wererfd',
+            specialCarOrderMoney: 80,
+            specialLineOrderMoney: 90
+          }
+        ]
+        this.$nextTick(() => {
+          this.$refs['rightTablePage'].set('total', 2)
+        })
+      },
+      // 弹出框的时间查询
+      searchDataAnalysis () {
+        if (this.leftRightTag === 0) {
+          this.disabledLeft = false
+          this.disabledRight = true
+          // 操作区
+          this.disabledRight = false
+        }
+        if (this.leftRightTag === 1) {
+          this.disabledLeft = true
+          this.disabledRight = false
+          // 操作区
+          this.disabledLeft = false
+        }
+      },
+      // 弹出框的导出事件
+      exportDataAnalysis () {
+        this.setStartExportButtonLook()
+        if (this.leftRightTag === 0) {
+          this.disabledLeft = false
+          this.disabledRight = true
+          this.leftTableDataExcel = this.leftTableData
+          this.$nextTick(() => {
+            this.betterExportExcel('#leftTable', '分销渠道数据.xlsx')
+          })
+          this.disabledRight = false
+        }
+        if (this.leftRightTag === 1) {
+          this.disabledLeft = true
+          this.disabledRight = false
+          this.rightTableDataExcel = this.rightTableData
+          this.$nextTick(() => {
+            this.betterExportExcel('#rightTable', '渠道粉丝明细.xlsx')
+          })
+          this.disabledLeft = false
+        }
+        this.setEndExportButtonLook()
+      },
+      // 专车订单详情
+      getSpecialCarOrderInfo (index, row) {
+        console.log('index', index)
+        console.log('row', row)
+      },
+      // 专线订单详情
+      getSpecialLineOrderInfo (index, row) {
+        console.log('index', index)
+        console.log('row', row)
+      },
+      // 粉丝数据分析查看的点击事件
+      fansDataAnalysis (index, row) {
+        console.log('index', index)
+        console.log('row', row)
+        this.fansDataAnalysisDialogVisiable = true
+        this.tableName = row.distributionName
+        this.clickLeftButton()
+      },
+      // 删除数据的事件
+      handleDel (index, row) {
+        this.$refs['delConfirm'].del(row.id)
+      },
+      // 主页面导出订单触发事件
+      exportMainData () {
+        this.setStartExportButton()
+        // 中文头赋值
+        this.pageCnHeader = ['分销渠道名称', '新粉丝（关注/取消）', '老粉丝（关注/取消）']
+        // 字段赋值
+        this.pageEnHeader = ['distributionName', 'newFans', 'oldFans']
+        // 导出数据赋值
+        this.pageExportData = this.userIncrements
+        // excel表的名称赋值
+        this.excelName = '用户增量数据'
+        this.exportExcel()
+      },
+      // 导出订单功能模块，主页面左边页面右边页面都调用这个方法快
+      // 导出按钮点击下去后的变化
+      setStartExportButton () {
+        this.exportExcelName = '正在导出'
+        this.exportExcelType = 'danger'
+        this.buttonLoading = true
+      },
+      // 导出订单成功后按钮的变化
+      setEndExportButton () {
+        this.exportExcelName = '导出数据'
+        this.exportExcelType = 'primary'
+        this.buttonLoading = false
+      },
+      // 查看的
+      // 导出订单功能模块，主页面左边页面右边页面都调用这个方法快
+      // 导出按钮点击下去后的变化
+      setStartExportButtonLook () {
+        this.exportExcelNameLook = '正在导出'
+        this.exportExcelTypeLook = 'danger'
+        this.buttonLoadingLook = true
+      },
+      // 导出订单成功后按钮的变化
+      setEndExportButtonLook () {
+        this.exportExcelNameLook = '导出数据'
+        this.exportExcelTypeLook = 'primary'
+        this.buttonLoadingLook = false
+      },
+      // 导出excel的函数
+      exportExcel () {
+        require.ensure([], () => {
+        const { export_json_to_excel } = require('./../../common/vendor/Export2Excel')
+        const tHeader = this.pageCnHeader
+        const filterVal = this.pageEnHeader
+        const list = this.pageExportData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, this.excelName)
+        })
+        this.setEndExportButton()
+        // 提示语通用
+        this.$notify(util.notifyBody(true, '导出成功'))
+      },
+      formatJson (filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => v[j]))
+      },
+      // 更高级的excel导出
+      betterExportExcel (tableId, excelName) {
+         var wb = XLSX.utils.table_to_book(document.querySelector(tableId))
+         var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+         try {
+            FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), excelName)
+         } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+         // 提示语通用
+         this.$notify(util.notifyBody(true, '导出成功'))
+         return wbout
+      },
+      // 获取主表格的数据
+      getUserIncrements () {
+        this.userIncrements = [
+          {
+            id: 1,
+            distributionName: '陈建东',
+            newFans: 5 + '/' + 2,
+            oldFans: 2 + '/' + 3
+          },
+          {
+            id: 2,
+            distributionName: '陈建南',
+            newFans: 8 + '/' + 5,
+            oldFans: 2 + '/' + 7
+          }
+        ]
+        this.$refs['mainPage'].set('total', 2)
+      }
+    },
+    mounted () {
+      this.getUserIncrements()
+    }
+  }
+</script>
+
+<style>
+  .user_increment_operate .el-form-item {
+    float: right;
+    margin-right: 30px;
+  }
+  .fans_data_analysis .table_name {
+    text-align: center;
+    font-size: 18px;
+    height: 30px;
+    padding-top: 7px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+  }
+  .left_table .toolbar-bottom {
+    position: static!important;
+  }
+  .right_table .toolbar-bottom {
+    position: static!important;
+  }
+  /*768以内的*/
+    @media screen and (min-height: 0px) and (max-height: 767px) {
+      .fans_data_analysis .el-dialog {
+        width: 60%!important;
+      }
+    }
+    /*768到1080之间的*/
+    @media screen and (min-height: 768px) and (max-height: 1080px) {
+      .fans_data_analysis .el-dialog {
+        width: 50%!important;
+      }
+    }
+    /*做1080以上分辨率的适配*/
+    @media screen and (min-height: 1080px) {
+      .fans_data_analysis .el-dialog {
+        width: 45%!important;
+      }
+    }
+</style>

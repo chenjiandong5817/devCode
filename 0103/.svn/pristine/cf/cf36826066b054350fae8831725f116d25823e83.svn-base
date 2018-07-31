@@ -1,0 +1,32 @@
+{
+  "type": "Layout",
+  "description": "空数据页面配置",
+  "bodyStyle": {
+    "minWidth": 1920,
+    "minHeight": 1080,
+    "backgroundColor": "#212E5B"
+  },
+  "rows": [
+    {
+      "type": "Row",
+      "align": "middle",
+      "justify": "center",
+      "cols": [
+        {
+          "type": "Column",
+          "span": 24,
+          "bodyStyle": {
+            "color": "#fff",
+            "textAlign": "center"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "value": "别看了没数据"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

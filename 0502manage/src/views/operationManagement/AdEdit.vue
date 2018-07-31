@@ -1,0 +1,447 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<!-- 代码模块化预备 -->
+<template>
+  <section>
+    <el-row class="adEdit">
+      <el-col :span="14">
+         <el-row class="data-row" >
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;">
+              </div>
+            </el-col>
+            <el-col :span="22">
+               <el-row v-loading="aliListLoading">
+                  <el-col :span="24">
+                     <div class="text-show">
+                       <!-- 支付宝广告语： -->
+                       {{ aliTitle }}：
+                     </div>
+                     <div class="text-show">
+                       {{ aliPay }}
+                     </div>
+                  </el-col>
+               </el-row>
+               <el-row style="margin-top: 40px">
+                  <el-col :span="16">
+                     <el-input v-model="aliPayParam" placeholder="请输入变更的广告语" size="large"></el-input>
+                  </el-col>
+                  <el-col :span="2">
+                     <div style="width: 5px;height: 5px;">
+                     </div>
+                  </el-col>
+                  <el-col :span="6">
+                     <el-button size="large" type="primary" @click="aliPayClick">提交更改</el-button>
+                  </el-col>
+               </el-row>
+            </el-col>
+            <!-- <el-col :span="1">
+              <div style="width: 5px;height: 5px;">
+              </div>
+            </el-col> -->
+          </el-row>
+          <el-row class="data-row" >
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;">
+              </div>
+            </el-col>
+            <el-col :span="22">
+               <el-row v-loading="weListLoading">
+                  <el-col :span="24">
+                     <div class="text-show">
+                       <!-- 微信广告语： -->
+                       {{ weTitle }}：
+                     </div>
+                     <div class="text-show">
+                       {{ weChat }}
+                     </div>
+                  </el-col>
+               </el-row>
+               <el-row style="margin-top: 40px">
+                  <el-col :span="16">
+                     <el-input v-model="weChatParam" placeholder="请输入变更的广告语" size="large"></el-input>
+                  </el-col>
+                  <el-col :span="2">
+                     <div style="width: 5px;height: 5px;">
+                     </div>
+                  </el-col>
+                  <el-col :span="6">
+                     <el-button size="large" type="primary" @click="weChatClick">提交更改</el-button>
+                  </el-col>
+               </el-row>
+            </el-col>
+            <!-- <el-col :span="1">
+              <div style="width: 5px;height: 5px;">
+              </div>
+            </el-col> -->
+          </el-row>
+          <el-row class="data-row" >
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;">
+              </div>
+            </el-col>
+            <el-col :span="22">
+               <el-row v-loading="unionListLoading">
+                  <el-col :span="24">
+                     <div class="text-show">
+                       <!-- 银联广告语： -->
+                       {{ unionTitle }}：
+                     </div>
+                     <div class="text-show">
+                       {{ unionPay }}
+                     </div>
+                  </el-col>
+               </el-row>
+               <el-row style="margin-top: 40px">
+                  <el-col :span="16">
+                     <el-input v-model="unionPayParam" placeholder="请输入变更的广告语" size="large"></el-input>
+                  </el-col>
+                  <el-col :span="2">
+                     <div style="width: 5px;height: 5px;">
+                     </div>
+                  </el-col>
+                  <el-col :span="6">
+                     <el-button size="large" type="primary" @click="unionPayClick">提交更改</el-button>
+                  </el-col>
+               </el-row>
+            </el-col>
+            <!-- <el-col :span="1">
+              <div style="width: 5px;height: 5px;">
+              </div>
+            </el-col> -->
+          </el-row>
+      </el-col>
+      <!-- 图片上传 -->
+      <el-col :span="10">
+        <el-row style="margin-top: 40px;">
+          <el-col :span="3">
+              <div style="width: 5px;height: 5px;">
+              </div>
+           </el-col>
+          <el-col :span="21">
+            <div style="font-size: 25px;">
+              请上传图片，该图片用于广告显示（点击图片即可进行更换）
+            </div>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 50px;">
+           <el-col :span="3">
+              <div style="width: 5px;height: 5px;">
+              </div>
+           </el-col>
+           <el-col :span="21">
+             <el-upload
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture-card"
+              ref="uploadImgBlock"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :auto-upload="autoUpload"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="removeFile"
+              :on-change="uploadChange">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+           </el-col>
+        </el-row>
+        <el-row style="margin-top: 20px">
+          <el-col :span="3">
+            <div style="width: 5px;height: 5px;">
+            </div>
+          </el-col>
+          <el-col :span="21">
+            <el-button type="primary" @click="uploadImg">上传图片</el-button>
+          </el-col>
+        </el-row>
+        <!-- 链接 -->
+        <el-row style="margin-top: 40px">
+          <el-col :span="3">
+            <div style="width: 5px;height: 5px;">
+            </div>
+          </el-col>
+          <el-col :span="19">
+            <div v-loading="linkLoading">
+              <span>
+                {{ linkTitle }}：{{ link }}
+              </span>
+            </div>
+            <div style="margin-top: 20px;">
+              <el-input v-model="linkParam"></el-input>
+            </div>
+          </el-col>
+        </el-row>
+        <!-- 上传链接的按钮 -->
+        <el-row style="margin-top: 20px">
+          <el-col :span="3">
+            <div style="width: 5px;height: 5px;">
+            </div>
+          </el-col>
+          <el-col :span="21">
+            <el-button type="primary" @click="uploadImgLink">提交链接</el-button>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+  </section>
+</template>
+
+<script>
+  import API from './../../api'
+  import Util from './../../common/js/util'
+  export default {
+    data () {
+      return {
+        id: '',
+        aliTitle: null,
+        weTitle: null,
+        unionTitle: null,
+        linkTitle: null,
+        aliPay: '',
+        weChat: '',
+        unionPay: '',
+        link: '',
+        aliPayParam: '',
+        weChatParam: '',
+        unionPayParam: '',
+        linkParam: '',
+        adContent: null,
+        aliListLoading: false,
+        weListLoading: false,
+        unionListLoading: false,
+        linkLoading: false,
+        // 图片的链接
+        dialogImageUrl: '',
+        // 是否放大图片的显示
+        dialogVisible: false,
+        // 存储图片的信息用于显示的
+        fileGetted: [{name: '测试.jpg', url: ''}],
+        // 是否自动上传
+        autoUpload: false,
+        // 存储图片的信息用于上传的
+        fileUploaded: [],
+        // 根据名称来判断图片的唯一性
+        imgName: null,
+        // 图片的路径
+        imageUrl: '',
+        API: API
+      }
+    },
+    computed: {
+    },
+    components: {
+    },
+    methods: {
+      getAdInfo () {
+        this.listLoading = true
+        API.getAdContent().go(this.id).then((data) => {
+          if (data.status === 1) {
+            this.adContent = data.data
+            this.aliPay = data.data[0].content
+            this.weChat = data.data[1].content
+            this.unionPay = data.data[2].content
+            this.link = data.data[4].content
+            this.aliTitle = data.data[0].title
+            this.weTitle = data.data[1].title
+            this.unionTitle = data.data[2].title
+            this.linkTitle = data.data[4].title
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.listLoading = false
+        })
+      },
+      aliPayClick () {
+        var para = {
+          id: this.adContent[0].id,
+          title: this.adContent[0].title,
+          content: this.aliPayParam
+        }
+        this.aliListLoading = true
+        API.editAdContent().go(para).then((data) => {
+          if (data.status === 1) {
+            this.aliPayParam = ''
+            this.getAdInfo()
+            this.$notify(Util.notifyBody(true, data.message))
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.aliListLoading = false
+        })
+      },
+      weChatClick () {
+        var para = {
+          id: this.adContent[1].id,
+          title: this.adContent[1].title,
+          content: this.weChatParam
+        }
+        this.weListLoading = true
+        API.editAdContent().go(para).then((data) => {
+          if (data.status === 1) {
+            this.weChatParam = ''
+            this.getAdInfo()
+            this.$notify(Util.notifyBody(true, data.message))
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.weListLoading = false
+        })
+      },
+      unionPayClick () {
+        var para = {
+          id: this.adContent[2].id,
+          title: this.adContent[2].title,
+          content: this.unionPayParam
+        }
+        this.unionListLoading = true
+        API.editAdContent().go(para).then((data) => {
+          if (data.status === 1) {
+            this.unionPayParam = ''
+            this.getAdInfo()
+            this.$notify(Util.notifyBody(true, data.message))
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.unionListLoading = false
+        })
+      },
+      // 上传链接
+      uploadImgLink () {
+        var para = {
+          id: this.adContent[4].id,
+          title: this.adContent[4].title,
+          content: this.linkParam
+        }
+        this.linkLoading = true
+        API.editAdContent().go(para).then((data) => {
+          if (data.status === 1) {
+            this.linkParam = ''
+            this.getAdInfo()
+            this.$notify(Util.notifyBody(true, data.message))
+          } else {
+            this.$notify(Util.notifyBody(false, data.message))
+          }
+          this.linkLoading = false
+        })
+      },
+      // 点击已经上传的文件的函数
+      handlePictureCardPreview (file) {
+        this.dialogImageUrl = file.url
+        this.dialogVisible = true
+      },
+      // 上传文件前的钩子函数
+      beforeUpload (file) {
+        let fd = new FormData()
+        fd.append('id', 3)
+        fd.append('fileName', '测试.jpg')
+        fd.append('multipartFile', file)
+        API.uploadPicture(fd).then((data) => {
+          if (data.data.status === 1) {
+            this.getPicture()
+            this.$notify(Util.notifyBody(true, data.data.message))
+          } else {
+            this.$notify(Util.notifyBody(false, data.data.message))
+          }
+        })
+        return false
+      },
+      // 文件状态改变时的函数
+      uploadChange (file, fileList) {
+        this.imageUrl = URL.createObjectURL(file.raw)
+        this.fileUploaded = fileList
+      },
+      removeFile (file, fileList) {
+        this.fileUploaded = fileList
+      },
+      uploadImg () {
+        // var isJPG = null
+        if (this.imgName === this.fileUploaded[0].name) {
+          this.$notify(Util.notifyBody(false, '上传失败，上传的图片是相同的！'))
+          return
+        }
+        // isJPG = this.fileUploaded[0].raw.type
+        // if (isJPG !== 'image/jpeg') {
+        //   this.$notify(Util.notifyBody(false, '上传失败，只能上传JPG 格式的图片！'))
+        //   return
+        // }
+        // if (this.imgName !== this.fileUploaded[0].name && isJPG === 'image/jpeg') {
+        //   this.$refs.uploadImgBlock.submit()
+        // }
+        // 图片格式不加限制
+        if (this.imgName !== this.fileUploaded[0].name) {
+          this.$refs.uploadImgBlock.submit()
+        }
+      },
+      getPicture () {
+        // this.imageUrl = ''
+        API.getAdPicture().go(3).then((data) => {
+          var headFlow = 'data:image/jpg;base64,'
+          var afterFlow = data
+          var imgUrl = headFlow + afterFlow
+          this.imageUrl = headFlow + afterFlow
+          this.fileGetted[0].url = imgUrl
+          this.fileGetted[0]['raw'] = {}
+          this.fileGetted[0]['raw']['type'] = 'image/jpeg'
+          // 使用push赋值
+          this.fileUploaded = this.fileGetted
+          // 给图片名称赋值
+          this.imgName = this.fileGetted[0].name
+        })
+      }
+    },
+    mounted () {
+      this.getAdInfo()
+      this.getPicture()
+    }
+  }
+</script>
+
+<style>
+  .adEdit .text-show {
+    display: inline-block;
+    font-family: 'PingFangSC-Regular', 'PingFang SC';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20px;
+  }
+  @media screen and (min-height: 0px) and (max-height: 767px) {
+    .adEdit .data-row {
+      height: 135px;
+      margin-top: 46px;
+    }
+    .adEdit .el-upload--picture-card {
+      height: 148px!important;
+      width: 400px!important;
+    }
+    .avatar {
+      width: 398px;
+      height: 148px;
+      border-radius: 6px;
+      display: block;
+    }
+  }
+  @media screen and (min-height: 768px) and (max-height: 1080px) {
+    .adEdit .data-row {
+      height: 200px;
+      margin-top: 65px;
+    }
+    .adEdit .el-upload--picture-card {
+      height: 148px!important;
+      width: 550px!important;
+    }
+    .avatar {
+      width: 548px;
+      height: 148px;
+      border-radius: 6px;
+      display: block;
+    }
+  }
+</style>

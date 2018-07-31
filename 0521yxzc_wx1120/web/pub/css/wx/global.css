@@ -1,0 +1,364 @@
+body
+{
+    font-family: PingFang-SC, sans-serif;
+
+    background-color: #f3f4f6;
+}
+ul,
+li
+{
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+.container-fluid
+{
+    padding: 0;
+}
+
+/**************reset*******************/
+.layui-layer
+{
+    border-radius: 10px !important;
+    background-color: #fff !important;
+}
+.layui-layer.notradius{
+    border-radius: 0 !important;
+}
+.layui-layer.radius{
+    overflow: hidden;
+}
+.layui-layer-title
+{
+    font-size: 16px !important;
+
+    padding-right: 40px !important;
+
+    text-align: center;
+
+    color: #4f5a67 !important;
+    border-bottom: none !important;
+    background-color: #fff !important;
+
+    border-radius: 10px !important;
+}
+
+.layui-layer-btn
+{
+    line-height: 45px;
+
+    padding: 0 !important;
+
+    border-top: 1px solid #e4e7ea;
+}
+.layui-layer-btn a
+{
+    line-height: 45px !important;
+
+    width: 50%;
+    height: 45px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    text-align: center;
+}
+.layui-layer-btn .layui-layer-btn0
+{
+    color: #6b7886 !important;
+    border: none;
+    border-color: #e4e7ea !important;
+    border-right: 1px solid #e4e7ea;
+    border-bottom-left-radius: 10px;
+    background-color: #fff !important;
+}
+.layui-layer-btn .layui-layer-btn1
+{
+    color: #00b5e6 !important;
+    border: none;
+    border-bottom-right-radius: 10px;
+    background-color: #fff !important;
+}
+.layui-layer-hui{
+    color: #fff !important;
+    background-color: #999999 !important;
+}
+/***************************************/
+.area_ctrl,.area_btn_box{
+    background-color: #fff;
+}
+
+.area_btn_box .larea_cancel
+{
+    color: #9ea7b1;
+}
+.area_btn_box .larea_finish
+{
+    color: #3e88f5;
+}
+/****************************************/
+.ios-select-widget-box header.iosselect-header{
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+}
+.ios-select-widget-box header.iosselect-header a.close
+{
+    color: #9ea7b1;
+}
+.ios-select-widget-box header.iosselect-header a.sure
+{
+    color: #3e88f5;
+}
+
+
+/* 我的优惠券 */
+.e-radio{
+    display: none;
+}
+.e-radio +label{
+    display: block;
+    position: relative;
+}
+.e-radio +label:after{
+    content: "";
+    display: inline-block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #ffffff;
+    border: solid 2px #b1b4b7;
+    right: 10px;
+    top: 14px;
+    border-radius: 20px;
+}
+.e-radio:checked +label:after{
+    content: "\2713";
+    font-size: 12px;
+    line-height: 17px;
+    background-color: #00b5e6;
+    border-color: #00b5e6;
+    color: #fff;
+    text-align: center;
+}
+.coupon-ul{
+
+}
+.coupon-ul>li{
+    margin-top: 14px;
+    position: relative;
+}
+.coupon-ul>li>label{
+
+}
+.profile-guoqi{
+    display: none;
+}
+.coupon-ul .coupon-img{
+    display: table;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding: 20px 0;
+}
+.coupon-name{
+    font-family: PingFang-SC;
+    font-size: 24px;
+    font-weight: 500;
+    padding: 6px 0;
+}
+.coupon-text{
+
+}
+.coupon-time{
+    font-family: PingFang-SC;
+    font-size: 14px;
+    color: #ffffff;
+}
+/* 折扣券背景图 */
+.coupon-img.zhe{
+    background-image: url("../../images/yellow_bg.png");
+}
+.zhe .coupon-name{
+    color: #d18500;
+}
+/* 满减券背景图 */
+.coupon-img.manjian{
+    background-image: url("../../images/blue_bg.png");
+}
+.manjian .coupon-name{
+    color: #57a1bc;
+}
+/* 过期券背景图 */
+.coupon-img.guoqi{
+    background-image: url("../../images/gray_bg.png");
+}
+.guoqi .coupon-name{
+    color: #babbbb;
+}
+.guoqi .profile-guoqi{
+    display: block;
+    position: absolute;
+    right: 45px;
+    width: 97px;
+    top: 10px;
+}
+
+
+.coupon-img>div{
+    display: table-cell;
+    vertical-align: middle;
+}
+.coupon-img>div:first-child{
+    padding-left: 10px;
+}
+.coupon-img>div:last-child{
+    text-align: right;
+    padding-right: 20px;
+}
+.coupon-ul .coupon-text{
+    color: #4b4d51;
+    font-size: 14px;
+    padding-left: 20px;
+    height: 40px;
+    line-height: 40px;
+}
+.not-coupon{
+    height: 40px;
+    line-height: 40px;
+    color: #4b4d51;
+}
+.not-coupon > .e-radio +label:after{
+    top: 7px;
+}
+.coupon-ul .e-radio +label:after{
+    top: auto;
+    bottom: 10px;
+}
+.tishims{
+    font-family: PingFang-SC;
+    font-size: 14px;
+    color: #a9abb0;
+    margin: 5px 0;
+}
+.coupon-money{
+    color: #fff;
+    font-size: 20px;
+}
+.coupon-money >span{
+    font-size: 32px;
+}
+
+/*选择优惠券*/
+.select-coupon{
+    padding-bottom: 120px;
+}
+.l-coupon-btn{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    padding-bottom: 10px;
+}
+.quxiao{
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    color: #4f5a67;
+    border-radius: 4px;
+    border: solid 1px #4f5a67;
+    line-height: 40px;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.queren{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 4px;
+    background-color: #00b5e6;
+    font-size: 20px;
+    color: #fff;
+}
+
+
+/*我的行程*/
+.l-myorder{
+
+}
+.myorder-ul{
+    width: 92%;
+    margin: 0 auto;
+}
+.myorder-ul > li{
+    cursor: pointer;
+    padding: 12px 0;
+    border-bottom: solid 1px #e5e5e5;
+}
+.myorder-time{
+    display: table;
+    width: 100%;
+    font-size: 16px;
+    color: #7a7c81;
+}
+.myorder-time>div{
+    display: table-cell;
+}
+.myorder-time>div:last-child{
+    text-align: right;
+}
+.myorder-class{
+    border: 1px solid #ababab;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 0 5px;
+    color: #ababab;
+    margin-left: 10px;
+}
+.myorder-pay{
+    color: #00b5e6;
+}
+.myorder-gray{
+    color: #a9abb0;;
+}
+.myorder-sing{
+    color: #4f5a67;
+}
+.myorder-icon{
+    font-size: 16px;
+    color: #4b4d51;
+}
+.myorder-icon>span{
+    padding-left: 10px;
+}
+.myorder-icon:before{
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border: 2px solid #eea236;
+    border-radius: 6px;
+}
+.myorder-icon.qidian{
+    margin: 5px 0;
+}
+.myorder-icon.qidian:before{
+    border-color: #2fc68d;
+}
+.myorder-icon.zhongdian:before{
+    border-color: #f08a92;
+}
+
+.one-btn{
+    overflow: hidden;
+}
+.one-btn .layui-layer-btn{
+    text-align: center;
+}
+.one-btn .layui-layer-btn .layui-layer-btn0{
+    width: 100%;
+}

@@ -1,0 +1,121 @@
+<!-- /*
+ * @Author: cdroid
+ * @Date: 2017-05-25 10:42:17
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-27 15:33:48
+ * @Description: 通用机场列表界面
+ */ -->
+<template>
+  <section v-loading="listLoading">
+    <el-row class="simulate-height">
+      <el-col style="height: 100%;margin-top: 50px;">
+         <el-row style="height: 12%">
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;"></div>
+            </el-col>
+            <el-col :span="20" style="height: 100%">
+                <div style="text-align: center">
+                  <span style="font-size: 30px;color: red;">提醒：当前讯问问题及答案将会被记录到日志当中</span>
+                </div>
+            </el-col>
+            <el-col :span="2" style="height: 100%">
+                <div style="width: 5px;height: 5px;"></div>
+            </el-col>
+         </el-row>
+         <el-row style="height: 35%">
+            <el-col :span="2">
+              <div style="width: 5px;height: 5px;"></div>
+            </el-col>
+            <el-col :span="20" style="height: 100%">
+                <div style="display: inline-block;vertical-align: top;">
+                  <span>问题</span>
+                </div>
+                <div style="display: inline-block;margin-left: 30px;width: 85%;" class="input-question">
+                  <el-input type="textarea" autosize v-model="filter.question" placeholder="输入问题"></el-input>
+                </div>
+            </el-col>
+            <el-col :span="2" style="height: 100%">
+                <el-button type="primary" @click="getAnswer">查询</el-button>
+            </el-col>
+         </el-row>
+         <el-row style="height: 50%">
+             <el-col :span="2">
+                <div style="width: 5px;height: 5px;"></div>
+             </el-col>
+             <el-col :span="20" style="height: 100%">
+                <div>
+                  <div style="display: inline-block;vertical-align: top;">
+                    <span>答案</span>
+                  </div>
+                  <div style="display: inline-block;margin-left: 30px;width: 85%;" class="input-answer">
+                    <el-input type="textarea" autosize v-model="filter.answer" placeholder="输入问题"></el-input>
+                  </div>
+                </div>
+             </el-col>
+         </el-row>
+      </el-col>
+    </el-row>
+  </section>
+</template>
+
+<script>
+  import API from '../../api'
+
+  export default {
+    data () {
+      return {
+        filter: {
+          question: '',
+          answer: ''
+        },
+        listLoading: false
+      }
+    },
+    computed: {
+    },
+    components: {
+    },
+    methods: {
+      getAnswer () {
+        this.listLoading = true
+        if (this.filter.question === '') {
+          this.filter.answer = '请输入问题，再进行查询'
+          this.listLoading = false
+          return
+        }
+        var para = this.filter.question
+        API.getSimulateAskTest().go(para).then((data) => {
+          this.listLoading = false
+          if (data.result === 'noFound') {
+            this.filter.answer = '在知识库中无匹配项，查询图灵机器人'
+          }
+          if (data.result !== 'noFound') {
+            this.filter.answer = data.result
+          }
+        })
+      }
+    },
+    mounted () {
+      // this.getAnswer()
+    }
+  }
+</script>
+
+<style scoped>
+   @media screen and (min-height: 0px) and (max-height: 767px) {
+      .simulate-height {
+        height: 500px;
+      }
+    }
+    @media screen and (min-height: 768px) and (max-height: 1080px) {
+      .simulate-height {
+        height: 700px;
+      }
+    }
+    .input-question .el-input {
+      width: 100%!important;
+    }
+    .input-answer .el-textarea {
+      width: 100%!important;
+    }
+</style>

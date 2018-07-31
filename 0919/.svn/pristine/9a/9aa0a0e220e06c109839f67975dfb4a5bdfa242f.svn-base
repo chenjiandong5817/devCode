@@ -1,0 +1,110 @@
+/*
+* @Author: chenjiandong
+* @Date:   2017-09-07 15:48:37
+* @Last Modified by:   chenjiandong
+* @Last Modified time: last_modified_time
+*/
+import loginInfo from '../../vuex/store'
+export default {
+      // 对是否远机位进行格式化
+    formatterIsNo: function (row, column, cellValue) {
+      if (cellValue === '1') {
+        return '是'
+      }
+      if (cellValue === '0') {
+        return '否'
+      }
+    },
+    // 对是否离港进行格式化
+    formatterDirection: function (row, column, cellValue) {
+      if (cellValue === 'A') {
+        return '进港'
+      }
+      if (cellValue === 'D') {
+        return '出港'
+      }
+      if (cellValue === 'A/D') {
+        return '进港/出港'
+      }
+    },
+    // 对状态进行格式化
+    formatterStatus: function (row, column, cellValue) {
+      if (cellValue === 'A') {
+        return '可用'
+      }
+      if (cellValue === 'D') {
+        return '禁用'
+      }
+      if (cellValue === 'O') {
+        return '开放'
+      }
+      if (cellValue === 'C') {
+        return '关闭'
+      }
+    },
+    // 对地区进行格式化
+    formatterNature: function (row, column, cellValue) {
+      if (cellValue === 'I') {
+        return '国际'
+      }
+      if (cellValue === 'D') {
+        return '国内'
+      }
+      if (cellValue === 'R') {
+        return '地区'
+      }
+    },
+    // 对是否离港进行格式化
+    formatterCarouselType: function (row, column, cellValue) {
+      if (cellValue === 'A') {
+        return '进'
+      }
+      if (cellValue === 'D') {
+        return '出'
+      }
+    },
+    // 对是否禁用进行格式化
+    formatterDisable: function (row, column, cellValue) {
+      if (cellValue === 1) {
+        return '禁用'
+      }
+      if (cellValue === 0) {
+        return '启用'
+      }
+    },
+    // 对是否禁用启用进行格式化返回的数据是字符串
+    formatterDisableString: function (row, column, cellValue) {
+      if (cellValue === '1') {
+        return '禁用'
+      }
+      if (cellValue === '0') {
+        return '启用'
+      }
+    },
+    // 对是否虚拟航空公司进行格式化
+    formatterIsvirtual: function (row, column, cellValue) {
+      if (cellValue === '0') {
+        return '非虚拟航空公司'
+      }
+      if (cellValue === '1') {
+        return '虚拟航空公司'
+      }
+    },
+    // 转换为大小写
+    // toUpperCaseInput: function (data) {
+    //   return data.toUpperCase()
+    // }
+    setSubAirportls () {
+      // 设置绑定用户管辖运营机场
+      let result = []
+      let list = loginInfo.state.userStorage.user.aiisAirports
+      for (var i = 0; i < list.length; i++) {
+        let value = list[i].airportCode
+        let text = list[i].airport !== undefined ? list[i].airport.cnabbr2w : ''
+        text = text === undefined ? '' : text
+        let obj = { value: value, text: text }
+        result.push(obj)
+      }
+      return result
+    }
+}

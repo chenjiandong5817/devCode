@@ -1,0 +1,11 @@
+export const SVG_HEIGHT = 700
+export const MENIU_TEXT_FONT_SIZE = 20
+export const MENIU_MARGIN_SIZE = 5
+export const MENIU_BACKGROUND_COLOR = '#888'
+export const MENIU_ITEM_HINT_COCLOR = '#555'
+export const MENIU_ITEM_BACKGROUND_COLOR = '#888'
+export const MENIU_MOVE_X = 3
+export const MENIU_MOVE_Y = MENIU_TEXT_FONT_SIZE / 2
+export const MENIU_ITEM_FILL_OPACITY = 0.3
+export const CIRCLE_R = 10
+export const MESSAGE_TEXT_FONT_SIZE = 15
